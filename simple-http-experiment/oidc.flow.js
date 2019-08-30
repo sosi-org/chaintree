@@ -135,11 +135,11 @@ class REResolver {
     }
 };
 */
-function REResolver(regexp, args_map) {
+function REResolver(regexp, args_map, generator) {
     check_error(!(0 in args_map) || args_map[0] === undefined, 'argsmap-should-not-have-0' /* The constraint name!*/ );
     //const that = {};
     /*that.re*/ const the_regexp = new RegExp(regexp);
-    return (input_string) => {
+    const conv_func = (input_string) => {
         const regexp_matched = the_regexp.exec(input_string);
         if (!regexp_matched) {
             // throw new customError();
@@ -155,19 +155,23 @@ function REResolver(regexp, args_map) {
         lazy_assert_check_equal( Object.keys(result_obj)+'', Object.values(args_map)+'');
         return result_obj;
     };
+    this.generate = generator ; // (args) => `${args.prot}://...`;
+    this.resolve = conv_func;
 }
 async function main() {
+    // note that the '/' that is returned as path is the '/' itself. It is not "reconstructed".
     const URL_RESOLVER = /^([htps]+):\/\/([a-z0-9\.\-]+)(\/.*)$/gm;
-    const url_resolver = REResolver(
+    const url_resolver = new REResolver(
             //URL_RESOLVER, [1,2,3]
-            URL_RESOLVER, {1:'prot', 2:'hostname', 3:'path'}
+            URL_RESOLVER, {1:'prot', 2:'hostname', 3:'path'},
+            (argsObj) => `${argsObj.prot}://${argsObj.hostname}${path}`
         );
     // how to fix this pattern
     // how to force not using 0? (This one is easy)
     // How to make sure info/data is not lost?
     // todo: testcases
 
-    const {hostname, path} = url_resolver(
+    const {hostname, path} = url_resolver.resolve(
       'https://authorise-api.lloydsbank.co.uk/prod01/channel/lyds/.well-known/openid-configuration'
     );
     const port = 443; //80; // how to simplify this code? (default based on 'prot' and whether it is sepcified here in the URL)
@@ -175,6 +179,16 @@ async function main() {
 
     lazy_assert_check(hostname === 'authorise-api.lloydsbank.co.uk', 'hostname nok');
     lazy_assert_check(path === '/prod01/channel/lyds/.well-known/openid-configuration', 'path nok');
+    const gen_url = url_resolver.generate(
+        {prot:'https', hostname: 'authorise-api.lloydsbank.co.uk', path:'/prod01/channel/lyds/.well-known/openid-configuration'}
+    );
+    lazy_assert_check(
+        gen_url
+            ===
+        'https://authorise-api.lloydsbank.co.uk/prod01/channel/lyds/.well-known/openid-configuration',
+        'generator nok'
+    );
+
 
     return http_request({verb: 'GET', hostname, path, port, headers: {}, body_data: 'hello'});
 }
