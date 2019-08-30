@@ -140,6 +140,7 @@ function REResolver(regexp, args_map, generator) {
     //const that = {};
     /*that.re*/ const the_regexp = new RegExp(regexp);
     const conv_func = (input_string) => {
+        console.log('convfunc0 with:', input_string);
         const regexp_matched = the_regexp.exec(input_string);
         if (!regexp_matched) {
             // throw new customError();
@@ -157,14 +158,42 @@ function REResolver(regexp, args_map, generator) {
     };
     this.generate = generator ; // (args) => `${args.prot}://...`;
     this.resolve = conv_func;
+    this.inverse = () => {
+        const obj = {};
+        obj.inverse = () => {
+            /*
+            const obj2 = {};
+            [obj2.generate, obj2.resolve] = [obj.generate, obj.resolve];
+            obj2.inverse = () => {throw new Error('I know. not implemented')}
+            // won't work
+            [obj2.generate, obj2.resolve] = [obj2.resolve, obj2.generate];
+            //return obj; //this
+            // wrong. OOP is a cetain type of closure.
+            //.   in which, this can be swapped. etc.
+            // this is a real mess
+            return obj2;
+            */
+            throw new Error('not implemented');
+        }
+        [obj.generate, obj.resolve] = [this.generate, this.resolve];
+        // obj.inverse();
+        [obj.generate, obj.resolve] = [obj.resolve, obj.generate];
+
+        return obj;
+    }; //: one that reverse
+
+    // interface: generate(), resolve(), inverse()
 }
+
 async function main() {
     // note that the '/' that is returned as path is the '/' itself. It is not "reconstructed".
     const URL_RESOLVER = /^([htps]+):\/\/([a-z0-9\.\-]+)(\/.*)$/gm;
     const url_resolver = new REResolver(
             //URL_RESOLVER, [1,2,3]
             URL_RESOLVER, {1:'prot', 2:'hostname', 3:'path'},
-            (argsObj) => `${argsObj.prot}://${argsObj.hostname}${path}`
+            (argsObj) => {
+                console.log('gen0', argsObj);
+                return `${argsObj.prot}://${argsObj.hostname}${path}`}
         );
     // how to fix this pattern
     // how to force not using 0? (This one is easy)
@@ -179,16 +208,19 @@ async function main() {
 
     lazy_assert_check(hostname === 'authorise-api.lloydsbank.co.uk', 'hostname nok');
     lazy_assert_check(path === '/prod01/channel/lyds/.well-known/openid-configuration', 'path nok');
-    const gen_url = url_resolver.generate(
-        {prot:'https', hostname: 'authorise-api.lloydsbank.co.uk', path:'/prod01/channel/lyds/.well-known/openid-configuration'}
-    );
+    const arg_obj = {prot:'https', hostname: 'authorise-api.lloydsbank.co.uk', path:'/prod01/channel/lyds/.well-known/openid-configuration'};
+    const gen_url = url_resolver.generate(arg_obj);
+    const full_url = 'https://authorise-api.lloydsbank.co.uk/prod01/channel/lyds/.well-known/openid-configuration';
     lazy_assert_check(
         gen_url
             ===
-        'https://authorise-api.lloydsbank.co.uk/prod01/channel/lyds/.well-known/openid-configuration',
+        full_url,
         'generator nok'
     );
 
+    const url_maker = url_resolver.inverse();
+
+    // console.log('>', url_maker.resolve(full_url));
 
     return http_request({verb: 'GET', hostname, path, port, headers: {}, body_data: 'hello'});
 }
