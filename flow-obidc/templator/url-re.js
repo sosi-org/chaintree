@@ -45,6 +45,14 @@ function UrlRegExp() {
     //todo: typed args
     // todo: default: return empty string instead of undefined. => it is reconstructable.
 
+    /*
+    It is important to dissociate between unmatched error (i.e. for any reason) with deliberately missng value (implicit).
+    That's why smpty string is necessary.
+    In the new RegExp language, this needs to be systematic.
+    Another reason the current RegExp is rubish for this purpose.
+    */
+
+
     return new RegExpResolver(
             URL_RESOLVER,
             {1:'prot', 2:'hostname', 3: 'port', 4:'path'},

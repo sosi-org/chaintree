@@ -25,13 +25,15 @@ console.log({hostname, path, port, prot});
 const headers = {
     // 'Content-Type': 'application/json',
     // 'Content-Length': data.length,
+    /*
     'User-Agent': 'PostmanRuntime/7.15.2',
-    'Accept': '*/*',
+    'Accept': '*\/*',
     'Cache-Controle': 'no-cache',
 
     'Host': 'gatewaydata02.psd2.sandbox.extranet.group',
     'Accept-Encoding': 'gzip, deflate',
     'Connection': 'keep-alive',
+    */
 };
 
 
