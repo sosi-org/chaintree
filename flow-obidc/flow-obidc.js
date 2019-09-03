@@ -58,7 +58,7 @@ function base64Decode(strData) {
 
 function encode64(strData) {
     return Buffer.from(strData).toString('base64');
-  }
+}
 
 async function doit() {
     try {
@@ -123,6 +123,9 @@ async function doit() {
 
         const jws_gktv = new RegExpResolver(
                 /^gktv(.*)$/gm,
+                //todo: auto generate this by naming groups:
+                // NamedRegExpResolver
+                //      /^gktv(?<jws>.*)$/gm,
                 {1:'jws'},
                 ({jws}) => `gktv${jws}`
             );
@@ -131,6 +134,7 @@ async function doit() {
 
         const jws_template = new RegExpResolver(
             /^([^\.]*)\.([^\.]*)\.([^\.]*)$/gm,
+            //   /^(?<header>[^\.]*)\.(?<payload>[^\.]*)\.(?<signature>[^\.]*)$/
             {1:'header', 2: 'payload', 3: 'signature'},
             ({header, payload, signature}) => `${header}.${payload}.${signature}`
         );
