@@ -111,7 +111,10 @@ async function doit() {
                 ...callModes.TLS_selfsigned,
             });
             console.log('part 2: output:', b);
-            return b;
+            const bobj = JSON.parse(b);
+            const checker = new Schema_from_swagger(require_yaml('./token1.schema.yaml'));
+            checker.resolve(bobj); // throws if wrong
+            return bobj;
         };
         part2();
 

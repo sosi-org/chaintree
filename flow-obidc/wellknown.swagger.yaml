@@ -17,6 +17,8 @@ required:
   - claims_parameter_supported
   - request_parameter_supported
   - request_uri_parameter_supported
+additionalProperties: false
+
 properties:
   version:
     type: number

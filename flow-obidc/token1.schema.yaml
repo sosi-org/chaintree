@@ -1,0 +1,26 @@
+title: wellknown
+type: object
+required:
+  - token_type
+  - access_token
+  - expires_in
+  - consented_on
+  - scope
+additionalProperties: false
+
+properties:
+    token_type:
+      type: string
+    access_token:
+      type: string
+    expires_in:
+      type: integer
+    consented_on:
+      type: integer
+    scope:
+      type: string
+      enum:
+        - openid accounts
+        - openid
+        - accounts
+

@@ -7,6 +7,7 @@
 
     Uses Swagger 2.0 format.
     Not very good: The default mode for fields is not mandatory.
+    see: https://swagger.io/docs/specification/2-0/basic-structure/
 */
 
 const tv4 = require('tv4');
