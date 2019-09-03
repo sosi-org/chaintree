@@ -1,6 +1,6 @@
 'use strict';
 
-const company_config = require('./company-config.json');
+const company_config = require('./company-config.js');
 
 console.log(company_config);
 
@@ -106,6 +106,7 @@ async function doit() {
                 body_data: body_data,
                 ...callModes.TLS_selfsigned,
             });
+            console.log('part 2: output:', b);
             return b;
         };
         part2();
