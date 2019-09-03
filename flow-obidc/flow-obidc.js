@@ -36,11 +36,20 @@ const headers = {
     */
 };
 
-
+function ignore_https_TLS_SSC_error() {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
 
 async function doit() {
     try {
-        await fabrics.http_request({verb: 'GET', hostname, path, port, headers /*, body_data: 'hello'*/ });
+        // ignore_https_TLS_SSC_error();
+        const a = await fabrics.http_request(
+            {verb: 'GET', hostname, path, port, headers,
+            /*, body_data: 'hello'*/ /*body_data: undefined, */
+            extra_options: {rejectUnauthorized: false}
+        });
+        console.log("outcome:", a);
+
     } catch (e) {   
         console.error(e);
     }

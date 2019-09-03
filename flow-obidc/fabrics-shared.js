@@ -7,7 +7,7 @@ const {allow_enum, allow_type} = require('./error-checking.js');
 /*
     from simple-http-experiment/oidc.flow.js
 */
-function http_request({verb, hostname, path, port, headers, body_data}) {
+function http_request({verb, hostname, path, port, headers, body_data, extra_options}) {
 
     allow_enum(verb, ['POST', 'GET', 'PUT']);
     allow_type(hostname, 'string');
@@ -15,14 +15,19 @@ function http_request({verb, hostname, path, port, headers, body_data}) {
     allow_type(port, 'integer');
     allow_type(headers, 'dict');
 
+    // to keep separate
+    const from_extra_options = extra_options?{
+      rejectUnauthorized: extra_options.rejectUnauthorized
+    }:{};
+
     const options = {
       hostname,
       port,
       path,
       method: verb,
       headers,
-    }
-    console.log({options});
+      ...from_extra_options,
+    };
 
     return new Promise( (accept, reject) => {
         const req = https.request(options, (res) => {
