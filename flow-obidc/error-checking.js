@@ -54,6 +54,9 @@ function allow_type(x, type) {
     let ok = SchemaChecker.is_a.string(type);
     ok = ok && (x !== null) && (x !== undefined);
 
+    if (x === null || x === undefined) {
+        throw new TypeError(x + ' is undefined or null');
+    }
     let fine = SchemaChecker.composite(type);
 
     if (ok && fine(x) /*|| (typeof x) === type */ ) {
@@ -61,6 +64,13 @@ function allow_type(x, type) {
     } else {
         throw new TypeError(x + ' must be of type '+type);
     }
+}
+//
+function allow_fixed_special_only(x, special) {
+    if (x === special) {
+        return;
+    }
+    throw new TypeError(x + ' must be === '+special);
 }
 
 function allow_enum(x, enum_array) {
@@ -80,4 +90,5 @@ module.exports = {
     add_slow_CustomError,
     check_error,
     lazy_assert_check_equal,
+    allow_fixed_special_only,
 };
