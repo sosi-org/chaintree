@@ -34,9 +34,9 @@ function http_request({verb, hostname, path, port, headers, body_data, extra_opt
 
           console.log(`statusCode: ${res.statusCode}`)
 
-          res.on('data', (response_data) => {
+          res.on('data', (response_data_buffer) => {
             // single chunk only?
-            accept(response_data);
+            accept(response_data_buffer.toString());
           });
         });
 
