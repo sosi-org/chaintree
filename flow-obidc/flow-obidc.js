@@ -9,7 +9,7 @@ const fabrics = require('./fabrics-shared.js');
 console.log(company_config.wellknown);
 
 
-const {UrlRegExp, UrlRegExpWithPort} = require('./templator/url-re.js');
+const {UrlRegExp, UrlRegExpWithPort, RegExpResolver} = require('./templator/url-re.js');
 
 const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
 
@@ -110,13 +110,32 @@ async function doit() {
                 body_data: body_data,
                 ...callModes.TLS_selfsigned,
             });
-            console.log('part 2: output:', b);
             const bobj = JSON.parse(b);
             const checker = new Schema_from_swagger(require_yaml('./token1.schema.yaml'));
             checker.resolve(bobj); // throws if wrong
             return bobj;
         };
-        part2();
+        const token1 = await part2();
+        console.log('token1:', token1);
+
+        const access_toekn = token1.access_token;
+        console.log('access_toekn:', access_toekn);
+
+        const jws_gktv = new RegExpResolver(
+                /^gktv(.*)$/gm,
+                {1:'jws'},
+                ({jws}) => `gktv${jws}`
+            );
+        const jws_str = jws_gktv.resolve(access_toekn);
+        console.log('***jws_strjws_str', jws_str);
+
+        const jws_template = new RegExpResolver(
+            /^([^\.]*)\.([^\.]*)\.([^\.]*)$/gm,
+            {1:'header', 2: 'payload', 3: 'signature'},
+            ({header, payload, signature}) => `${header}.${payload}.${signature}`
+        );
+        const args = jws_template.resolve(jws_str.jws);
+        console.log(args);
 
     } catch (e) {
         console.error(e);

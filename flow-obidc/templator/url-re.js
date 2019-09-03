@@ -139,5 +139,6 @@ test_UrlRegExpWithPort();
 module.exports = {
     UrlRegExp,
     UrlRegExpWithPort,
+    RegExpResolver,
 };
 
