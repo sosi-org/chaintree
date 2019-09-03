@@ -6,7 +6,7 @@ function group(re) {
 }
 function plus_able(...args) {
     return !"if concatable without parentheses";
-} 
+}
 /*
 function concat(re1, re2) {
     return new RegExp('(' + re1.source + re2.source + ')');

@@ -80,7 +80,7 @@ async function doit() {
         checker.resolve(jsonated); // throws if wrong
 
         const token_endpoint = jsonated.token_endpoint;
-        console.log("token_endpoint:", token_endpoint); 
+        console.log("token_endpoint:", token_endpoint);
 
         console.log('part 2');
         const part2 = async () =>{
@@ -118,7 +118,7 @@ async function doit() {
         };
         part2();
 
-    } catch (e) {   
+    } catch (e) {
         console.error(e);
     }
 }

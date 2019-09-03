@@ -149,7 +149,7 @@ function REResolver(regexp, args_map, generator) {
         const result_obj = {};
         for (const i in args_map) {
             const keyname = args_map[i];
-            // i is a number  
+            // i is a number
             if (keyname === undefined && i === '0') continue;
             result_obj[keyname] = regexp_matched[i];
         }
