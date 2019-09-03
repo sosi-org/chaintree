@@ -11,6 +11,7 @@ console.log(company_config.wellknown);
 
 const {UrlRegExp, UrlRegExpWithPort} = require('./templator/url-re.js');
 
+const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
 
 
 let {hostname, path, port, prot} = UrlRegExp().resolve(company_config.wellknown);
@@ -72,8 +73,11 @@ async function doit() {
             ...callModes.TLS_selfsigned,
         });
         const jsonated = JSON.parse(a);
-        console.log("outcome:", jsonated);
+        console.log("outcome:", a);
 
+        const checker = new Schema_from_swagger(require_yaml('./wellknown.swagger.yaml'));
+        //checker.resolve(a);
+        checker.resolve(jsonated); // throws if wrong
 
         const token_endpoint = jsonated.token_endpoint;
         console.log("token_endpoint:", token_endpoint); 

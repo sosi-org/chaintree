@@ -1,0 +1,68 @@
+title: wellknown
+type: object
+required:
+  - version
+  - issuer
+  - authorization_endpoint
+  - token_endpoint
+  - jwks_uri
+  - scopes_supported
+  - claims_supported
+  - response_types_supported
+  - grant_types_supported
+  - subject_types_supported
+  - id_token_signing_alg_values_supported
+  - request_object_signing_alg_values_supported
+  - token_endpoint_auth_methods_supported
+  - claims_parameter_supported
+  - request_parameter_supported
+  - request_uri_parameter_supported
+properties:
+  version:
+    type: number
+  issuer:
+    type: string
+  authorization_endpoint:
+    type: string
+  token_endpoint:
+    type: string
+  jwks_uri:
+    type: string
+  scopes_supported:
+    type: array
+    items:
+      type: string
+  claims_supported:
+    type: array
+    items:
+      type: string
+  response_types_supported:
+    type: array
+    items:
+      type: string
+  grant_types_supported:
+    type: array
+    items:
+      type: string
+  subject_types_supported:
+    type: array
+    items:
+      type: string
+  id_token_signing_alg_values_supported:
+    type: array
+    items:
+      type: string
+  request_object_signing_alg_values_supported:
+    type: array
+    items:
+      type: string
+  token_endpoint_auth_methods_supported:
+    type: array
+    items:
+      type: string
+  claims_parameter_supported:
+    type: boolean
+  request_parameter_supported:
+    type: boolean
+  request_uri_parameter_supported:
+    type: boolean
