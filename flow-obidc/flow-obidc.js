@@ -1,22 +1,24 @@
 'use strict';
 
+const fabrics = require('./fabrics-shared.js');
+const {UrlRegExp, UrlRegExpWithPort, RegExpResolver} = require('./templator/url-re.js');
+const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
+const {Base64} = require('./templator/base64.js')
+
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);
 }
+
+
+
 
 stage(1,1, 'wellknown point - taken from config');
 // todo: use "npm comment-json"
 const company_config = require('./company-config.js');
 
 // console.log(company_config);
-const fabrics = require('./fabrics-shared.js');
 
 console.log(company_config.wellknown);
-
-
-const {UrlRegExp, UrlRegExpWithPort, RegExpResolver} = require('./templator/url-re.js');
-
-const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
 
 stage(1,2, 'calling the wellknown point');
 
@@ -61,7 +63,6 @@ function base64Decode(strData) {
 }
 */
 
-const {Base64} = require('./templator/base64.js')
 
 
 async function doit() {
@@ -93,6 +94,9 @@ async function doit() {
             // then: prapare:
             // const: (source): given from outise: from company_config
             //      company_config.app is creatd by "App Creation" tasks.
+            //          SSA:
+            //               Note that they have already provided SSA (in the larger circuit).
+            //               SSA has two purposes: 1. certify (Also to arrive to use THROUGH a different ROUTE: form OB). 2. contains info fior us. 
             const ClIdsecretObj = {id: company_config.app.clientId, secret: company_config.app.clientSecret};
             console.log('----',ClIdsecretObj);
             // template code: (generate/reconstruct)
@@ -131,12 +135,12 @@ async function doit() {
         console.log('access_toekn:', access_toekn);
 
         const jws_gktv = new RegExpResolver(
-                /^gktv(.*)$/gm,
+                /^gktvo(.*)$/gm,
                 //todo: auto generate this by naming groups:
                 // NamedRegExpResolver
                 //      /^gktv(?<jws>.*)$/gm,
                 {1:'jws'},
-                ({jws}) => `gktv${jws}`
+                ({jws}) => `gktvo${jws}`
             );
         const jws_str = jws_gktv.resolve(access_toekn);
         console.log('***jws_strjws_str', jws_str);
@@ -149,6 +153,20 @@ async function doit() {
         );
         const args = jws_template.resolve(jws_str.jws);
         console.log(args);
+
+        (()=>{
+
+            // a;; variables must be const. (subclass of javascript)
+            const {header, payload, signature} = args;
+            const base64 = new Base64();
+            const decod64ed_jws = {
+                header: base64.resolve(header),
+                payload: base64.resolve(payload),
+                signature: base64.resolve(signature),
+            };
+            console.log('decod64ed_jws', decod64ed_jws);
+
+        })();
 
     } catch (e) {
         console.error(e);
