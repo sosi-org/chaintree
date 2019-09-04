@@ -19,7 +19,6 @@ function RegExpResolver(regexp, args_map, generator) {
     const that = this;
     this.regexp = regexp;
     this.resolve = (input_string) => {
-        console.log('33input_string', input_string);
         check_error(typeof input_string !== 'undefined', 'must-be-defined');
         const the_regexp = new RegExp(that.regexp);
         const regexp_matched = the_regexp.exec(input_string);
@@ -73,17 +72,14 @@ function UrlRegExp() {
 function MapDefaultPort() {
     "use strict";
     this.resolve = ({prot, port}) => {
-        console.log('6', {prot, port});
         if (port) {
             return port;
         }
-        console.log('7');
         // todo: assure_type  allow_type
         allow_fixed_special_only(port, undefined);
         // for now, inly http and https are supported
         // a bottleneck
         allow_enum(prot, ['http', 'https']);
-        console.log('8');
 
         // separate nice compact object for this (const. config)
         const defaults = {http: 80, https: 443};
@@ -103,12 +99,9 @@ function UrlRegExpWithPort() {
     const dp = new MapDefaultPort();
 
     this.resolve = (input_string) => {
-        console.log('22input_string', input_string)
         const a = ur.resolve(input_string);
-        console.log('4a', a);
         // chain. as separate step (stage)s.
         const newport = dp.resolve({port: a.port, prot:a.prot});
-        console.log('5', a, newport);
         // bad idea: replaced the original object
         a.port = newport;
 

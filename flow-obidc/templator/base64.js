@@ -12,9 +12,7 @@ function decode64(stringBase64) {
 
 function test_(data_utf8) {
     const e64 = encode64(data_utf8);
-    console.log('e64', e64);
     const orig_reconst = decode64(e64);
-    console.log('expect', orig_reconst, '==', data_utf8);
 
     if (orig_reconst !== data_utf8) {
       throw new Error('test failed: ', orig_reconst, '!==', data_utf8);

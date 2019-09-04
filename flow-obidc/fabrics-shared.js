@@ -30,6 +30,7 @@ function http_request({verb, hostname, path, port, headers, body_data, extra_opt
     };
 
     return new Promise( (accept, reject) => {
+        console.log('request:', JSON.stringify(options));
         const req = https.request(options, (res) => {
 
           console.log(`statusCode: ${res.statusCode}`)

@@ -32,17 +32,17 @@ function getSwaggerV2Schema(swagger_filecontent, swagger_pointname) {
 }
 
 function schemaValidator(schema, json_data) {
-    console.log();
-    console.log('----------');
-    console.log('matching: ', schema);
-    console.log('with: ', json_data);
+    //console.log();
+    //console.log('----------');
+    // console.log('matching: ', schema);
+    console.log('extracted: ', json_data);
     let validation_result = tv4.validateMultiple(json_data, schema);
     console.log(validation_result)
 
     const errors = validation_result['errors'];
 
-    console.log('----------');
-    console.log();
+    //console.log('----------');
+    //console.log();
 
     // for troubleshooting, use another method
     return errors.length === 0;

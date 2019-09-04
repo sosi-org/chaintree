@@ -1,9 +1,13 @@
 'use strict';
 
+function stage(stage_id, minor_step, heading) {
+    console.log('---------- stage %d.', stage_id, minor_step, ':', heading);
+}
+
+stage(1,1, 'wellknown point - taken from config');
 const company_config = require('./company-config.js');
 
-console.log(company_config);
-
+// console.log(company_config);
 const fabrics = require('./fabrics-shared.js');
 
 console.log(company_config.wellknown);
@@ -13,6 +17,7 @@ const {UrlRegExp, UrlRegExpWithPort, RegExpResolver} = require('./templator/url-
 
 const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
 
+stage(1,2, 'calling the wellknown point');
 
 let {hostname, path, port, prot} = UrlRegExp().resolve(company_config.wellknown);
 
@@ -57,8 +62,10 @@ function base64Decode(strData) {
 
 const {Base64} = require('./templator/base64.js')
 
+
 async function doit() {
     try {
+        stage(1,3, 'calling the wellknown point - cont');
         // ignore_https_TLS_SSC_error();
 
         // call types/modes:
@@ -70,16 +77,17 @@ async function doit() {
             ...callModes.TLS_selfsigned,
         });
         const jsonated = JSON.parse(a);
-        console.log("outcome:", a);
 
         const checker = new Schema_from_swagger(require_yaml('./wellknown.swagger.yaml'));
         //checker.resolve(a);
         checker.resolve(jsonated); // throws if wrong
 
+        stage(1,4, 'finding the `/token` endpoint - from contents from wellknown');
+
         const token_endpoint = jsonated.token_endpoint;
         console.log("token_endpoint:", token_endpoint);
 
-        console.log('part 2');
+        stage(2,1, 'calling the `/token` - using clientId');
         const part2 = async () =>{
             // then: prapare:
             // const: (source)
