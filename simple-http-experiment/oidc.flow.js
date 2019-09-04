@@ -22,6 +22,7 @@ function lazy_assert_check(ok, message) {
       throw new Error(message);
    }
 }
+// old file
 function lazy_assert_check_equal(a,b) {
     lazy_assert_check (a === b, 'must be equal. but are: '+a+' !=== '+b);
 }
@@ -156,6 +157,7 @@ function REResolver(regexp, args_map, generator) {
             if (keyname === undefined && i === '0') continue;
             result_obj[keyname] = regexp_matched[i];
         }
+        // old file
         lazy_assert_check_equal( Object.keys(result_obj)+'', Object.values(args_map)+'');
         return result_obj;
     };

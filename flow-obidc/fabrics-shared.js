@@ -3,6 +3,7 @@
 const https = require('https')
 
 const {allow_enum, allow_type, lazy_assert_check_equal} = require('./error-checking.js');
+const {TemplatorConstraintError, FlowValueConstraintError} = require('./custom-errors/custom-exceptions.js');
 
 /*
     from simple-http-experiment/oidc.flow.js
@@ -60,18 +61,20 @@ function flow_valid_value(value, expected, constraint_description) {
     // lazy_assert_check;
     // (cond === true, true)
     // (cond, true)
-    lazy_assert_check_equal(value, expected, 'this flow will be valid only if constraint met: ' + constraint_description);
+    lazy_assert_check_equal(value, expected, FlowValueConstraintError, 'this flow will be valid only if constraint met: ' + constraint_description);
+    // TemplatorConstraintError
 }
 
 /*
     "template-constraint" version of flow_valid_value (ass opposed to flow-constraint)
 */
 function valid_value_as_template_constraint(value, expected, constraint_description) {
-    lazy_assert_check_equal(value, expected, 'this constraint failed' + constraint_description);
+    lazy_assert_check_equal(value, expected, TemplatorConstraintError, 'this constraint failed' + constraint_description);
 }
 
 function flow_valid_type(value, expected_type, constraint_description) {
     allow_type(value, expected_type, 'this flow will be valid only if constraint met: ' + constraint_description);
+    // FlowValueConstraintError
 }
 
 /*

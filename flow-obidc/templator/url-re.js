@@ -2,6 +2,7 @@
 
 // const {} = require('../fabrics-shared.js');
 const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_CustomError, lazy_assert_check_equal} = require('../error-checking.js');
+const {TemplatorConstraintError, FlowValueConstraintError, ReversibilityTestError} = require('../custom-errors/custom-exceptions.js');
 
 add_slow_CustomError('argsmap-should-not-have-0');
 add_slow_CustomError('resolver-regexp-pattern-did-not-match');
@@ -37,7 +38,9 @@ function RegExpResolver(regexp, args_map, generator) {
             }
             result_obj[keyname] = regexp_matched[i];
         }
-        lazy_assert_check_equal( Object.keys(result_obj)+'', Object.values(args_map)+'');
+
+        // in fact: static error: error in specifying the list of binding args
+        lazy_assert_check_equal( Object.keys(result_obj)+'', Object.values(args_map)+'', TemplatorConstraintError, 'args mismatch');
         return result_obj;
     };
     this.generate = generator; // () => throw new Error('not implemented');
@@ -125,7 +128,7 @@ function test_UrlRegExpWithPort() {
     const argObj = t.resolve('http://yahoo.com/');
     const reconstructed = t.generate(argObj);
     // empty path must be empty string
-    lazy_assert_check_equal(reconstructed, 'http://yahoo.com:80/');
+    lazy_assert_check_equal(reconstructed, 'http://yahoo.com:80/', ReversibilityTestError);
 }
 
 // if (test)

@@ -1,5 +1,6 @@
 const {SchemaChecker, typeinfo} = require('../simple-http-experiment/basic_utils.js');
 
+const {TemplatorConstraintError, FlowValueConstraintError} = require('./custom-errors/custom-exceptions.js');
 
 /* each of these is a constraint */
 const CustomErrors = {
@@ -46,10 +47,10 @@ function equal_and_buffer(a, b) {
     }
     return true;
 }
-function lazy_assert_check_equal(a,b, error_code) {
+function lazy_assert_check_equal(a,b, error_class=Error, error_code) {
     if (is_buffer(a) || is_buffer(b)) {
         if (!equal_and_buffer(a, b)) {
-            throw new Error('oincompatible types: should be: Buffer vs Buffer. Are:', a,b);
+            throw new error_class('incompatible types: should be: Buffer vs Buffer. Are:', a,b);
         }
     }
     // add error_code

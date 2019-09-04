@@ -221,6 +221,7 @@ async function doit() {
                     const file_content_binarybuffer = this.pem_format.encode(buffer, 'DATA');
 
                     // lazy_assert_check_equal(file_content_binarybuffer, this.file_content_binarybuffer);
+                    // expand inline:, remove valid_value_as_template_constraint() ?
                     fabrics.valid_value_as_template_constraint(file_content_binarybuffer, this.file_content_binarybuffer, 'binary contents must be equal');
 
                     return null;

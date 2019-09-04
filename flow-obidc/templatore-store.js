@@ -1,6 +1,6 @@
 'use strict';
 
-const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_CustomError, lazy_assert_check_equal} = require('./error-checking.js');
+const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_CustomError} = require('./error-checking.js');
 
 add_slow_CustomError('base-type-name-already-registered');
 
