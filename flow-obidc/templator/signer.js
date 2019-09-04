@@ -97,10 +97,24 @@ function g_verify({data, signature}, /*param*/ {algorithm, key}) {
     console.log('checking signature:', {data, signature}, '  with', {algorithm, key})
     // Error: error:0909006C:PEM routines:get_name:no start line
 
+    const data_buffer = Buffer.from(data);
     // key = "PUBLIC_key" (if "hmac") : "secret" (if "ecdsa")
     // only on consumer (client)'s side.
     const alg_obj = jwa(algorithm);
-    return alg_obj.verify(data, signature, key);
+    // can break:
+    console.log({data:data_buffer, signature, key});
+    // { data: 271, signature: 256, key: 1192 }
+    console.log({data:data.length, signature:signature.length, key:key.length});
+    // process.exit(1);
+    try {
+
+        const ver = alg_obj.verify(data_buffer, signature, key);
+        console.log('good:', ver); // false
+        return ver;
+
+    } catch (e) {
+        throw new Error('Constraint error: PEM file content format has problems:  ---- ' +e);
+    }
 }
 
 
@@ -141,7 +155,8 @@ class sign_verifier_u3 {
         // check input value. for example if string ...
         const verified = g_verify({data, signature}, this.algorithm_key_tuple);
         if (!verified) {
-            throw new Error('Constraint failed');
+            // finally a PEM file is processed. However, the SSA is not valid
+            throw new Error('ConstraintFailed: verified='+verified);
         }
         // Can we reconstruct inputs from this (data only)? No.
         // But on the other hand, this is now "resolve/generate"-symmetric.

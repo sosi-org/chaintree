@@ -29,7 +29,29 @@ function lazy_assert_check(ok, message) {
       throw new Error(message);
    }
 }
+function is_buffer(a) {
+    return a && a.constructor && /*a.constructor.name == 'Buffer' &&*/ a.constructor === Buffer;
+}
+function equal_and_buffer(a, b) {
+    if (is_buffer(a)) {
+        if (is_buffer(b)) {
+            if (a.equals(b)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
 function lazy_assert_check_equal(a,b, error_code) {
+    if (is_buffer(a) || is_buffer(b)) {
+        if (!equal_and_buffer(a, b)) {
+            throw new Error('oincompatible types: should be: Buffer vs Buffer. Are:', a,b);
+        }
+    }
     // add error_code
     lazy_assert_check (a === b, error_code + '. Must have been equal. but are: '+a+' !=== '+b);
 }

@@ -63,10 +63,20 @@ function flow_valid_value(value, expected, constraint_description) {
     lazy_assert_check_equal(value, expected, 'this flow will be valid only if constraint met: ' + constraint_description);
 }
 
+/*
+    "template-constraint" version of flow_valid_value (ass opposed to flow-constraint)
+*/
+function valid_value_as_template_constraint(value, expected, constraint_description) {
+    lazy_assert_check_equal(value, expected, 'this constraint failed' + constraint_description);
+}
+
 function flow_valid_type(value, expected_type, constraint_description) {
     allow_type(value, expected_type, 'this flow will be valid only if constraint met: ' + constraint_description);
 }
 
+/*
+  Non-specific (context-free) flow checks.
+*/
 const check_flow =
     (a) =>
         flow_valid_value(a !== undefined, true, 'undefined cannot flow in wires') &&
@@ -78,4 +88,5 @@ module.exports = {
     flow_valid_value,
     flow_valid_type,
     check_flow,
+    valid_value_as_template_constraint,
 };
