@@ -66,10 +66,11 @@ function allow_type(x, type) {
     }
 }
 //
-function allow_fixed_special_only(x, special) {
+function allow_fixed_special_only(x, special, error_code) {
     if (x === special) {
         return;
     }
+    check_error(false, error_code);
     throw new TypeError(x + ' must be === '+special);
 }
 

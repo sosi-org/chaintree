@@ -6,6 +6,8 @@ const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_C
 add_slow_CustomError('argsmap-should-not-have-0');
 add_slow_CustomError('resolver-regexp-pattern-did-not-match');
 add_slow_CustomError('must-be-defined');
+add_slow_CustomError('port-must-be-unspecified');  // guaranteable assertion, not runtime error
+
 /*
     generator = (args) => `${args.prot}://...`;
     interface: generate(), resolve(), inverse()
@@ -76,7 +78,7 @@ function MapDefaultPort() {
             return port;
         }
         // todo: assure_type  allow_type
-        allow_fixed_special_only(port, undefined);
+        allow_fixed_special_only(port, undefined, 'port-must-be-unspecified');
         // for now, inly http and https are supported
         // a bottleneck
         allow_enum(prot, ['http', 'https']);

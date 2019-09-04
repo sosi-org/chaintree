@@ -3,11 +3,20 @@
 const fabrics = require('./fabrics-shared.js');
 const {UrlRegExp, UrlRegExpWithPort, RegExpResolver} = require('./templator/url-re.js');
 const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
-const {Base64} = require('./templator/base64.js')
+const {Base64} = require('./templator/base64.js');
 
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);
 }
+
+class B64Url {
+}
+
+class BinaryBuffer {
+    // from/to string utf-8
+}
+
+const {util: {base64url_decode_to_binary}} = require('./templator/b64url.js');
 
 
 
@@ -155,6 +164,12 @@ async function doit() {
         console.log(args);
 
         (()=>{
+            // Use RFC7515 to decode JWS
+
+            // b64url_buffer
+            const {b64url_buffer} = require('./templator/b64url.js');
+            //base64url_decode_to_binary = new b64url_buffer().resoslve
+            const b64ubobj = new b64url_buffer();
 
             // a;; variables must be const. (subclass of javascript)
             const {header, payload, signature} = args;
@@ -162,8 +177,14 @@ async function doit() {
             const decod64ed_jws = {
                 header: base64.resolve(header),
                 payload: base64.resolve(payload),
-                signature: base64.resolve(signature),
+                // signature: base64url_decode_to_binary(signature),
+                signature: b64ubobj.resolve(signature),
             };
+            // semantics are the same. (Semantics signature).
+            //      same type of same name? (args)
+            //      This is extra on top of types being the same. 
+            // (none of them implies the other).
+            // But only being "piped" directly (no branch) + same name means so (not same type))
             console.log('decod64ed_jws', decod64ed_jws);
 
         })();

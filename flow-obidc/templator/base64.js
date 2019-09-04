@@ -6,8 +6,15 @@ function encode64(strData) {
 }
 
 function decode64(stringBase64) {
+  // todso: make sure causes exception if not base64
+  // test '==' is added
   const buffer = Buffer.from(stringBase64, 'base64');
   return buffer.toString('utf-8');
+}
+
+function decode64_to_binary_buffer(stringBase64) {
+  const buffer = Buffer.from(stringBase64, 'base64');
+  return buffer;
 }
 
 function test_(data_utf8) {
@@ -42,6 +49,7 @@ module.exports = {
   util: {
     encode64,
     decode64,
+    decode64_to_binary_buffer,
   },
   Base64,
 };
