@@ -55,10 +55,7 @@ function base64Decode(strData) {
 }
 */
 
-
-function encode64(strData) {
-    return Buffer.from(strData).toString('base64');
-}
+const {Base64} = require('./templator/base64.js')
 
 async function doit() {
     try {
@@ -90,7 +87,8 @@ async function doit() {
             // template code: (generate/reconstruct)
             const ClIdsecret = `${ClIdsecretObj.id}:${ClIdsecretObj.secret}`;
             // a simple transform (again reversible)
-            const ClIdsecret64 = encode64(ClIdsecret);
+            const base64 = new Base64();
+            const ClIdsecret64 = base64.generate(ClIdsecret);
 
             // scopes, grant (and flow) type.
             const body_data = "grant_type=client_credentials&scope=openid accounts";
