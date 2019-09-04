@@ -37,7 +37,26 @@ const jwa = require('jwa');
   node-jws, jwa
 */
 
-const {register_templator} = require('templatore-store');
+const ALG_BOOK = {
+
+    /* algorithm : [cryptosystem, description], */
+
+    HS256:	['hmac', 'HMAC using SHA-256 hash algorithm'],
+    HS384:	['hmac', 'HMAC using SHA-384 hash algorithm'],
+    HS512:	['hmac', 'HMAC using SHA-512 hash algorithm'],
+    RS256:	['rsa-ssa', 'RSASSA using SHA-256 hash algorithm'],
+    RS384:	['rsa-ssa', 'RSASSA using SHA-384 hash algorithm'],
+    RS512:	['rsa-ssa', 'RSASSA using SHA-512 hash algorithm'],
+    PS256:	['rsa-ssa', 'RSASSA-PSS using SHA-256 hash algorithm'],
+    PS384:	['rsa-ssa', 'RSASSA-PSS using SHA-384 hash algorithm'],
+    PS512:	['rsa-ssa', 'RSASSA-PSS using SHA-512 hash algorithm'],
+    ES256:	['ecdsa', 'ECDSA using P-256 curve and SHA-256 hash algorithm'],
+    ES384:	['ecdsa', 'ECDSA using P-384 curve and SHA-384 hash algorithm'],
+    ES512:	['ecdsa', 'ECDSA using P-521 curve and SHA-512 hash algorithm'],
+    // none	No digital signature or MAC value included;
+};
+
+const {register_templator} = require('../templatore-store.js');
 
 /*
     base operations: (primitives, atomics)
@@ -93,6 +112,8 @@ class sign_verifier_u3 {
      *  Constructor args:
      *     We don't want to reconstruct this information.
      *     Not even on owner's side.
+     * 
+     *  key: secretOrPrivateKey
      */
     constructor({algorithm, key}) {
         /*
@@ -102,6 +123,12 @@ class sign_verifier_u3 {
         // It is all about tuples
         this.algorithm_key_tuple = {algorithm, key};
         /* {algorithm:this.algorithm, key: this.key} */
+    }
+
+    type() {
+        // cryptosystem type?
+        const [code, description] = ALG_BOOK[this.algorithm_key_tuple.algorithm];
+        return code;
     }
 
     resolve({data, signature}) {

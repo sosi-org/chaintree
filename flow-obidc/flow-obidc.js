@@ -187,6 +187,15 @@ async function doit() {
             // But only being "piped" directly (no branch) + same name means so (not same type))
             console.log('decod64ed_jws', decod64ed_jws);
 
+            // ssa source (input) required (from the upper circuits/circle)
+            const ssa = '??';
+            const {sign_verifier_u3} = require('./templator/signer.js')
+            // note: is RS256. Uses RSASSA: . This ussage requires this.
+            const sr = new sign_verifier_u3({
+                algorithm: decod64ed_jws.header.alg /* some wiring here. Needs to be made explicit and separated. */,
+                key: ssa
+            });
+
         })();
 
     } catch (e) {
