@@ -3,7 +3,8 @@ const {SchemaChecker, typeinfo} = require('../simple-http-experiment/basic_utils
 const {TemplatorConstraintError, FlowValueConstraintError} = require('./custom-errors/custom-exceptions.js');
 
 /* each of these is a constraint */
-const CustomErrors = {
+// old name: CustomErrors
+const ErrorCategories = {
     'bad_type_name': {},
     'array_of_enum_strings': {},
     'code_alreay_registered': {},
@@ -11,7 +12,7 @@ const CustomErrors = {
 
 
 function check_error(ok_cond, error_code, ...args) {
-    const c = CustomErrors[error_code];
+    const c = ErrorCategories[error_code];
     if (!c) {
         throw new TypeError('bad error code: '+error_code);
     }
@@ -64,13 +65,13 @@ function lazy_assert_check_equal(a,b, error_class=Error, error_code) {
 
     executed at time of defintiion of funtions. (i.e. global scope direct "function call")
 */
-function add_slow_CustomError(code) {
+function add_slow_ErrorCategory(code) {
 
     allow_type(code, 'string');
 
-    check_error(!CustomErrors[code], 'code_alreay_registered');
+    check_error(!ErrorCategories[code], 'code_alreay_registered');
 
-    CustomErrors[code] = {};
+    ErrorCategories[code] = {};
 }
 
 
@@ -125,7 +126,7 @@ module.exports = {
 
     allow_enum,
     allow_type,
-    add_slow_CustomError,
+    add_slow_ErrorCategory,
     check_error,
     lazy_assert_check_equal,
     allow_fixed_special_only,

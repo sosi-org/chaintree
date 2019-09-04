@@ -1,8 +1,8 @@
 'use strict';
 
-const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_CustomError} = require('./error-checking.js');
+const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_ErrorCategory} = require('./error-checking.js');
 
-add_slow_CustomError('base-type-name-already-registered');
+add_slow_ErrorCategory('base-type-name-already-registered');
 
 class base_types {
     constructor() {

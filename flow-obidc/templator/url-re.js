@@ -1,13 +1,13 @@
 'use strict';
 
 // const {} = require('../fabrics-shared.js');
-const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_CustomError, lazy_assert_check_equal} = require('../error-checking.js');
+const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_ErrorCategory, lazy_assert_check_equal} = require('../error-checking.js');
 const {TemplatorConstraintError, FlowValueConstraintError, ReversibilityTestError} = require('../custom-errors/custom-exceptions.js');
 
-add_slow_CustomError('argsmap-should-not-have-0');
-add_slow_CustomError('resolver-regexp-pattern-did-not-match');
-add_slow_CustomError('must-be-defined');
-add_slow_CustomError('port-must-be-unspecified');  // guaranteable assertion, not runtime error
+add_slow_ErrorCategory('argsmap-should-not-have-0');
+add_slow_ErrorCategory('resolver-regexp-pattern-did-not-match');
+add_slow_ErrorCategory('must-be-defined');
+add_slow_ErrorCategory('port-must-be-unspecified');  // guaranteable assertion, not runtime error
 
 /*
     generator = (args) => `${args.prot}://...`;
