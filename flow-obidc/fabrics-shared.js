@@ -2,7 +2,7 @@
 
 const https = require('https')
 
-const {allow_enum, allow_type} = require('./error-checking.js');
+const {allow_enum, allow_type, lazy_assert_check_equal} = require('./error-checking.js');
 
 /*
     from simple-http-experiment/oidc.flow.js
@@ -34,7 +34,10 @@ function http_request({verb, hostname, path, port, headers, body_data, extra_opt
         const req = https.request(options, (res) => {
 
           console.log(`statusCode: ${res.statusCode}`)
-
+          if (res.statusCode !== 200) {
+              // standard Exception
+              throw new Error('Status other than 200: ' + res.statusCode);
+          }
           res.on('data', (response_data_buffer) => {
             // single chunk only?
             accept(response_data_buffer.toString());
@@ -52,11 +55,27 @@ function http_request({verb, hostname, path, port, headers, body_data, extra_opt
     });
 };
 
-function flow_valid_if(cond, constraint_description) {
+// old name: flow_valid_if()
+function flow_valid_value(value, expected, constraint_description) {
     // lazy_assert_check;
-    lazy_assert_check(cond === true, constraint_description);
+    // (cond === true, true)
+    // (cond, true)
+    lazy_assert_check_equal(value, expected, 'this flow will be valid only if constraint met: ' + constraint_description);
 }
+
+function flow_valid_type(value, expected_type, constraint_description) {
+    allow_type(value, expected_type, 'this flow will be valid only if constraint met: ' + constraint_description);
+}
+
+const check_flow =
+    (a) =>
+        flow_valid_value(a !== undefined, true, 'undefined cannot flow in wires') &&
+        true;
+
+
 module.exports = {
     http_request,
-    flow_valid_if,
+    flow_valid_value,
+    flow_valid_type,
+    check_flow,
 };

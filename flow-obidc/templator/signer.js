@@ -92,7 +92,11 @@ function g_sign({data},  /*param*/ {algorithm, key}) {
     const signature = alg_obj.sign(data, key);
     return signature;
 }
+
 function g_verify({data, signature}, /*param*/ {algorithm, key}) {
+    console.log('checking signature:', {data, signature}, '  with', {algorithm, key})
+    // Error: error:0909006C:PEM routines:get_name:no start line
+
     // key = "PUBLIC_key" (if "hmac") : "secret" (if "ecdsa")
     // only on consumer (client)'s side.
     const alg_obj = jwa(algorithm);
@@ -123,16 +127,18 @@ class sign_verifier_u3 {
         // It is all about tuples
         this.algorithm_key_tuple = {algorithm, key};
         /* {algorithm:this.algorithm, key: this.key} */
+        this.type();    // for its error-checking (predicted side-effect)
     }
 
     type() {
         // cryptosystem type?
-        const [code, description, hash_bits, signature_length_bits, basepoint_bits]
-            = ALG_BOOK[this.algorithm_key_tuple.algorithm];
+        const tuple = ALG_BOOK[this.algorithm_key_tuple.algorithm];
+        const [code, description, hash_bits, signature_length_bits, basepoint_bits] = tuple;
         return code;
     }
 
     resolve({data, signature}) {
+        // check input value. for example if string ...
         const verified = g_verify({data, signature}, this.algorithm_key_tuple);
         if (!verified) {
             throw new Error('Constraint failed');

@@ -107,6 +107,9 @@ function http_request({verb, hostname, path, port, headers, body_data}) {
            // milestone 2
 
           console.log(`statusCode: ${res.statusCode}`)
+          if (res.statusCode !== '200') {
+              throw new Error('Status other than 200: ' + res.statusCode);
+          }
 
           res.on('data', (response_data) => {
             //process.stdout.write(d);

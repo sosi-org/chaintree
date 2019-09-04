@@ -31,7 +31,7 @@ function lazy_assert_check(ok, message) {
 }
 function lazy_assert_check_equal(a,b, error_code) {
     // add error_code
-    lazy_assert_check (a === b, 'must be equal. but are: '+a+' !=== '+b);
+    lazy_assert_check (a === b, error_code + '. Must have been equal. but are: '+a+' !=== '+b);
 }
 
 /*
@@ -51,7 +51,8 @@ function add_slow_CustomError(code) {
 }
 
 
-function allow_type(x, type) {
+function allow_type(x, type, context) {
+    // context: flow value type (run-time), etc.
     let ok = SchemaChecker.is_a.string(type);
     ok = ok && (x !== null) && (x !== undefined);
 
@@ -85,6 +86,17 @@ function allow_enum(x, enum_array) {
         throw new TypeError(x);
     }
 }
+/*
+    Exceptions to create:
+        // Status other than 200
+    Template Constraint violated:  (runtime)
+
+Other:
+    Flow wiring problem:  // wiring-time
+    Flow content/value problem: // run-time
+            Flow constraint
+
+*/
 
 module.exports = {
 

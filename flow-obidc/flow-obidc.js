@@ -190,15 +190,42 @@ async function doit() {
             // ssa source (input) required (from the upper circuits/circle)
             const ssa = '??';
             const {sign_verifier_u3} = require('./templator/signer.js')
-            // note: is RS256. Uses RSASSA: . This ussage requires this.
+            // wiring instruction. (w-time!)
+            console.log('decod64ed_jws', decod64ed_jws);
+            /*
+            const decod64ed_jws_header_obj = JSON.parse(decod64ed_jws.header)
+            console.log('decod64ed_jws_header_obj', decod64ed_jws_header_obj);
+            */
+            // partial wiring (resolution) not allowed.
+            // combined operations (lookup + parse) not allowed in one statement.
+
+            //const algorithm = decod64ed_jws_header_obj.alg;
+            /*
+                instead of:
+                    const algorithm = decod64ed_jws_header_obj.alg;  // some wiring here. Needs to be made explicit and separated.
+                it must be:
+                    const {algorithm, kid} = JSON.parse(decod64ed_jws.header);
+            */
+            // nice: enforces the limitation of direct renaming only.
+            const {alg:algorithm, kid} = JSON.parse(decod64ed_jws.header);
+            // console.log({algorithm, kid} );
+
+            fabrics.check_flow(algorithm); // checks it is not undefined.
+            // note: is RS256. Uses RSASSA: . The following ussage requires this.
             const sr = new sign_verifier_u3({
-                algorithm: decod64ed_jws.header.alg /* some wiring here. Needs to be made explicit and separated. */,
-                key: ssa
+                algorithm, // never use non-(Shorthand property names)
+                key: ssa,  // can rename
             });
 
             // this flow will be valid only if RSA-SSA is used:
-            fabrics.flow_valid_if(sr.type() === 'rsa-ssa', 'RSA-SSA must be used');
+            fabrics.flow_valid_value(sr.type(), 'rsa-ssa', 'RSA-SSA must be used');
 
+            // explicit_type( decod64ed_jws,  {payload: 'string', algorithm: 'string', header: 'string'} )
+            // explicit_type(decod64ed_jws.payload, 'string');
+            fabrics.flow_valid_type(decod64ed_jws.payload, 'string', 'payload is a string');
+
+            console.log("decod64ed_jws.payload", decod64ed_jws.payload);
+            sr.resolve({data: decod64ed_jws.payload, signature: decod64ed_jws.signature});
         })();
 
     } catch (e) {
