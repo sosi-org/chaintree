@@ -90,8 +90,10 @@ async function doit() {
         stage(2,1, 'calling the `/token` - using clientId');
         const part2 = async () =>{
             // then: prapare:
-            // const: (source)
-            const ClIdsecretObj = {id: '6bc0daf9-c856-4b39-9e51-c52de7726460', secret: 'S1hL1rR0tA4sD6uA3nB2rX3rY5gA8gL5fC4aR0yF8nB7vQ5pB8'};
+            // const: (source): given from outise: from company_config
+            //      company_config.app is creatd by "App Creation" tasks.
+            const ClIdsecretObj = {id: company_config.app.clientId, secret: company_config.app.clientSecret};
+            console.log('----',ClIdsecretObj);
             // template code: (generate/reconstruct)
             const ClIdsecret = `${ClIdsecretObj.id}:${ClIdsecretObj.secret}`;
             // a simple transform (again reversible)
