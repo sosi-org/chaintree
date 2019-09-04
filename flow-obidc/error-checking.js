@@ -29,7 +29,8 @@ function lazy_assert_check(ok, message) {
       throw new Error(message);
    }
 }
-function lazy_assert_check_equal(a,b) {
+function lazy_assert_check_equal(a,b, error_code) {
+    // add error_code
     lazy_assert_check (a === b, 'must be equal. but are: '+a+' !=== '+b);
 }
 
@@ -67,6 +68,7 @@ function allow_type(x, type) {
 }
 //
 function allow_fixed_special_only(x, special, error_code) {
+    // combine with lazy_assert_check_equal()
     if (x === special) {
         return;
     }

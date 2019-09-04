@@ -39,20 +39,20 @@ const jwa = require('jwa');
 
 const ALG_BOOK = {
 
-    /* algorithm : [cryptosystem, description], */
+    /* algorithm : [cryptosystem, description, hash_bits, signature_length_bits, "length of the order of the base point"], */
 
-    HS256:	['hmac', 'HMAC using SHA-256 hash algorithm'],
-    HS384:	['hmac', 'HMAC using SHA-384 hash algorithm'],
-    HS512:	['hmac', 'HMAC using SHA-512 hash algorithm'],
-    RS256:	['rsa-ssa', 'RSASSA using SHA-256 hash algorithm'],
-    RS384:	['rsa-ssa', 'RSASSA using SHA-384 hash algorithm'],
-    RS512:	['rsa-ssa', 'RSASSA using SHA-512 hash algorithm'],
-    PS256:	['rsa-ssa', 'RSASSA-PSS using SHA-256 hash algorithm'],
-    PS384:	['rsa-ssa', 'RSASSA-PSS using SHA-384 hash algorithm'],
-    PS512:	['rsa-ssa', 'RSASSA-PSS using SHA-512 hash algorithm'],
-    ES256:	['ecdsa', 'ECDSA using P-256 curve and SHA-256 hash algorithm'],
-    ES384:	['ecdsa', 'ECDSA using P-384 curve and SHA-384 hash algorithm'],
-    ES512:	['ecdsa', 'ECDSA using P-521 curve and SHA-512 hash algorithm'],
+    HS256:	['hmac', 'HMAC using SHA-256 hash algorithm', 256, -1,-1],
+    HS384:	['hmac', 'HMAC using SHA-384 hash algorithm', 384, -1,-1],
+    HS512:	['hmac', 'HMAC using SHA-512 hash algorithm', 512, -1,-1],
+    RS256:	['rsa-ssa', 'RSASSA using SHA-256 hash algorithm', 256, -1,-1],
+    RS384:	['rsa-ssa', 'RSASSA using SHA-384 hash algorithm', 384, -1,-1],
+    RS512:	['rsa-ssa', 'RSASSA using SHA-512 hash algorithm', 512, -1,-1],
+    PS256:	['rsa-ssa', 'RSASSA-PSS using SHA-256 hash algorithm', 256, -1,-1],
+    PS384:	['rsa-ssa', 'RSASSA-PSS using SHA-384 hash algorithm', 384, -1,-1],
+    PS512:	['rsa-ssa', 'RSASSA-PSS using SHA-512 hash algorithm', 512, -1,-1],
+    ES256:	['ecdsa', 'ECDSA using P-256 curve and SHA-256 hash algorithm', 256, -2,-1],
+    ES384:	['ecdsa', 'ECDSA using P-384 curve and SHA-384 hash algorithm', 384, -2,-1],
+    ES512:	['ecdsa', 'ECDSA using P-521 curve and SHA-512 hash algorithm', 512, 1042, 521],
     // none	No digital signature or MAC value included;
 };
 
@@ -127,7 +127,8 @@ class sign_verifier_u3 {
 
     type() {
         // cryptosystem type?
-        const [code, description] = ALG_BOOK[this.algorithm_key_tuple.algorithm];
+        const [code, description, hash_bits, signature_length_bits, basepoint_bits]
+            = ALG_BOOK[this.algorithm_key_tuple.algorithm];
         return code;
     }
 

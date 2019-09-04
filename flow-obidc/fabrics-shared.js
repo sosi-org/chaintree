@@ -52,7 +52,11 @@ function http_request({verb, hostname, path, port, headers, body_data, extra_opt
     });
 };
 
-
+function flow_valid_if(cond, constraint_description) {
+    // lazy_assert_check;
+    lazy_assert_check(cond === true, constraint_description);
+}
 module.exports = {
     http_request,
+    flow_valid_if,
 };

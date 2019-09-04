@@ -196,6 +196,9 @@ async function doit() {
                 key: ssa
             });
 
+            // this flow will be valid only if RSA-SSA is used:
+            fabrics.flow_valid_if(sr.type() === 'rsa-ssa', 'RSA-SSA must be used');
+
         })();
 
     } catch (e) {
