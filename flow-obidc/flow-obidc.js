@@ -5,6 +5,7 @@ function stage(stage_id, minor_step, heading) {
 }
 
 stage(1,1, 'wellknown point - taken from config');
+// todo: use "npm comment-json"
 const company_config = require('./company-config.js');
 
 // console.log(company_config);
