@@ -12,21 +12,19 @@ const {sign_verifier_u3} = require('../templator/signer.js')
 // filenames (file-ref s)
 /*
 const SOURCES = {
+  // require
   access_token_gktvo: '../sensitive-data/cached-data/red1-1-jws',
+  //fs.read
   priv_key_source: './sensitive-data/r1_private_key.key',
 };
-*/
-const SOURCES = {
-  // require
-  access_token_gktvo: './jws/2_jws_example.jws',
-  //fs.read
-  priv_key_source: './jws/2_public.key',
-};
-
-/*
 const access_token_gktvo = //token1.access_token;
    require(SOURCES.access_token_gktvo);
 */
+
+const SOURCES = {
+  access_token_gktvo: './jws/2_jws_example.jws',
+  priv_key_source: './jws/2_public.key',
+};
 const access_token_gktvo =
   'gktvo' +
   new from_file(SOURCES.access_token_gktvo)
