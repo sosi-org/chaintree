@@ -5,6 +5,8 @@ const {from_file} = require('../templator/from_file.js');
 const {Base64} = require('../templator/base64.js');
 const {RegExpResolver} = require('../templator/url-re.js');
 
+const {b64url_buffer} = require('../templator/b64url.js');
+
 
 const access_token_gktvo = //token1.access_token;
    require('../sensitive-data/cached-data/red1-1-jws');
@@ -34,8 +36,6 @@ const args = jws_template.resolve(jws_str.jws);
 
 // Use RFC7515 to decode JWS
 
-// b64url_buffer
-const {b64url_buffer} = require('../templator/b64url.js');
 //base64url_decode_to_binary = new b64url_buffer().resoslve
 const b64ubobj = new b64url_buffer();
 
