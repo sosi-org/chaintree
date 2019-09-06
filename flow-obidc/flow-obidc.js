@@ -4,6 +4,8 @@ const fabrics = require('./fabrics-shared.js');
 const {UrlRegExp, UrlRegExpWithPort, RegExpResolver} = require('./templator/url-re.js');
 const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
 const {Base64} = require('./templator/base64.js');
+const {from_file} = require('./templator/from_file.js');
+// console.log( new from_file('./jws/1_public.key') );
 
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);
@@ -253,20 +255,6 @@ async function doit() {
                     //}
                     // work around
                     //return this.file_content_binarybuffer;
-                }
-            }
-            class from_file {
-                constructor(filename) {
-                    const fs = require('fs');
-                    this.file_content_binarybuffer = fs.readFileSync(filename);
-                }
-                resolve(buffer) {
-                    fabrics.valid_value_as_template_constraint(buffer, this.file_content_binarybuffer, 'binary contents must be equal');
-                    return null;
-                }
-                generate(nullval) {
-                    fabrics.valid_value_as_template_constraint(nullval, null);
-                    return this.file_content_binarybuffer;
                 }
             }
             //const pem = require_pem('./sensitive-data/r1_private_key.key');
