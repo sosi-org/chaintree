@@ -1,3 +1,7 @@
+'use strict';
+
+const fabrics = require('../fabrics-shared.js');
+
 class from_file {
   constructor(filename) {
       const fs = require('fs');

@@ -96,7 +96,7 @@ function g_sign({data},  /*param*/ {algorithm, key}) {
 }
 
 function g_verify({data, signature}, /*param*/ {algorithm, key}) {
-    console.log('checking signature:', {data, signature}, '  with', {algorithm, key})
+    // console.log('checking signature:', {data, signature}, '  with', {algorithm, key})
     // Error: error:0909006C:PEM routines:get_name:no start line
 
     const data_buffer = Buffer.from(data);
@@ -104,9 +104,9 @@ function g_verify({data, signature}, /*param*/ {algorithm, key}) {
     // only on consumer (client)'s side.
     const alg_obj = jwa(algorithm);
     // can break:
-    console.log({data:data_buffer, signature, key});
+    // console.log({data:data_buffer, signature, key});
     // { data: 271, signature: 256, key: 1192 }
-    console.log({data:data.length, signature:signature.length, key:key.length});
+    console.log('lengths:', {data:data.length, signature:signature.length, key:key.length});
     // process.exit(1);
     try {
 
@@ -132,7 +132,7 @@ class sign_verifier_u3 {
      *  Constructor args:
      *     We don't want to reconstruct this information.
      *     Not even on owner's side.
-     * 
+     *
      *  key: secretOrPrivateKey
      */
     constructor({algorithm, key}) {
