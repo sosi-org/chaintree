@@ -1,4 +1,11 @@
 'use strict';
+/*
+  Not used:
++    "jsonwebtoken": "^8.5.1",
++    "njwt": "^1.0.0",
++    "secure-random": "^1.1.2",
++    "uuid": "^3.3.3"
+*/
 
 const fabrics = require('../fabrics-shared.js');
 const {from_file} = require('../templator/from_file.js');
@@ -21,15 +28,23 @@ const access_token_gktvo = //token1.access_token;
    require(SOURCES.access_token_gktvo);
 */
 
+
 const SOURCES = {
   access_token_gktvo: './jws/2_jws_example.jws',
+  // how to sepcify in compile-time that the following is a filename, hence, follow it when you click on it.
   priv_key_source: './jws/2_public.key',
+    /* works on any of the following:
+        './jws/2_public.key',
+        './jws/2_private.key',
+        './jws/2_private.pem',
+    */
 };
 const access_token_gktvo =
   'gktvo' +
   new from_file(SOURCES.access_token_gktvo)
   .generate(null)
   .toString();
+// Next question: how to validate using private key?
 
 console.log('access_token_gktvo:', access_token_gktvo);
 
@@ -88,10 +103,11 @@ const decod64ed_jws = {
 // const priv_key_source = new require_pem('./sensitive-data/r1_private_key.key');
 const priv_key_source = new from_file(SOURCES.priv_key_source);
 const binary_private_key = priv_key_source.generate(null);
-const ssa = binary_private_key; // changin name for semanticss
+let ssa = binary_private_key; // changin name for semanticss
 console.log('PRIVATE KEY: ', ssa /*, ssa.toString()*/);
 console.log('P----- KEY: ', ssa.toString());
 
+// ssa = Buffer.from(ssa.toString()+'');
 // sign_verifier_u3:
 // wiring instruction. (w-time!)
 // console.log('decod64ed_jws', decod64ed_jws);

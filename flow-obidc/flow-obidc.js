@@ -299,8 +299,22 @@ async function doit() {
             // explicit_type(decod64ed_jws.payload, 'string');
             fabrics.flow_valid_type(decod64ed_jws.payload, 'string', 'payload is a string');
 
-            console.log("decod64ed_jws.payload", decod64ed_jws.payload);
-            const q4 = sr.resolve({data: decod64ed_jws.payload, signature: decod64ed_jws.signature});
+            //console.log("decod64ed_jws.payload", decod64ed_jws.payload);
+            const header_payload_tuple = new RegExpResolver(
+                  /^([^\.]*)\.([^\.]*)$/gm,
+                  {1:'header', 2: 'payload'},
+                  ({header, payload}) => `${header}.${payload}`
+            );
+            // this is the non-reversible part:
+            const partial_info = {header: args.header, payload: args.payload};
+            // how to make this "partial_info" reversible?
+
+            const _signee = header_payload_tuple.generate(partial_info);
+            const _signature = args.signature;
+
+            // const q4 = sr.resolve({data: decod64ed_jws.payload, signature: decod64ed_jws.signature});
+            const q4 = sr.resolve({data: _signee, signature: _signature});
+
             console.log('4444444 q4', q4);
             return q4;
         };
