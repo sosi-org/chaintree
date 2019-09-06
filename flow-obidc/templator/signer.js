@@ -105,8 +105,9 @@ function g_verify({data, signature}, /*param*/ {algorithm, key}) {
     const alg_obj = jwa(algorithm);
     // can break:
     // console.log({data:data_buffer, signature, key});
+    console.log('Strings:', {data:data_buffer.toString(), signature:signature.toString(), key:key.toString()});
     // { data: 271, signature: 256, key: 1192 }
-    console.log('lengths:', {data:data.length, signature:signature.length, key:key.length});
+    console.log('lengths:', {data:data_buffer.length, signature:signature.length, key:key.length});
     // process.exit(1);
     try {
 
@@ -155,6 +156,7 @@ class sign_verifier_u3 {
 
     resolve({data, signature}) {
         // check input value. for example if string ...
+        console.log({data: data.toString(), signature: signature.toString()});
         const verified = g_verify({data, signature}, this.algorithm_key_tuple);
         if (!verified) {
             // workaround: fake verification

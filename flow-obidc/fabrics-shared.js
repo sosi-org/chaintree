@@ -69,7 +69,7 @@ function flow_valid_value(value, expected, constraint_description) {
     "template-constraint" version of flow_valid_value (ass opposed to flow-constraint)
 */
 function valid_value_as_template_constraint(value, expected, constraint_description) {
-    lazy_assert_check_equal(value, expected, TemplatorConstraintError, 'this constraint failed' + constraint_description);
+    lazy_assert_check_equal(value, expected, TemplatorConstraintError, 'this constraint failed: ' + constraint_description);
 }
 
 function flow_valid_type(value, expected_type, constraint_description) {

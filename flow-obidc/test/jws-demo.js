@@ -10,13 +10,28 @@ const {sign_verifier_u3} = require('../templator/signer.js')
 
 
 // filenames (file-ref s)
+/*
 const SOURCES = {
   access_token_gktvo: '../sensitive-data/cached-data/red1-1-jws',
   priv_key_source: './sensitive-data/r1_private_key.key',
 };
+*/
+const SOURCES = {
+  // require
+  access_token_gktvo: './jws/2_jws_example.jws',
+  //fs.read
+  priv_key_source: './jws/2_public.key',
+};
 
+/*
 const access_token_gktvo = //token1.access_token;
    require(SOURCES.access_token_gktvo);
+*/
+const access_token_gktvo =
+  'gktvo' +
+  new from_file(SOURCES.access_token_gktvo)
+  .generate(null)
+  .toString();
 
 console.log('access_token_gktvo:', access_token_gktvo);
 
@@ -77,6 +92,7 @@ const priv_key_source = new from_file(SOURCES.priv_key_source);
 const binary_private_key = priv_key_source.generate(null);
 const ssa = binary_private_key; // changin name for semanticss
 console.log('PRIVATE KEY: ', ssa /*, ssa.toString()*/);
+console.log('P----- KEY: ', ssa.toString());
 
 // sign_verifier_u3:
 // wiring instruction. (w-time!)
@@ -116,7 +132,29 @@ fabrics.flow_valid_value(sr.type(), 'rsa-ssa', 'RSA-SSA must be used');
 // explicit_type(decod64ed_jws.payload, 'string');
 fabrics.flow_valid_type(decod64ed_jws.payload, 'string', 'payload is a string');
 
+const header_payload_tuple = new RegExpResolver(
+  /^([^\.]*)\.([^\.]*)$/gm,
+  {1:'header', 2: 'payload'},
+  ({header, payload}) => `${header}.${payload}`
+);
+// this is the non-reversible part:
+const partial_info = {header: args.header, payload: args.payload};
+// how ot make it reversible?
+
+
+
 console.log("decod64ed_jws.payload", decod64ed_jws.payload);
-const q4 = sr.resolve({data: decod64ed_jws.payload, signature: decod64ed_jws.signature});
+// const signee = decod64ed_jws.payload;  // incorrect
+// const signee = args.payload /*decod64ed_jws.payload*/;
+const _signee = header_payload_tuple.generate(partial_info);;
+
+/*
+    potential example found for propagation:
+    A = (header.payload.signature) >> B = (header, payload)
+    A = (header.payload.signature) >> C = (header,payload, signature)
+*/
+// const _signature = decod64ed_jws.signature;
+const _signature = args.signature;
+const q4 = sr.resolve({data: _signee, signature: _signature});
 console.log('4444444 q4', q4);
 return q4;
