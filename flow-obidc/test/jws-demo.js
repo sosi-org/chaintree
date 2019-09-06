@@ -6,10 +6,17 @@ const {Base64} = require('../templator/base64.js');
 const {RegExpResolver} = require('../templator/url-re.js');
 
 const {b64url_buffer} = require('../templator/b64url.js');
+const {sign_verifier_u3} = require('../templator/signer.js')
 
+
+// filenames (file-ref s)
+const SOURCES = {
+  access_token_gktvo: '../sensitive-data/cached-data/red1-1-jws',
+  priv_key_source: './sensitive-data/r1_private_key.key',
+};
 
 const access_token_gktvo = //token1.access_token;
-   require('../sensitive-data/cached-data/red1-1-jws');
+   require(SOURCES.access_token_gktvo);
 
 console.log('access_token_gktvo:', access_token_gktvo);
 
@@ -66,12 +73,12 @@ const decod64ed_jws = {
 
 //const pem = require_pem('./sensitive-data/r1_private_key.key');
 // const priv_key_source = new require_pem('./sensitive-data/r1_private_key.key');
-const priv_key_source = new from_file('./sensitive-data/r1_private_key.key');
+const priv_key_source = new from_file(SOURCES.priv_key_source);
 const binary_private_key = priv_key_source.generate(null);
 const ssa = binary_private_key; // changin name for semanticss
 console.log('PRIVATE KEY: ', ssa /*, ssa.toString()*/);
 
-const {sign_verifier_u3} = require('../templator/signer.js')
+// sign_verifier_u3:
 // wiring instruction. (w-time!)
 // console.log('decod64ed_jws', decod64ed_jws);
 
