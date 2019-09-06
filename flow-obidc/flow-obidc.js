@@ -179,7 +179,7 @@ async function doit() {
         console.log('33333333333');
         console.log(args);
 
-        (()=>{
+        const part4 = ()=>{
             // Use RFC7515 to decode JWS
 
             // b64url_buffer
@@ -314,7 +314,20 @@ async function doit() {
             console.log("decod64ed_jws.payload", decod64ed_jws.payload);
             const q4 = sr.resolve({data: decod64ed_jws.payload, signature: decod64ed_jws.signature});
             console.log('4444444 q4', q4);
-        })();
+            return q4;
+        };
+
+        const jws = part4();
+        /*
+        now I have a `jws`
+            the proper format should be:
+                writing the output vasriable "after" the funciton call.
+                For example:
+                    part4() >> jws;  // jws is undefined. It is defined here
+                    part4() >> jws;  // jws is undefined. It is defined here
+                    const part4() >> ?jws;  // The question mark marks it as the new variable (applied the "const" to it. The scope will be determined by the locaiton of the const on the left hand side.).
+        */
+       ;
 
     } catch (e) {
         console.error(e);
