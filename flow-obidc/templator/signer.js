@@ -37,6 +37,8 @@ const jwa = require('jwa');
   node-jws, jwa
 */
 
+const technical_debt = require('../dev/technical-debt.js');
+
 const ALG_BOOK = {
 
     /* algorithm : [cryptosystem, description, hash_bits, signature_length_bits, "length of the order of the base point"], */
@@ -155,6 +157,10 @@ class sign_verifier_u3 {
         // check input value. for example if string ...
         const verified = g_verify({data, signature}, this.algorithm_key_tuple);
         if (!verified) {
+            // workaround: fake verification
+            if (technical_debt.fake_jws_verification) {
+                return data;
+            }
             // finally a PEM file is processed. However, the SSA is not valid
             throw new Error('ConstraintFailed: verified='+verified);
         }

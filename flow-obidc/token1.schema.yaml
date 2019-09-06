@@ -1,4 +1,4 @@
-title: wellknown
+title: token-endpoint-1
 type: object
 required:
   - token_type

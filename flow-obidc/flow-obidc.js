@@ -100,6 +100,20 @@ async function doit() {
 
         stage(2,1, 'calling the `/token` - using clientId');
         const part2 = async () =>{
+
+            // me:
+            // necesary objects. not more. (extension of no-move/no-cloning)
+
+            // bottleneck:
+            //     (token_endpoint, company_config.app.clientId, company_config.app.clientSecret, body_data = "grant_type=client_credentials&scope=openid accounts";)
+
+            /*
+                token_endpoint
+                (company_config.app.clientId, company_config.app.clientSecret),
+                querystring.parse('grant_type=client_credentials&scope=openid accounts')
+                querystring.stringify({ grant_type: 'client_credentials', scope: 'openid accounts' })
+            */
+
             // then: prapare:
             // const: (source): given from outise: from company_config
             //      company_config.app is creatd by "App Creation" tasks.
@@ -138,6 +152,7 @@ async function doit() {
             return bobj;
         };
         const token1 = await part2();
+        console.log('22222222222');
         console.log('token1:', token1);
 
         const access_toekn = token1.access_token;
@@ -161,6 +176,7 @@ async function doit() {
             ({header, payload, signature}) => `${header}.${payload}.${signature}`
         );
         const args = jws_template.resolve(jws_str.jws);
+        console.log('33333333333');
         console.log(args);
 
         (()=>{
@@ -296,7 +312,8 @@ async function doit() {
             fabrics.flow_valid_type(decod64ed_jws.payload, 'string', 'payload is a string');
 
             console.log("decod64ed_jws.payload", decod64ed_jws.payload);
-            sr.resolve({data: decod64ed_jws.payload, signature: decod64ed_jws.signature});
+            const q4 = sr.resolve({data: decod64ed_jws.payload, signature: decod64ed_jws.signature});
+            console.log('4444444 q4', q4);
         })();
 
     } catch (e) {
