@@ -3,7 +3,7 @@
 const https = require('https')
 
 const {allow_enum, allow_type, lazy_assert_check_equal} = require('./error-checking.js');
-const {TemplatorConstraintError, FlowValueConstraintError} = require('./custom-errors/custom-exceptions.js');
+const {TemplatorConstraintError, FlowValueConstraintError, StatusNon200} = require('./custom-errors/custom-exceptions.js');
 
 /*
     from simple-http-experiment/oidc.flow.js
@@ -51,7 +51,7 @@ function http_request({verb, hostname, path, port, headers, body_data, matls, ex
           console.log(`statusCode: ${res.statusCode}`)
           if (res.statusCode !== 200) {
               // standard Exception
-              throw new Error('Status other than 200: ' + res.statusCode);
+              throw new StatusNon200(res.statusCode);
           }
           res.on('data', (response_data_buffer) => {
             // single chunk only?

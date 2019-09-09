@@ -216,7 +216,6 @@ async function doit() {
                 }}),
         };
 
-        let opt;
         const a = await fabrics.http_request(
             {verb: 'GET', hostname, path, port, headers,
             /*, body_data: 'hello'*/ /*body_data: undefined, */

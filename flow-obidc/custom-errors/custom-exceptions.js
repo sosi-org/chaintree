@@ -20,9 +20,14 @@ class ReversibilityTestError extends Error {
 
 
 // lower level:
+
+var HttpStatus = require('http-status-codes');
 class StatusNon200 extends Error {
-  constructor(...args) {
-      super(...args)
+  constructor(status_code) {
+      // 'Status other than 200: '
+      const description = HttpStatus.getStatusText(status_code);
+      super(`Status none-200: ${status_code} (${description})`);
+      this.status_code = status_code;
       Error.captureStackTrace(this, StatusNon200);
   }
 }
@@ -31,4 +36,5 @@ module.exports = {
     TemplatorConstraintError,
     FlowValueConstraintError,
     ReversibilityTestError,
+    StatusNon200,
 };
