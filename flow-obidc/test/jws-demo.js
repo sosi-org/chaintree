@@ -39,6 +39,13 @@ const SOURCES = {
         './jws/2_private.pem',
     */
 };
+
+/*
+function component(refs, inputs);
+  refs: SOURCES: filenames, etc. Contant, but need ot be resolved (using access to atouside the box). These are ports.
+  inputs: the set of flow data.
+*/
+
 const access_token_gktvo =
   'gktvo' +
   new from_file(SOURCES.access_token_gktvo)

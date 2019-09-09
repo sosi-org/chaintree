@@ -184,6 +184,14 @@ async function doit() {
         const part4 = ()=>{
             // Use RFC7515 to decode JWS
 
+            /*
+                inputs:
+                    args = (provides the resolved jws).
+                SOURCES: (filenames as references. Are reference to "labelled-lines". The (flow/circuit of the) content of files need to be determined later.)
+                    key file (provides SSA)
+
+                orphan outputs: kid
+            */
             // b64url_buffer
             const {b64url_buffer} = require('./templator/b64url.js');
             //base64url_decode_to_binary = new b64url_buffer().resoslve
