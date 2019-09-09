@@ -5,7 +5,7 @@
 // not definition of templates. (but you can use them by importaing them)
 
 //seeds, tokens.
-const seeds = require('./sensitive-data/company-seed-info.json');
+const seeds = require('./sensitive-data/SIT01-OBIE/company-seed-info.json');
 
 const {domain, product_name, channel, subcomp, app} = seeds;
 

@@ -8,7 +8,7 @@ const {TemplatorConstraintError, FlowValueConstraintError} = require('./custom-e
 /*
     from simple-http-experiment/oidc.flow.js
 */
-function http_request({verb, hostname, path, port, headers, body_data, extra_options}) {
+function http_request({verb, hostname, path, port, headers, body_data, matls, extra_options}) {
 
     allow_enum(verb, ['POST', 'GET', 'PUT']);
     allow_type(hostname, 'string');
@@ -16,10 +16,22 @@ function http_request({verb, hostname, path, port, headers, body_data, extra_opt
     allow_type(port, 'integer');
     allow_type(headers, 'dict');
 
+    console.log('url:', hostname + ':' + port + path);
+    console.log('body_data1', body_data);
     // to keep separate
-    const from_extra_options = extra_options?{
-      rejectUnauthorized: extra_options.rejectUnauthorized
-    }:{};
+
+    const from_extra_options = extra_options ? {
+      rejectUnauthorized: extra_options.rejectUnauthorized,
+    } : {};
+
+    const from_matls = matls ? {
+      maxCachedSessions: matls.maxCachedSessions,
+      secureProtocol: matls.secureProtocol,
+      securityOptions: matls.securityOptions,
+      ciphers: matls.ciphers,
+      key: matls.key,
+      cert: matls.cert,
+    } : {};
 
     const options = {
       hostname,
@@ -28,7 +40,9 @@ function http_request({verb, hostname, path, port, headers, body_data, extra_opt
       method: verb,
       headers,
       ...from_extra_options,
+      ...from_matls,
     };
+    console.log({options});
 
     return new Promise( (accept, reject) => {
         console.log('request:', JSON.stringify(options));
@@ -49,6 +63,7 @@ function http_request({verb, hostname, path, port, headers, body_data, extra_opt
           reject(error);
         })
 
+        console.log('body_data2', body_data);
         if (typeof body_data !== 'undefined') {
             req.write(body_data);
         }

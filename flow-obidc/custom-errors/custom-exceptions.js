@@ -19,6 +19,13 @@ class ReversibilityTestError extends Error {
 }
 
 
+// lower level:
+class StatusNon200 extends Error {
+  constructor(...args) {
+      super(...args)
+      Error.captureStackTrace(this, StatusNon200);
+  }
+}
 
 module.exports = {
     TemplatorConstraintError,
