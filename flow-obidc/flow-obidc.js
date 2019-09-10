@@ -290,6 +290,11 @@ async function doit() {
                 //...callModes.matls_keycert({key, cert}),
                 ...callModes.matls_keycert(key_cert_tuple),
             };
+            /* ??
+                "rejectUnauthorized": false,
+                "followRedirect": false
+            */
+
             console.log('****opt', opt);
             const b = await fabrics.http_request( opt );
             console.log('****222');
@@ -317,19 +322,20 @@ async function doit() {
                 {1:'jws'},
                 ({jws}) => `gktvo${jws}`
             );
-        const jws_str = jws_gktv.resolve(access_toekn);
-        console.log('***jws_strjws_str', jws_str);
-
+        const jws_argObj = jws_gktv.resolve(access_toekn);
+        console.log('***jws_argObj', jws_argObj);
 
         //SSA = ...
-
-        const jws_string = jwt_str.jws;
+        // simple flow binding (single-arg)
+        const jws_string = jws_argObj.jws;
         const jws2_string = component_jws(
             jws_string,
             //'./sensitive-data/sit01-obwac/luat01-token.key????'
             // ./sensitive-data/SIT02-OBIE/cached-data/...
             {key_filename: './sensitive-data/SIT01-OBIE/cached-data/luat01-token.key????'}
         );
+
+        console.log({jws2_String});
 
     } catch (e) {
         console.error(e);
