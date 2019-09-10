@@ -260,6 +260,10 @@ async function part5(company_config_temp) {
 
     const uri = company_config_temp["account-access-consents"]({obver: 'v3.1'});
 
+    const moment = require('moment');
+    const now = new moment();
+    const now_detailed = now.format();
+    const exp_time_detailed = now.add(3,'months').format();
     const body = {
 		"Data": {
 			"Permissions": [
@@ -277,10 +281,11 @@ async function part5(company_config_temp) {
 				"ReadStandingOrdersDetail",
 				"ReadScheduledPaymentsBasic",
 				"ReadScheduledPaymentsDetail"
-			],
-			"ExpirationDateTime": "2019-12-08T14:26:21Z",
-			"TransactionFromDateTime": "2016-09-10T19:31:21+01:00",
-			"TransactionToDateTime": "2019-09-10T19:31:21+01:00"
+            ],
+            // Why does the client ask for the times?
+			"ExpirationDateTime": exp_time_detailed, //"2019-12-08T14:26:21Z",
+			"TransactionFromDateTime": now_detailed, //"2016-09-10T19:31:21+01:00",
+			"TransactionToDateTime": now_detailed,   //"2019-09-10T19:31:21+01:00"
 		},
 		"Risk": {}
 	};
