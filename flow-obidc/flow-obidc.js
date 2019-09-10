@@ -63,7 +63,7 @@ const part2 = async (token_endpoint, company_config_app, body_data) =>{
 
 
     const key_cert_tuple = require(
-        './sensitive-data/SIT01-OBIE/cached-data/ma-tls-sit01.js',
+        './sensitive-data/SIT01-OBIE/cached-data/ma-tls-1.js',
     );
     console.log('key_cert_tuple***', key_cert_tuple);
 
@@ -220,10 +220,98 @@ function component_jws(jws_string, SOURCES) {
    return jws;
 }
 
+async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token, key_cert_tuple}) {
+    // Request features: {POST, Bearer, MATLS}.
+    //      ..which will require: (url, body, token, (key,cert) )
+    //           ..consequences:
+    //                 "application/json" // body is json
+
+    // Lesson: Every single call requires its key&cert. Each subsystem (AISP versus Token) has its own.
+
+    // how to enfirce exact match (no miss (unmentioned), no undefined)
+    const /*url_tuple*/ {hostname, path, port, prot} =
+        new UrlRegExpWithPort().resolve(url);
+    // warn: unused. Easy using -like tools.
+
+    const body_data = JSON.stringify(body_obj);
+
+    const opt = {
+        verb: 'POST',
+        hostname, path, port,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer gktvo${bearertype_token}`,
+            // "Accept": "",  meaning = ?
+        },
+        body_data,
+        ...fabrics.callModes.TLS_selfsigned,
+        ...fabrics.callModes.matls_keycert(key_cert_tuple),
+        // followRedirect=false, ciphers:All
+    };
+
+    console.log('http*opt', opt);
+    const b = await fabrics.http_request( opt );
+
+}
+
+async function part5(company_config_temp) {
+    // See line 131
+    // call 3:
+
+    const uri = company_config_temp["account-access-consents"]({obver: 'v3.1'});
+
+    const body = {
+		"Data": {
+			"Permissions": [
+				"ReadAccountsBasic",
+				"ReadAccountsDetail",
+				"ReadBalances",
+				"ReadTransactionsDetail",
+				"ReadTransactionsCredits",
+				"ReadTransactionsDebits",
+				"ReadProducts",
+				"ReadDirectDebits",
+				"ReadBeneficiariesBasic",
+				"ReadBeneficiariesDetail",
+				"ReadStandingOrdersBasic",
+				"ReadStandingOrdersDetail",
+				"ReadScheduledPaymentsBasic",
+				"ReadScheduledPaymentsDetail"
+			],
+			"ExpirationDateTime": "2019-12-08T14:26:21Z",
+			"TransactionFromDateTime": "2016-09-10T19:31:21+01:00",
+			"TransactionToDateTime": "2019-09-10T19:31:21+01:00"
+		},
+		"Risk": {}
+	};
+
+
+    // 202 characters
+    const what1_token = new from_file(
+        './sensitive-data/SIT01-OBIE/cached-data/what-2.txt'
+    ).generate(null);
+    console.log('what1_token', what1_token.length, what1_token);
+
+    const key_cert_tuple = require(
+        './sensitive-data/SIT01-OBIE/cached-data/ma-tls-2.js',
+    );
+
+    const b = await style_3_call__POST_bearer_matls({
+        url: uri,
+        body_obj: body,
+        bearertype_token: what1_token,
+        key_cert_tuple,
+    });
+    // Status none-200: 400 (Bad Request)
+    console.log('response to: ', uri);
+    console.log(b);
+    process.exit(1);
+}
 
 stage(1,1, 'wellknown point - taken from config');
 // todo: use "npm comment-json"
 const company_config = require('./company-config.js');
+// part5(company_config)
 
 // console.log(company_config);
 
@@ -334,6 +422,11 @@ async function doit() {
         //     by the token endpoint (first call)
         // The client needs to be able to validate it?
         //
+
+        // Where does SSA stand?
+
+
+        part5(company_config);
 
     } catch (e) {
         console.error(e);

@@ -63,7 +63,7 @@ function http_request({verb, hostname, path, port, headers, body_data, matls, ex
           reject(error);
         })
 
-        console.log('body_data2', body_data);
+        console.log('body_data to POST:', body_data);
         if (typeof body_data !== 'undefined') {
             req.write(body_data);
         }
