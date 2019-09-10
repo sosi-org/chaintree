@@ -100,6 +100,20 @@ const check_flow =
         flow_valid_value(a !== undefined, true, 'undefined cannot flow in wires') &&
         true;
 
+// call types/modes:
+const callModes = {
+    TLS_selfsigned: {extra_options: {rejectUnauthorized: false}},
+
+    matls_keycert: // = ({key, cert}) => ({}),
+        ({key, cert}) => ({matls: {
+            maxCachedSessions: 0,
+            secureProtocol: 'TLSv1_2_method',
+            securityOptions: 'SSL_OP_NO_SSLv3',
+            ciphers: 'ALL',
+            key: key,
+            cert: cert
+        }}),
+};
 
 module.exports = {
     http_request,
@@ -107,4 +121,5 @@ module.exports = {
     flow_valid_type,
     check_flow,
     valid_value_as_template_constraint,
+    callModes,
 };

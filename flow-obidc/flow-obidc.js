@@ -20,6 +20,84 @@ class BinaryBuffer {
 
 const {util: {base64url_decode_to_binary}} = require('./templator/b64url.js');
 
+
+
+const part2 = async (token_endpoint, company_config_app, body_data) =>{
+    stage(2,1, 'calling the `/token` - using clientId');
+
+    // me:
+    // necesary objects. not more. (extension of no-move/no-cloning)
+
+    // bottleneck:
+    //     (token_endpoint, company_config.app.clientId, company_config.app.clientSecret, body_data = "grant_type=client_credentials&scope=openid accounts";)
+
+    /*
+        token_endpoint
+        (company_config.app.clientId, company_config.app.clientSecret),
+        querystring.parse('grant_type=client_credentials&scope=openid accounts')
+        querystring.stringify({ grant_type: 'client_credentials', scope: 'openid accounts' })
+    */
+
+    // then: prapare:
+    // const: (source): given from outise: from company_config
+    //      company_config.app is creatd by "App Creation" tasks.
+    //          SSA:
+    //               Note that they have already provided SSA (in the larger circuit).
+    //               SSA has two purposes: 1. certify (Also to arrive to use THROUGH a different ROUTE: form OB). 2. contains info fior us. 
+    const ClIdsecretObj = {id: company_config_app.clientId, secret: company_config_app.clientSecret};
+    console.log('----',ClIdsecretObj);
+    // template code: (generate/reconstruct)
+    const ClIdsecret = `${ClIdsecretObj.id}:${ClIdsecretObj.secret}`;
+    // a simple transform (again reversible)
+    const base64 = new Base64();
+    const ClIdsecret64 = base64.generate(ClIdsecret);
+
+    // // scopes, grant (and flow) type.
+    // const body_data =
+    // then
+    let {hostname, path, port} = new UrlRegExpWithPort().resolve(token_endpoint);
+    console.log({hostname, path, port});
+
+
+    console.log('ClIdsecret64', ClIdsecret64);
+
+
+    const key_cert_tuple = require(
+        './sensitive-data/SIT01-OBIE/cached-data/ma-tls-sit01.js',
+    );
+    console.log('key_cert_tuple***', key_cert_tuple);
+
+    console.log('****11');
+    //try{
+    // using hostname, etc enforces use of the full format (typed URL like an OOP object)
+    const opt = {
+        verb: 'POST', hostname, path, port, headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": `Basic ${ClIdsecret64}`,
+        },
+        body_data: body_data,
+        ...fabrics.callModes.TLS_selfsigned,
+        //...fabrics.callModes.matls_keycert({key, cert}),
+        ...fabrics.callModes.matls_keycert(key_cert_tuple),
+    };
+    /* ??
+        "rejectUnauthorized": false,
+        "followRedirect": false
+    */
+
+    console.log('****opt', opt);
+    const b = await fabrics.http_request( opt );
+    console.log('****222');
+    const bobj = JSON.parse(b);
+    const checker = new Schema_from_swagger(require_yaml('./token1.schema.yaml'));
+    checker.resolve(bobj); // throws if wrong
+    return bobj;
+    //} catch(non200) {
+    //    console.log('1. none-200 status:', non200);
+    //    process.exit(1);
+    //}
+};
+
 function component_jws(jws_string, SOURCES) {
 
     const jws_template = new RegExpResolver(
@@ -201,25 +279,11 @@ async function doit() {
         stage(1,3, 'calling the wellknown point - cont');
         // ignore_https_TLS_SSC_error();
 
-        // call types/modes:
-        const callModes = {
-            TLS_selfsigned: {extra_options: {rejectUnauthorized: false}},
-
-            matls_keycert: // = ({key, cert}) => ({}),
-                ({key, cert}) => ({matls: {
-                    maxCachedSessions: 0,
-                    secureProtocol: 'TLSv1_2_method',
-                    securityOptions: 'SSL_OP_NO_SSLv3',
-                    ciphers: 'ALL',
-                    key: key,
-                    cert: cert
-                }}),
-        };
 
         const a = await fabrics.http_request(
             {verb: 'GET', hostname, path, port, headers,
             /*, body_data: 'hello'*/ /*body_data: undefined, */
-            ...callModes.TLS_selfsigned,
+            ...fabrics.callModes.TLS_selfsigned,
         });
         const jsonated = JSON.parse(a);
 
@@ -232,82 +296,12 @@ async function doit() {
         const token_endpoint = jsonated.token_endpoint;
         console.log("token_endpoint:", token_endpoint);
 
-        stage(2,1, 'calling the `/token` - using clientId');
-        const part2 = async () =>{
-
-            // me:
-            // necesary objects. not more. (extension of no-move/no-cloning)
-
-            // bottleneck:
-            //     (token_endpoint, company_config.app.clientId, company_config.app.clientSecret, body_data = "grant_type=client_credentials&scope=openid accounts";)
-
-            /*
-                token_endpoint
-                (company_config.app.clientId, company_config.app.clientSecret),
-                querystring.parse('grant_type=client_credentials&scope=openid accounts')
-                querystring.stringify({ grant_type: 'client_credentials', scope: 'openid accounts' })
-            */
-
-            // then: prapare:
-            // const: (source): given from outise: from company_config
-            //      company_config.app is creatd by "App Creation" tasks.
-            //          SSA:
-            //               Note that they have already provided SSA (in the larger circuit).
-            //               SSA has two purposes: 1. certify (Also to arrive to use THROUGH a different ROUTE: form OB). 2. contains info fior us. 
-            const ClIdsecretObj = {id: company_config.app.clientId, secret: company_config.app.clientSecret};
-            console.log('----',ClIdsecretObj);
-            // template code: (generate/reconstruct)
-            const ClIdsecret = `${ClIdsecretObj.id}:${ClIdsecretObj.secret}`;
-            // a simple transform (again reversible)
-            const base64 = new Base64();
-            const ClIdsecret64 = base64.generate(ClIdsecret);
-
-            // scopes, grant (and flow) type.
-            const body_data = "grant_type=client_credentials&scope=openid accounts";
-            // then
-            let {hostname, path, port} = new UrlRegExpWithPort().resolve(token_endpoint);
-            console.log({hostname, path, port});
 
 
-            console.log('ClIdsecret64', ClIdsecret64);
+        // scopes, grant (and flow) type.
+        const body_data = "grant_type=client_credentials&scope=openid accounts";
 
-
-            const key_cert_tuple = require(
-                './sensitive-data/SIT01-OBIE/cached-data/ma-tls-sit01.js',
-            );
-            console.log('key_cert_tuple***', key_cert_tuple);
-
-            console.log('****11');
-            //try{
-            // using hostname, etc enforces use of the full format (typed URL like an OOP object)
-            const opt = {
-                verb: 'POST', hostname, path, port, headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Authorization": `Basic ${ClIdsecret64}`,
-                },
-                body_data: body_data,
-                ...callModes.TLS_selfsigned,
-                //...callModes.matls_keycert({key, cert}),
-                ...callModes.matls_keycert(key_cert_tuple),
-            };
-            /* ??
-                "rejectUnauthorized": false,
-                "followRedirect": false
-            */
-
-            console.log('****opt', opt);
-            const b = await fabrics.http_request( opt );
-            console.log('****222');
-            const bobj = JSON.parse(b);
-            const checker = new Schema_from_swagger(require_yaml('./token1.schema.yaml'));
-            checker.resolve(bobj); // throws if wrong
-            return bobj;
-            //} catch(non200) {
-            //    console.log('1. none-200 status:', non200);
-            //    process.exit(1);
-            //}
-        };
-        const token1 = await part2();
+        const token1 = await part2(token_endpoint, company_config.app, body_data);
         console.log('22222222222');
         console.log('token1:', token1);
 
@@ -336,6 +330,10 @@ async function doit() {
         );
 
         console.log({jws2_String});
+        // Why a JWS is sent to the client?
+        //     by the token endpoint (first call)
+        // The client needs to be able to validate it?
+        //
 
     } catch (e) {
         console.error(e);
