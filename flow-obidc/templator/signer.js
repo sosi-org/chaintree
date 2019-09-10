@@ -112,10 +112,11 @@ function g_verify({data, signature}, /*param*/ {algorithm, key}) {
     try {
 
         const ver = alg_obj.verify(data_buffer, signature, key);
-        console.log('good:', ver); // false
+        console.log('verification:', ver); // false
         return ver;
 
     } catch (e) {
+        // definitely not a constraint error. A rune-time binding (of course, to file) error.
         throw new Error('Constraint error: PEM file content format has problems:  ---- ' +e);
     }
 }

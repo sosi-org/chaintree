@@ -326,10 +326,10 @@ async function doit() {
             jws_string,
             //'./sensitive-data/sit01-obwac/luat01-token.key????'
             // ./sensitive-data/SIT02-OBIE/cached-data/...
-            {key_filename: './sensitive-data/SIT01-OBIE/cached-data/luat01-token.key????'}
+            {key_filename: './sensitive-data/SIT01-OBIE/cached-data/ssa-jws-pubkey.pem'}
         );
 
-        console.log({jws2_String});
+        console.log({jws2_string});
         // Why a JWS is sent to the client?
         //     by the token endpoint (first call)
         // The client needs to be able to validate it?
