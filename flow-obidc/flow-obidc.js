@@ -1,8 +1,6 @@
 'use strict';
 
 // const fabrics = require('./fabrics-shared.js');
-const {extract_the_only_field} = require('./fabrics-shared.js');
-const {RegExpResolver} = require('./templator/url-re.js');
 const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
 
 const {from_file} = require('./templator/from_file.js');
@@ -10,7 +8,7 @@ const {from_file} = require('./templator/from_file.js');
 //const {all_non_undefined}  = require('./error-checking.js');
 
 // components
-const {component_jws_verifysignature} = require('./jwt_tools.js');
+const {component_jws_verifysignature, accesstoken_from_gktvo} = require('./jwt_tools.js');
 const {call_post_style_1, style_3_call__POST_bearer_matls, call_get_style1} = require('./rest.js');
 
 function stage(stage_id, minor_step, heading) {
@@ -150,21 +148,6 @@ async function part5(company_config_temp, access_token /*, SOURCES*/) {
 }
 
 
-function ignore_https_TLS_SSC_error() {
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
-
-/*
-function base64Decode(strData) {
-    console.log('strData', strData)
-    //deprecated:
-    //let buff = new Buffer(strData, 'base64');
-    let buff = Buffer.from(strData, 'base64');
-    let text = buff.toString('ascii');
-    console.log('text64', text)
-    return text;
-}
-*/
 
 
 async function doit() {
@@ -211,24 +194,8 @@ async function doit() {
         const access_toekn_gktvo = tokencall1_resp.access_token;
         console.log('access_toekn_gktvo:', access_toekn_gktvo);
 
-        // Produce a 'gktvo' Bearer
-        const jws_gktv = new RegExpResolver(
-                /^gktvo(.*)$/gm,
-                //todo: auto generate this by naming groups:
-                // NamedRegExpResolver
-                //      /^gktv(?<jws>.*)$/gm,
-                {1:'jws'},
-                ({jws}) => `gktvo${jws}`
-            );
-        const jws_argObj = jws_gktv.resolve(access_toekn_gktvo);
-        console.log('***jws_argObj', jws_argObj);
 
-        // access_token__jws_string is the access_token
-
-        //SSA = ...
-        // simple flow binding (single-arg)
-        // const access_token__jws_string = jws_argObj.jws;
-        const access_token__jws_string = extract_the_only_field(jws_argObj, 'jws');
+        const access_token__jws_string =  accesstoken_from_gktvo(access_toekn_gktvo);
 
         const access_token__jws_string__reproduced = component_jws_verifysignature(
             access_token__jws_string,

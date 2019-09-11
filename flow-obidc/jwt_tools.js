@@ -6,6 +6,8 @@ const {Base64} = require('./templator/base64.js');
 const {from_file} = require('./templator/from_file.js');
 const fabrics = require('./fabrics-shared.js');
 
+const {extract_the_only_field} = require('./fabrics-shared.js');
+
 
 const part4_verify_jws_signature = (args, SOURCES)=>{
   // Use RFC7515 to decode JWS
@@ -130,7 +132,32 @@ function component_jws_verifysignature(jws_string, SOURCES) {
  return jws;
 }
 
+/*
+    extracts gktvo from the concatenation.
+*/
+function accesstoken_from_gktvo(access_toekn_gktvo) {
+    // Produce a 'gktvo' Bearer
+    const jws_gktv = new RegExpResolver(
+            /^gktvo(.*)$/gm,
+            //todo: auto generate this by naming groups:
+            // NamedRegExpResolver
+            //      /^gktv(?<jws>.*)$/gm,
+            {1:'jws'},
+            ({jws}) => `gktvo${jws}`
+        );
+    const jws_argObj = jws_gktv.resolve(access_toekn_gktvo);
+    console.log('***jws_argObj', jws_argObj);
+
+    // access_token__jws_string is the access_token
+
+    //SSA = ...
+    // simple flow binding (single-arg)
+    // const access_token__jws_string = jws_argObj.jws;
+    const access_token__jws_string = extract_the_only_field(jws_argObj, 'jws');
+    return access_token__jws_string;
+}
 
 module.exports = {
     component_jws_verifysignature,
+    accesstoken_from_gktvo,
 }

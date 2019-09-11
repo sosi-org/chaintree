@@ -6,6 +6,9 @@ const {Base64} = require('./templator/base64.js');
 const {all_non_undefined}  = require('./error-checking.js');
 const {allow_fixed_special_only} = require('./error-checking.js');
 
+function ignore_https_TLS_SSC_error() {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
 
 async function call_post_style_1(token_endpoint, {clientId,clientSecret}, body_data, key_cert_tuple) {
 
@@ -111,6 +114,7 @@ async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token,
 
   // console.log('http*opt', opt);
   const b = await http_request( opt );
+  return b;
 }
 
 /**
