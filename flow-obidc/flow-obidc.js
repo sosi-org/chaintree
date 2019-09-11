@@ -205,10 +205,10 @@ function component_jws(jws_string, SOURCES) {
         const _signature = args.signature;
 
         // const q4 = sr.resolve({data: decod64ed_jws.payload, signature: decod64ed_jws.signature});
-        const q4 = sr.resolve({data: _signee, signature: _signature});
+        const reproduced = sr.resolve({data: _signee, signature: _signature});
 
-        console.log('4444444 q4', q4);
-        return q4;
+        console.log('4444444 reproduced', reproduced);
+        return reproduced;
     };
 
     const jws = part4();
@@ -239,6 +239,7 @@ async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token,
 
     const body_data = JSON.stringify(body_obj);
 
+    console.log('https://' + hostname + ':' + port + path);
     const opt = {
         verb: 'POST',
         hostname, path, port,
@@ -246,11 +247,38 @@ async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token,
             'Content-Type': 'application/json',
             'Authorization': `Bearer gktvo${bearertype_token}`,
             // "Accept": "",  meaning = ?
+            /*
+            ...{
+                "Accept":"",
+                "x-fapi-financial-id":"test",
+                "x-fapi-customer-last-logged-time":"Sun, 10 Sep 2017 19:43:31 UTC",
+                "x-fapi-customer-ip-address":"104.25.212.99",
+                "X-Test-DCRK":"true",
+                "X-Test-DCP2":"true",
+                "x-lbg-accountRequest-vip":"accountRequestVIPHeader",
+                "x-idempotency-key":"FRESCO.21302.GFX.20",
+                // "content-length":515
+                "content-length": body_data.length,
+            },
+            */
         },
         body_data,
+        //followRedirect:false,
         ...fabrics.callModes.TLS_selfsigned,
         ...fabrics.callModes.matls_keycert(key_cert_tuple),
         // followRedirect=false, ciphers:All
+
+        /*
+        ...{
+            "rejectUnauthorized": false,
+            "json": true,
+            "followRedirect": false,
+            "resolveWithFullResponse": true,
+            "secureProtocol": "TLSv1_2_method",
+            "securityOptions": "SSL_OP_NO_SSLv3",
+            "ciphers": "ALL",
+        },
+        */
     };
 
     // console.log('http*opt', opt);
@@ -327,7 +355,7 @@ async function part5(company_config_temp, access_token /*, SOURCES*/) {
     // Status none-200: 400 (Bad Request)
     console.log('response to: ', uri);
     console.log(b);
-    process.exit(1);
+    process.exit(0);
 }
 
 stage(1,1, 'wellknown point - taken from config');
@@ -435,31 +463,33 @@ async function doit() {
         const jws_argObj = jws_gktv.resolve(access_toekn_gktvo);
         console.log('***jws_argObj', jws_argObj);
 
-        // jws_string is the access_token
+        // access_token__jws_string is the access_token
 
         //SSA = ...
         // simple flow binding (single-arg)
-        // const jws_string = jws_argObj.jws;
-        const jws_string = extract_the_only_field(jws_argObj, 'jws');
-        const jws2_string = component_jws(
-            jws_string,
+        // const access_token__jws_string = jws_argObj.jws;
+        const access_token__jws_string = extract_the_only_field(jws_argObj, 'jws');
+
+        const access_token__jws_string__reproduced = component_jws(
+            access_token__jws_string,
             //'./sensitive-data/sit01-obwac/luat01-token.key????'
             // ./sensitive-data/SIT02-OBIE/cached-data/...
             {key_filename: './sensitive-data/SIT01-OBIE/cached-data/ssa-jws-pubkey.pem'}
         );
 
-        console.log({jws2_string});
+        console.log({access_token__jws_string__reproduced});
         // Why a JWS is sent to the client?
         //     by the token endpoint (first call)
         // The client needs to be able to validate it?
         //
 
-        const access_token = jws_string;
+        // How to make sure the names are chosen correctly
+        const access_token = access_token__jws_string;
 
         // Where does SSA stand?
 
 
-        part5(company_config, access_toekn_gktvo);
+        part5(company_config, access_token);
 
     } catch (e) {
         console.error(e);

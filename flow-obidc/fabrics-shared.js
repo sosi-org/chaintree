@@ -56,10 +56,12 @@ function http_request({verb, hostname, path, port, headers, body_data, matls, ex
         const req = https.request(options, (res) => {
 
           console.log(`statusCode: ${res.statusCode}`)
+          /*
           if (res.statusCode !== 200) {
               // standard Exception
               throw new StatusNon200(res.statusCode);
           }
+          */
           res.on('data', (response_data_buffer) => {
             // single chunk only?
             const response_string = response_data_buffer.toString();
