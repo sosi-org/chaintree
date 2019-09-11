@@ -1,8 +1,11 @@
 'use strict';
 
 const {callModes, http_request} = require('./fabrics-shared.js');
-const {UrlRegExpWithPort} = require('./templator/url-re.js');
+const {UrlRegExp, UrlRegExpWithPort} = require('./templator/url-re.js');
 const {Base64} = require('./templator/base64.js');
+const {all_non_undefined}  = require('./error-checking.js');
+const {allow_fixed_special_only} = require('./error-checking.js');
+
 
 async function call_post_style_1(token_endpoint, {clientId,clientSecret}, body_data, key_cert_tuple) {
 
@@ -15,8 +18,10 @@ async function call_post_style_1(token_endpoint, {clientId,clientSecret}, body_d
     const ClIdsecret64 = base64.generate(ClIdsecret);
 
     // then
-    let {hostname, path, port} = new UrlRegExpWithPort().resolve(token_endpoint);
+    let {hostname, path, port, prot} = new UrlRegExpWithPort().resolve(token_endpoint);
     // console.log({hostname, path, port});
+    all_non_undefined({hostname, path, port, prot});
+    allow_fixed_special_only(prot, 'https');
 
     // console.log('ClIdsecret64', ClIdsecret64);
 
@@ -57,6 +62,8 @@ async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token,
   const /*url_tuple*/ {hostname, path, port, prot} =
       new UrlRegExpWithPort().resolve(url);
   // warn: unused. Easy using -like tools.
+
+  all_non_undefined({hostname, path, port, prot});
 
   const body_data = JSON.stringify(body_obj);
 
@@ -106,7 +113,50 @@ async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token,
   const b = await http_request( opt );
 }
 
+/**
+ * simple GET call
+ */
+async function call_get_style1(get_url) {
+    let {hostname, path, port, prot} = UrlRegExp().resolve(get_url);
+
+    // bad:
+    if (port === undefined) {
+        port = 443;
+    }
+    // console.log({hostname, path, port, prot});
+    //todo: check not undefined.
+    all_non_undefined({hostname, path, port, prot});
+
+    const headers = {
+        // 'Content-Type': 'application/json',
+        // 'Content-Length': data.length,
+        /*
+        'User-Agent': 'PostmanRuntime/7.15.2',
+        'Accept': '*\/*',
+        'Cache-Controle': 'no-cache',
+
+        'Host': 'gatewaydata02.psd2.sandbox.extranet.group',
+        'Accept-Encoding': 'gzip, deflate',
+        'Connection': 'keep-alive',
+        */
+    "cache-control": "no-cache",
+    "accept": "application/json",
+    };
+
+    // ignore_https_TLS_SSC_error();
+
+
+    const a = await http_request(
+        {verb: 'GET', hostname, path, port, headers,
+        /*, body_data: 'hello'*/ /*body_data: undefined, */
+        ...callModes.TLS_selfsigned,
+    });
+
+    return a;
+}
+
 module.exports = {
   call_post_style_1,
   style_3_call__POST_bearer_matls,
+  call_get_style1,
 }

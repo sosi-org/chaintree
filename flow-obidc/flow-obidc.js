@@ -1,17 +1,17 @@
 'use strict';
 
-const fabrics = require('./fabrics-shared.js');
+// const fabrics = require('./fabrics-shared.js');
 const {extract_the_only_field} = require('./fabrics-shared.js');
-const {UrlRegExp, RegExpResolver} = require('./templator/url-re.js');
+const {RegExpResolver} = require('./templator/url-re.js');
 const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
 
 const {from_file} = require('./templator/from_file.js');
 // console.log( new from_file('./jws/1_public.key') );
-const {all_non_undefined}  = require('./error-checking.js');
+//const {all_non_undefined}  = require('./error-checking.js');
 
 // components
 const {component_jws_verifysignature} = require('./jwt_tools.js');
-const {call_post_style_1, style_3_call__POST_bearer_matls} = require('./rest.js');
+const {call_post_style_1, style_3_call__POST_bearer_matls, call_get_style1} = require('./rest.js');
 
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);
@@ -149,42 +149,6 @@ async function part5(company_config_temp, access_token /*, SOURCES*/) {
     process.exit(0);
 }
 
-stage(1,1, 'wellknown point - taken from config');
-// todo: use "npm comment-json"
-const company_config = require('./company-config.js');
-// part5(company_config)
-
-// console.log(company_config);
-
-console.log(company_config.wellknown);
-
-stage(1,2, 'calling the wellknown point');
-
-let {hostname, path, port, prot} = UrlRegExp().resolve(company_config.wellknown);
-
-// bad:
-if (port === undefined) {
-    port = 443;
-}
-// console.log({hostname, path, port, prot});
-//todo: check not undefined.
-all_non_undefined({hostname, path, port, prot});
-
-const headers = {
-    // 'Content-Type': 'application/json',
-    // 'Content-Length': data.length,
-    /*
-    'User-Agent': 'PostmanRuntime/7.15.2',
-    'Accept': '*\/*',
-    'Cache-Controle': 'no-cache',
-
-    'Host': 'gatewaydata02.psd2.sandbox.extranet.group',
-    'Accept-Encoding': 'gzip, deflate',
-    'Connection': 'keep-alive',
-    */
-   "cache-control": "no-cache",
-   "accept": "application/json",
-};
 
 function ignore_https_TLS_SSC_error() {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -203,18 +167,23 @@ function base64Decode(strData) {
 */
 
 
-
 async function doit() {
     try {
-        stage(1,3, 'calling the wellknown point - cont');
-        // ignore_https_TLS_SSC_error();
+        stage(1,1, 'wellknown point - taken from config');
 
+        // todo: use "npm comment-json"
+        const company_config = require('./company-config.js');
+        // part5(company_config)
 
-        const a = await fabrics.http_request(
-            {verb: 'GET', hostname, path, port, headers,
-            /*, body_data: 'hello'*/ /*body_data: undefined, */
-            ...fabrics.callModes.TLS_selfsigned,
-        });
+        // console.log(company_config);
+
+        console.log(company_config.wellknown);
+
+        stage(1,2, 'calling the wellknown point');
+
+        const a = await call_get_style1(company_config.wellknown);
+        console.log(a);
+
         const jsonated = JSON.parse(a);
 
         const checker = new Schema_from_swagger(require_yaml('./wellknown.swagger.yaml'));
