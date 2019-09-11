@@ -110,6 +110,27 @@ function allow_enum(x, enum_array) {
         throw new TypeError(x);
     }
 }
+
+function all_non_undefined(key_values) {
+    // key_values also can be a simple array.
+    for(let k in key_values) {
+        if( typeof key_values[k] === 'undefined' ) {
+            console.log(key_values);
+            throw new Error('DataTightError cloning/empty: undefined: no-deletion failed.');
+        }
+    }
+}
+
+function all_mustbe_undefined(key_values) {
+    // key_values also can be a simple array.
+    for(let k in key_values) {
+        if( typeof key_values[k] !== 'undefined' ) {
+            console.log(key_values);
+            throw new Error('DataTightError cloning/empty: all must be undefined: data leak.');
+        }
+    }
+}
+
 /*
     Exceptions to create:
         // Status other than 200
@@ -130,4 +151,6 @@ module.exports = {
     check_error,
     lazy_assert_check_equal,
     allow_fixed_special_only,
+    all_non_undefined,
+    all_mustbe_undefined,
 };

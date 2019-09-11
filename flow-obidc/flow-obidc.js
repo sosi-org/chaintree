@@ -1,11 +1,13 @@
 'use strict';
 
 const fabrics = require('./fabrics-shared.js');
+const {extract_the_only_field} = require('./fabrics-shared.js');
 const {UrlRegExp, UrlRegExpWithPort, RegExpResolver} = require('./templator/url-re.js');
 const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
 const {Base64} = require('./templator/base64.js');
 const {from_file} = require('./templator/from_file.js');
 // console.log( new from_file('./jws/1_public.key') );
+const {all_non_undefined}  = require('./error-checking.js');
 
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);
@@ -59,15 +61,15 @@ const part2 = async (token_endpoint, company_config_app, body_data) =>{
     console.log({hostname, path, port});
 
 
-    console.log('ClIdsecret64', ClIdsecret64);
+    // console.log('ClIdsecret64', ClIdsecret64);
 
 
     const key_cert_tuple = require(
         './sensitive-data/SIT01-OBIE/cached-data/ma-tls-1.js',
     );
-    console.log('key_cert_tuple***', key_cert_tuple);
+    // console.log('key_cert_tuple***', key_cert_tuple);
 
-    console.log('****11');
+    //console.log('****11');
     //try{
     // using hostname, etc enforces use of the full format (typed URL like an OOP object)
     const opt = {
@@ -85,9 +87,9 @@ const part2 = async (token_endpoint, company_config_app, body_data) =>{
         "followRedirect": false
     */
 
-    console.log('****opt', opt);
+    // console.log('****opt', opt);
     const b = await fabrics.http_request( opt );
-    console.log('****222');
+    // console.log('****222');
     const bobj = JSON.parse(b);
     const checker = new Schema_from_swagger(require_yaml('./token1.schema.yaml'));
     checker.resolve(bobj); // throws if wrong
@@ -98,6 +100,8 @@ const part2 = async (token_endpoint, company_config_app, body_data) =>{
     //}
 };
 
+
+// only verifies
 function component_jws(jws_string, SOURCES) {
 
     const jws_template = new RegExpResolver(
@@ -249,12 +253,12 @@ async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token,
         // followRedirect=false, ciphers:All
     };
 
-    console.log('http*opt', opt);
+    // console.log('http*opt', opt);
     const b = await fabrics.http_request( opt );
 
 }
 
-async function part5(company_config_temp) {
+async function part5(company_config_temp, access_token) {
     // See line 131
     // call 3:
 
@@ -283,6 +287,7 @@ async function part5(company_config_temp) {
 				"ReadScheduledPaymentsDetail"
             ],
             // Why does the client ask for the times?
+            // Why is it in past?
 			"ExpirationDateTime": exp_time_detailed, //"2019-12-08T14:26:21Z",
 			"TransactionFromDateTime": now_detailed, //"2016-09-10T19:31:21+01:00",
 			"TransactionToDateTime": now_detailed,   //"2019-09-10T19:31:21+01:00"
@@ -290,21 +295,23 @@ async function part5(company_config_temp) {
 		"Risk": {}
 	};
 
-
+    /*
     // 202 characters
     const what1_token = new from_file(
-        './sensitive-data/SIT01-OBIE/cached-data/what-2.txt'
+        './sensitive-data/SIT01-OBIE/cached-data/what-3.txt'
     ).generate(null);
     console.log('what1_token', what1_token.length, what1_token);
+    */
 
     const key_cert_tuple = require(
         './sensitive-data/SIT01-OBIE/cached-data/ma-tls-2.js',
+        // './sensitive-data/SIT01-OBIE/cached-data/ma-tls-3.js',
     );
 
     const b = await style_3_call__POST_bearer_matls({
         url: uri,
         body_obj: body,
-        bearertype_token: what1_token,
+        bearertype_token: access_token,
         key_cert_tuple,
     });
     // Status none-200: 400 (Bad Request)
@@ -330,8 +337,9 @@ let {hostname, path, port, prot} = UrlRegExp().resolve(company_config.wellknown)
 if (port === undefined) {
     port = 443;
 }
-console.log({hostname, path, port, prot});
-
+// console.log({hostname, path, port, prot});
+//todo: check not undefined.
+all_non_undefined({hostname, path, port, prot});
 
 const headers = {
     // 'Content-Type': 'application/json',
@@ -394,13 +402,18 @@ async function doit() {
         // scopes, grant (and flow) type.
         const body_data = "grant_type=client_credentials&scope=openid accounts";
 
-        const token1 = await part2(token_endpoint, company_config.app, body_data);
-        console.log('22222222222');
-        console.log('token1:', token1);
+        const tokencall1_resp = await part2(token_endpoint, company_config.app, body_data);
+        // console.log('22222222222');
+        console.log('token from first /token call:', tokencall1_resp);
 
-        const access_toekn = token1.access_token;
-        console.log('access_toekn:', access_toekn);
+        // {token_type, access_token,expires_in,consented_on,scope,openid accounts} = 
+        // fully verify:
+        // {token_type: 'Bearer'}
+        // {"scope":"openid accounts"}
+        const access_toekn_gktvo = tokencall1_resp.access_token;
+        console.log('access_toekn_gktvo:', access_toekn_gktvo);
 
+        // Produce a 'gktvo' Bearer
         const jws_gktv = new RegExpResolver(
                 /^gktvo(.*)$/gm,
                 //todo: auto generate this by naming groups:
@@ -409,12 +422,15 @@ async function doit() {
                 {1:'jws'},
                 ({jws}) => `gktvo${jws}`
             );
-        const jws_argObj = jws_gktv.resolve(access_toekn);
+        const jws_argObj = jws_gktv.resolve(access_toekn_gktvo);
         console.log('***jws_argObj', jws_argObj);
+
+        // jws_string is the access_token
 
         //SSA = ...
         // simple flow binding (single-arg)
-        const jws_string = jws_argObj.jws;
+        // const jws_string = jws_argObj.jws;
+        const jws_string = extract_the_only_field(jws_argObj, 'jws');
         const jws2_string = component_jws(
             jws_string,
             //'./sensitive-data/sit01-obwac/luat01-token.key????'
@@ -428,10 +444,12 @@ async function doit() {
         // The client needs to be able to validate it?
         //
 
+        const access_token = jws_string;
+
         // Where does SSA stand?
 
 
-        part5(company_config);
+        part5(company_config, access_toekn_gktvo);
 
     } catch (e) {
         console.error(e);

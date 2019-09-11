@@ -35,16 +35,18 @@ function schemaValidator(schema, json_data) {
     //console.log();
     //console.log('----------');
     // console.log('matching: ', schema);
-    console.log('extracted: ', json_data);
+    // console.log('schema: extracted: ', json_data);
+    //todo: check no "undefined"
     let validation_result = tv4.validateMultiple(json_data, schema);
-    console.log(validation_result)
-
+    // console.log(validation_result)
+    // {errors: [], missing: [], valid: true }
     const errors = validation_result['errors'];
 
     //console.log('----------');
     //console.log();
 
     // for troubleshooting, use another method
+    // or: errors.valid === true;
     return errors.length === 0;
 }
 /*
