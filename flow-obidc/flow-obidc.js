@@ -258,7 +258,7 @@ async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token,
 
 }
 
-async function part5(company_config_temp, access_token) {
+async function part5(company_config_temp, access_token /*, SOURCES*/) {
     // See line 131
     // call 3:
 
@@ -303,10 +303,20 @@ async function part5(company_config_temp, access_token) {
     console.log('what1_token', what1_token.length, what1_token);
     */
 
+    /*
     const key_cert_tuple = require(
         './sensitive-data/SIT01-OBIE/cached-data/ma-tls-2.js',
         // './sensitive-data/SIT01-OBIE/cached-data/ma-tls-3.js',
     );
+    */
+
+    const SOURCES = {
+        matls_key_filename: './sensitive-data/SIT01-OBIE/cached-data/aka_transport.key',
+        matls_cert_filename: './sensitive-data/SIT01-OBIE/cached-data/aka_transport.pem',
+    };
+    const matls_key = new from_file(SOURCES.matls_key_filename).generate(null).toString();
+    const matls_cert = new from_file(SOURCES.matls_cert_filename).generate(null).toString();
+    const key_cert_tuple = {key: matls_key, cert: matls_cert};
 
     const b = await style_3_call__POST_bearer_matls({
         url: uri,
