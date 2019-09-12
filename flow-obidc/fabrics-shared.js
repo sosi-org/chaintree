@@ -142,6 +142,45 @@ function extract_the_only_field(obj, field_name) {
     extract_the_only_field(jws_argObj, ['jws'])
 */
 
+/**
+ * mini swagger validation
+ */
+function check_format_keys(obj, tuple_format) {
+    // const {token_type, access_token, expires_in, consented_on, scope} = tokencall1_resp;
+    //check << deep_equals()
+    function deep_equals(a, b) {
+        return JSON.stringify(a) === JSON.stringify(b);
+    }
+    // deep_equals
+    function check_deep_equality(a,b) {
+        if (!deep_equals(a, b)) {
+            throw new Error('reversibility failed');
+        }
+    }
+    // check_format
+    function _check_format_key(obj, tuple_format) {
+        console.log('objobj', obj);
+        const resultObj = eval(`
+            const ${tuple_format} = obj;
+            (
+            check_deep_equality(${tuple_format}, obj),
+            ${tuple_format}
+            )
+        `);
+        return resultObj;
+    }
+    //check_format_keys = _check_format_key;
+    return _check_format_key(obj, tuple_format);
+    //check_format(tuple_format);
+
+    //check_deep_equality({token_type, access_token, expires_in, consented_on, scope}, tokencall1_resp);
+}
+
+
+// test
+check_format_keys({a:'aa', b:'bb'}, `{a,b}`);
+// another example: check_format_keys(obj, `{token_type, access_token, expires_in, consented_on, scope}`);
+
 module.exports = {
     http_request,
     flow_valid_value,
@@ -150,4 +189,5 @@ module.exports = {
     valid_value_as_template_constraint,
     callModes,
     extract_the_only_field,
+    check_format_keys,
 };

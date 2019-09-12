@@ -11,6 +11,8 @@ const {from_file} = require('./templator/from_file.js');
 const {component_jws_verifysignature, accesstoken_from_gktvo} = require('./jwt_tools.js');
 const {call_post_style_1, style_3_call__POST_bearer_matls, call_get_style1} = require('./rest.js');
 
+const {check_format_keys} = require('./fabrics-shared.js');
+
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);
 }
@@ -165,10 +167,20 @@ async function doit() {
         stage(1,4, 'finding the `/token` endpoint - from contents from wellknown');
         const token_endpoint = jsonated.token_endpoint;
         console.log("token_endpoint:", token_endpoint);
+
+        stage(2,1, 'hitting the `/token` endpoint: i.e. first token call - to get the first token1jws');
         // scopes, grant (and flow) type.
         const body_data = "grant_type=client_credentials&scope=openid accounts";
         const tokencall1_resp = await part2(token_endpoint, company_config.app, body_data);
         console.log('token from first /token call:', tokencall1_resp);
+
+        console.log('tokencall1_resptokencall1_resp', tokencall1_resp);
+        // check_format_keys()
+
+        check_format_keys(tokencall1_resp,
+            `{token_type, access_token, expires_in, consented_on, scope}`
+        );
+
 
         // {token_type, access_token,expires_in,consented_on,scope,openid accounts} = 
         // fully verify:
