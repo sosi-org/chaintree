@@ -74,12 +74,10 @@ const part2 = async (token_endpoint, {clientId,clientSecret}, body_data) =>{
 
 
 
-async function part5(company_config_temp, access_token /*, SOURCES*/) {
+async function part5(uri, access_token /*, SOURCES*/) {
     // See line 131
     // call 3:
     stage(5,1, 'call the `/account-access-consents` - using bearer access_token and TLS certs');
-
-    const uri = company_config_temp["account-access-consents"]({obver: 'v3.1'});
 
     const moment = require('moment');
     const now = new moment();
@@ -153,38 +151,23 @@ async function part5(company_config_temp, access_token /*, SOURCES*/) {
 async function doit() {
     try {
         stage(1,1, 'wellknown point - taken from config');
-
         // todo: use "npm comment-json"
         const company_config = require('./company-config.js');
-        // part5(company_config)
-
-        // console.log(company_config);
-
         console.log(company_config.wellknown);
 
         stage(1,2, 'calling the wellknown point');
-
         const a = await call_get_style1(company_config.wellknown);
-        console.log(a);
-
         const jsonated = JSON.parse(a);
-
         const checker = new Schema_from_swagger(require_yaml('./wellknown.swagger.yaml'));
         //checker.resolve(a);
         checker.resolve(jsonated); // throws if wrong
 
         stage(1,4, 'finding the `/token` endpoint - from contents from wellknown');
-
         const token_endpoint = jsonated.token_endpoint;
         console.log("token_endpoint:", token_endpoint);
-
-
-
         // scopes, grant (and flow) type.
         const body_data = "grant_type=client_credentials&scope=openid accounts";
-
         const tokencall1_resp = await part2(token_endpoint, company_config.app, body_data);
-        // console.log('22222222222');
         console.log('token from first /token call:', tokencall1_resp);
 
         // {token_type, access_token,expires_in,consented_on,scope,openid accounts} = 
@@ -193,22 +176,21 @@ async function doit() {
         // {"scope":"openid accounts"}
         const access_toekn_gktvo = tokencall1_resp.access_token;
         console.log('access_toekn_gktvo:', access_toekn_gktvo);
-
-
         const access_token__jws_string =  accesstoken_from_gktvo(access_toekn_gktvo);
 
+        {
         const access_token__jws_string__reproduced = component_jws_verifysignature(
             access_token__jws_string,
             //'./sensitive-data/sit01-obwac/luat01-token.key????'
             // ./sensitive-data/SIT02-OBIE/cached-data/...
             {key_filename: './sensitive-data/SIT01-OBIE/cached-data/ssa-jws-pubkey.pem'}
         );
-
         console.log({access_token__jws_string__reproduced});
         // Why a JWS is sent to the client?
         //     by the token endpoint (first call)
         // The client needs to be able to validate it?
         //
+        }
 
         // How to make sure the names are chosen correctly
         const access_token = access_token__jws_string;
@@ -216,7 +198,8 @@ async function doit() {
         // Where does SSA stand?
 
 
-        part5(company_config, access_token);
+        const account_access_consents_url = company_config["account-access-consents"]({obver: 'v3.1'});
+        part5(account_access_consents_url, access_token);
 
     } catch (e) {
         console.error(e);
