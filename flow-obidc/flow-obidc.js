@@ -179,17 +179,17 @@ async function doit() {
         const access_token__jws_string =  accesstoken_from_gktvo(access_toekn_gktvo);
 
         {
-        const access_token__jws_string__reproduced = component_jws_verifysignature(
-            access_token__jws_string,
-            //'./sensitive-data/sit01-obwac/luat01-token.key????'
-            // ./sensitive-data/SIT02-OBIE/cached-data/...
-            {key_filename: './sensitive-data/SIT01-OBIE/cached-data/ssa-jws-pubkey.pem'}
-        );
-        console.log({access_token__jws_string__reproduced});
-        // Why a JWS is sent to the client?
-        //     by the token endpoint (first call)
-        // The client needs to be able to validate it?
-        //
+            const access_token__jws_string__reproduced = component_jws_verifysignature(
+                access_token__jws_string,
+                //'./sensitive-data/sit01-obwac/luat01-token.key????'
+                // ./sensitive-data/SIT02-OBIE/cached-data/...
+                {key_filename: './sensitive-data/SIT01-OBIE/cached-data/ssa-jws-pubkey.pem'}
+            );
+            console.log({access_token__jws_string__reproduced});
+            // Why a JWS is sent to the client?
+            //     by the token endpoint (first call)
+            // The client needs to be able to validate it?
+            //
         }
 
         // How to make sure the names are chosen correctly
