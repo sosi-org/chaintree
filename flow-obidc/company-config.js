@@ -34,5 +34,6 @@ module.exports = {
     "account-access-consents": l_account_access_consents,
 
     transaction_context_endpoint: `https://${domain}/${product_name}/${channel}/${subcomp}/consent-preauth-validation-service/v1.0/transaction-context`,
+    base_endpoint_path: `https://${domain}/${product_name}/${channel}/${subcomp}`,
 
 };

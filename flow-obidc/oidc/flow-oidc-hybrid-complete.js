@@ -337,7 +337,7 @@ async function doit() {
         }
         */
 
-       const next_url = company_config.transaction_context_endpoint;
+       const next_url2 = company_config.transaction_context_endpoint;
 
         const gets_headers = {
             'x-lbg-transaction-info':  lbg_transaction_info,
@@ -347,7 +347,7 @@ async function doit() {
         {
         // third GET style?
         const {statusCode,statusMessage,headers,response_buffer} = await call_get_style2(
-            next_url,
+            next_url2,
             // 'text/*',
             /*'content-type':*/ 'application/json',
             gets_headers
@@ -381,7 +381,32 @@ async function doit() {
             lbg_transaction_info
             } = obj4;
 
-            // now whar to do with these?
+            // now what to do with these?
+            {
+            // 5
+            const api_base = company_config.base_endpoint_path
+            // previous one:  api_base + '/consent-preauth-validation-service/v1.0/transaction-context',
+
+            // oh   lbg_transaction_info  might be the grand access_token
+
+            const next_url5 = `${api_base}/access-mgmt-service/v1.2/authenticate`;
+
+            const full_url5 = next_url5 + '?' + qs5;
+            console.log({full_url5});
+
+            const {statusCode,statusMessage,headers,response_buffer} = await call_get_style2(
+                full_url5,
+                null,
+                {
+                    'content-type': 'application/json',
+                    lbg_transaction_info,
+                }
+            );
+            console.log({statusCode,statusMessage,headers,response_buffer} )
+            // oops: 'Method Not Allowed',
+            // because it is GET. IT needs to be POST
+            }
+
         }
         }
         }
