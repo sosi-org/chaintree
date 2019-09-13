@@ -262,11 +262,15 @@ async function doit() {
         const temp = new FullUrlWithQueryHash().resolve(consent_preauth_validation_service__consent);
         const {prot, hostname, port, path, query_string, hash} = temp;
         console.log(temp.query_string)
-        const qs = require('querystring');
         const qsObj = qs.parse(query_string);
         console.log(qsObj);
 
-
+        const {
+            'original-url':original_url,appid,org,orgtitle,orgid,
+            provider,providertitle,providerid,catalog,
+            catalogtitle,catalogid,
+            'g-transid': g_transid, transid
+        } = qsObj;
 
     } catch (e) {
         console.error(e);
