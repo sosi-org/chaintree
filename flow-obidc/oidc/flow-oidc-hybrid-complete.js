@@ -93,22 +93,6 @@ async function part5(uri, access_token /*, SOURCES*/) {
 		"Risk": {}
 	};
 
-    /*
-    // 202 characters
-    const what1_token = new from_file(
-        './sensitive-data/SIT01-OBIE/cached-data/what-3.txt'
-    ).generate(null);
-    console.log('what1_token', what1_token.length, what1_token);
-    */
-
-    /*
-    const key_cert_tuple = require(
-        './sensitive-data/SIT01-OBIE/cached-data/ma-tls-2.js',
-        // './sensitive-data/SIT01-OBIE/cached-data/ma-tls-3.js',
-    );
-    */
-
-
     const matls_key = new from_file(SOURCES.KEYS.TLS.aisp1.matls_key_filename).generate(null).toString();
     const matls_cert = new from_file(SOURCES.KEYS.TLS.aisp1.matls_cert_filename).generate(null).toString();
     const key_cert_tuple = {key: matls_key, cert: matls_cert};
@@ -125,28 +109,41 @@ async function part5(uri, access_token /*, SOURCES*/) {
     process.exit(0);
 }
 
+// jsonizer
+class JSONner {
+    generate(json_string) {
+        return JSON.parse(json_string);
+    }
+    resolve(obj) {
+        return JSON.stringify(obj);
 
-
+    }
+}
+class JSON1 {
+    resolve(json_string) {
+        return JSON.parse(json_string);
+    }
+    generate(obj) {
+        return JSON.stringify(obj);
+    }
+}
 
 async function doit() {
     try {
         stage(1,1, 'wellknown point - taken from config');
         // todo: use "npm comment-json"
         const company_config = require(SOURCES.COMPILED_DATA.company_config );
-        console.log(company_config.wellknown);
-
-        console.log(company_config);
-
 
         stage(1,2, 'calling the wellknown point');
-        const a = await call_get_style1(company_config.wellknown);
-        const jsonated = JSON.parse(a);
+        const jsonated = await call_get_style1(company_config.wellknown);
+        //const wellknownObj = JSON.parse(jsonated); //new JSONner().generate()
+        const wellknownObj = new JSON1().resolve(jsonated);
+
         const checker = new Schema_from_swagger(require_yaml(FILES.formats.wellknown_schema));
-        checker.resolve(jsonated); // throws if wrong
+        checker.resolve(wellknownObj); // throws if wrong
 
         stage(1,4, 'finding the `/token` endpoint - from contents from wellknown');
-        const token_endpoint = jsonated.token_endpoint;
-        console.log("token_endpoint:", token_endpoint);
+        const {token_endpoint, authorization_endpoint} = wellknownObj;
 
         stage(2,1, 'hitting the `/token` endpoint: i.e. first token call - to get the first token1jws');
         // scopes, grant (and flow) type.
