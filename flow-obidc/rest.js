@@ -117,6 +117,30 @@ async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token,
   return b.toString('utf-8');
 }
 
+
+async function style_5_call__POST_tinfo_matls({url, body_obj, /*lbg_transaction_info,*/ key_cert_tuple}) {
+    const {hostname, path, port, prot} = new UrlRegExpWithPort().resolve(url);
+    all_non_undefined({hostname, path, port, prot});
+    const body_data = JSON.stringify(body_obj);
+    console.log('https://' + hostname + ':' + port + path);
+    const opt = {
+        verb: 'POST',
+        hostname, path, port,
+        headers: {
+            'Content-Type': 'application/json',
+            // lbg_transaction_info,  // include this in the body instead
+        },
+        body_data,
+        ...callModes.TLS_selfsigned,
+        ...callModes.matls_keycert(key_cert_tuple),
+    };
+    const {response_buffer: b} = await http_request( opt );
+    return b.toString('utf-8');
+  }
+
+
+
+
 /**
   simple GET call
   -  no query string
@@ -193,4 +217,5 @@ module.exports = {
   style_3_call__POST_bearer_matls,
   call_get_style1,
   call_get_style2,
+  style_5_call__POST_tinfo_matls,
 }

@@ -7,7 +7,10 @@ const {FullUrlWithQueryHash} = require('../templator/url-re.js');
 
 // components
 const {component_jws_verifysignature, accesstoken_from_gktvo} = require('../jwt_tools.js');
-const {call_post_style_1, style_3_call__POST_bearer_matls, call_get_style1, call_get_style2} = require('../rest.js');
+const {
+    call_post_style_1, style_3_call__POST_bearer_matls, style_5_call__POST_tinfo_matls,
+    call_get_style1, call_get_style2
+} = require('../rest.js');
 
 const {Base64} = require('../templator/base64.js');
 
@@ -390,10 +393,16 @@ async function doit() {
             // oh   lbg_transaction_info  might be the grand access_token
 
             const next_url5 = `${api_base}/access-mgmt-service/v1.2/authenticate`;
-
+            const qs5 = 'realm=lyds&authIndexType=module&authIndexValue=LbgAuthenticationModule';
+            const qo5 ={
+                realm: 'lyds',
+                authIndexType: 'module',
+                authIndexValue: 'LbgAuthenticationModule',
+            };
             const full_url5 = next_url5 + '?' + qs5;
             console.log({full_url5});
 
+            /*
             const {statusCode,statusMessage,headers,response_buffer} = await call_get_style2(
                 full_url5,
                 null,
@@ -405,6 +414,23 @@ async function doit() {
             console.log({statusCode,statusMessage,headers,response_buffer} )
             // oops: 'Method Not Allowed',
             // because it is GET. IT needs to be POST
+            */
+
+           const key = new from_file(SOURCES.KEYS.TLS.aisp1.matls_key_filename).generate(null).toString();
+           const cert = new from_file(SOURCES.KEYS.TLS.aisp1.matls_cert_filename).generate(null).toString();
+           const b5 = await style_5_call__POST_tinfo_matls({
+                url: full_url5,
+                body_obj: {
+                    // use this instead of bearertype_token
+                    lbg_transaction_info,
+                },
+                // but use no Authorization: not bearertype_token,
+                key_cert_tuple: {key, cert},
+            });
+
+            // now a proper error
+            console.log('proper error');
+            console.log(b5)
             }
 
         }
