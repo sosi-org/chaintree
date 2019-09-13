@@ -139,9 +139,65 @@ function test_UrlRegExpWithPort() {
 // if (test)
 test_UrlRegExpWithPort();
 
+
+
+class FullUrlWithQueryHash {
+    constructor() {
+        // const {RegExpResolver} = require('./templator/url-re.js');
+
+        // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/.*)(\?(.*))?(\#(.*))?$/gm;
+        // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?.]*)(\?([^#.]*))?(#(.*))?$/gm;
+        // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?.]*)?(\?[^#.]*)?(#.*)?$/gm;
+        // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?.]*)?(\?([^#.]*))?(#(.*))?$/gm;
+        const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?]*)?(\?([^#]*))?(#(.*))?$/gm;
+        this.url_with_qs = new RegExpResolver(
+            URL_RESOLVER2,
+            //{1:'prot', 2:'hostname', 3: 'port', 4:'path', 6:'query_string', 8: 'hash'},
+            {1:'prot', 2:'hostname', 3: 'port', 4:'path', 6:'query_string', 8: 'hash'},
+
+            ({prot,hostname,port,path,query_string,hash}) =>
+                `${prot}://${hostname}${port?(':'+port):''}${path}?${query_string}#${hash}`
+        );
+    }
+    resolve(full_url) {
+        return this.url_with_qs.resolve(full_url);
+    }
+    generate(objArgs) {
+        return this.url_with_qs.generate(objArgs);
+    }
+
+    static test() {
+        const url_with_qs = new FullUrlWithQueryHash();
+        const tt0 = url_with_qs.resolve('https://www.yahoo.com/df.df?q=5&h=5#hash.');
+        console.log(tt0, '\n');
+        const q0 = { prot: 'https', hostname: 'www.yahoo.com', port: undefined, path: '/dfdf', query_string: 'q=5&h=5', hash: 'hash' };
+
+        const tt1 = url_with_qs.resolve('https://www.yahoo.com/df.df?q=5.&h=5');
+        console.log(tt1, '\n')
+        const q1 = { prot: 'https', hostname: 'www.yahoo.com', port: undefined, path: '/dfdf', query_string: 'q=5&h=5', hash: undefined };
+
+        const tt2 = url_with_qs.resolve('https://www.yahoo.com/df.df');
+        console.log(tt2, '\n');
+        const q2 = { prot: 'https', hostname: 'www.yahoo.com', port: undefined, path: '/dfdf', query_string: undefined, hash: undefined };
+
+        const tt3 = url_with_qs.resolve('https://www.yahoo.com?q=5&h=5');
+        console.log(tt3, '\n');
+        const q3 = { prot: 'https',  hostname: 'www.yahoo.com',  port: undefined,  path: undefined,  query_string: 'q=5&h=5',  hash: undefined };
+
+        const tt4 = url_with_qs.resolve('https://www.yahoo.com?q=5&h=5#my.hash');
+        console.log(tt4, '\n');
+        const q4= { prot: 'https',  hostname: 'www.yahoo.com',  port: undefined,  path: undefined,  query_string: 'q=5&h=5', hash: 'myhash' };
+
+
+    }
+}
+FullUrlWithQueryHash.test();
+
+
 module.exports = {
     UrlRegExp,
     UrlRegExpWithPort,
     RegExpResolver,
+    FullUrlWithQueryHash,
 };
 
