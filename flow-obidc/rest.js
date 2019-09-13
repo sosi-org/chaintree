@@ -47,9 +47,9 @@ async function call_post_style_1(token_endpoint, {clientId,clientSecret}, body_d
     */
 
     // console.log('****opt', opt);
-    const b = await http_request( opt );
+    const {response_buffer: b} = await http_request( opt );
     // console.log('****222');
-    return b;
+    return b.toString('utf-8');
 }
 
 
@@ -113,12 +113,15 @@ async function style_3_call__POST_bearer_matls({url, body_obj, bearertype_token,
   };
 
   // console.log('http*opt', opt);
-  const b = await http_request( opt );
-  return b;
+  const {response_buffer: b} = await http_request( opt );
+  return b.toString('utf-8');
 }
 
 /**
- * simple GET call
+  simple GET call
+  -  no query string
+  -  no #
+  -  returns json
  */
 async function call_get_style1(get_url) {
     let {hostname, path, port, prot} = UrlRegExp().resolve(get_url);
@@ -150,17 +153,42 @@ async function call_get_style1(get_url) {
     // ignore_https_TLS_SSC_error();
 
 
-    const a = await http_request(
+    const {response_buffer: a} = await http_request(
         {verb: 'GET', hostname, path, port, headers,
         /*, body_data: 'hello'*/ /*body_data: undefined, */
         ...callModes.TLS_selfsigned,
     });
 
-    return a;
+    return a.toString('utf-8');
 }
+/*
+    GET
+    - has query string
+    - no #
+    - returns html
+*/
+async function call_get_style2(get_url /*, query_string*/, accept_mimetype) {
+    let {hostname, path, port, prot} = new UrlRegExpWithPort().resolve(get_url);
+
+    all_non_undefined({hostname, path, port, prot});
+
+    const headers = {
+        "cache-control": 'no-cache',
+        "accept": accept_mimetype,
+    };
+
+    const {response_buffer: a} = await http_request(
+        {verb: 'GET', hostname, path, port, headers,
+        ...callModes.TLS_selfsigned,
+    });
+
+    return a.toString('utf-8');
+}
+
 
 module.exports = {
   call_post_style_1,
   style_3_call__POST_bearer_matls,
   call_get_style1,
+  call_get_style2,
 }

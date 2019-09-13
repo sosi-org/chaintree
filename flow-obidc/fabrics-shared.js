@@ -7,14 +7,17 @@ const {TemplatorConstraintError, FlowValueConstraintError, StatusNon200} = requi
 
 /*
     from simple-http-experiment/oidc.flow.js
+    Todo: utilise encoded_query_str
+    todo: #
 */
-function http_request({verb, hostname, path, port, headers, body_data, matls, extra_options}) {
+function http_request({verb, hostname, path, port, /*encoded_query_str,*/ headers, body_data, matls, extra_options}) {
 
     allow_enum(verb, ['POST', 'GET', 'PUT']);
     allow_type(hostname, 'string');
     allow_type(path, 'string');
     allow_type(port, 'integer');
     allow_type(headers, 'dict');
+    // encoded_query_str: allow null or undefined
 
     console.log('url:', hostname + ':' + port + path);
     if (verb === 'GET') {
@@ -48,29 +51,57 @@ function http_request({verb, hostname, path, port, headers, body_data, matls, ex
       ...from_extra_options,
       ...from_matls,
     };
-    // console.log({options});
 
     return new Promise( (accept, reject) => {
         console.log('\n===========================================================================');
         console.log('Full request:', JSON.stringify(options),'\n');
-        const req = https.request(options, (res) => {
+        const req = https.request(options, (res) =>
+        {
+            //console.log('@res@', res); //res:  IncomingMessage
+            const {statusCode, statusMessage, headers} = res;
+            // httpVersion, aborted, timeout, req
+            //      req: {method, timeout}
+            console.log(`statusCode: ${statusCode}`)
+            console.log(`statusMessage: ${statusMessage}`)
+            console.log('headers:', headers);
+            /*
+            if (res.statusCode !== 200) {
+                // standard Exception
+                throw new StatusNon200(res.statusCode);
+            }
+            */
 
-          console.log(`statusCode: ${res.statusCode}`)
-          /*
-          if (res.statusCode !== 200) {
-              // standard Exception
-              throw new StatusNon200(res.statusCode);
-          }
-          */
-          res.on('data', (response_data_buffer) => {
-            // single chunk only?
-            const response_string = response_data_buffer.toString();
-            console.log('\nFull response:', response_string,'\n');
-            accept(response_string);
-          });
+            //default: use Buffer
+            //res.setEncoding('utf8');
+            //res.setEncoding('binary');
+            //res.setEncoding('base64');
+
+
+            const STREAM = {CHUNK_RECEIVED_EVENT: 'data', NO_MORE_DATA: 'end'};
+
+            // IncomingMessage.res.on
+
+            let data_store = [];
+
+            res.on(STREAM.CHUNK_RECEIVED_EVENT, (response_chunk_data_buffer) =>
+            {
+                data_store.push(response_chunk_data_buffer);
+            });
+
+            res.on(STREAM.NO_MORE_DATA, (un) =>
+            {
+                if (un!== undefined) throw new Error('implementation error.'); // remove this line
+                var total_binary_buffer = Buffer.concat(data_store);
+
+                data_store = [];
+                // {statusCode, statusMessage, headers, response_buffer: total_binary_buffer}
+                // accept(total_binary_buffer);
+                accept({statusCode, statusMessage, headers, response_buffer: total_binary_buffer});
+            });
         });
 
-        req.on('error', (error) => {
+        req.on('error', (error) =>
+        {
           reject(error);
         })
 

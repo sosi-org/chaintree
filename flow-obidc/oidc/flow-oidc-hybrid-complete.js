@@ -6,7 +6,7 @@ const {from_file} = require('../templator/from_file.js');
 
 // components
 const {component_jws_verifysignature, accesstoken_from_gktvo} = require('../jwt_tools.js');
-const {call_post_style_1, style_3_call__POST_bearer_matls, call_get_style1} = require('../rest.js');
+const {call_post_style_1, style_3_call__POST_bearer_matls, call_get_style1, call_get_style2} = require('../rest.js');
 
 
 function stage(stage_id, minor_step, heading) {
@@ -41,7 +41,7 @@ const FILES = {
     },
 }
 
-const part2 = async (token_endpoint, {clientId,clientSecret}, body_data) =>{
+const part2 = async (token_endpoint, {clientId,clientSecret}, body_data, SOURCES) =>{
     stage(2,1, 'calling the `/token` - using clientId');
 
     const key_cert_tuple = require(SOURCES.KEYS.TLS.tokenEP.token_tls_certs);
@@ -57,7 +57,7 @@ const part2 = async (token_endpoint, {clientId,clientSecret}, body_data) =>{
 
 
 
-async function part5(uri, access_token /*, SOURCES*/) {
+async function part6(uri, access_token /*, SOURCES*/) {
     // See line 131
     // call 3:
     stage(5,1, 'call the `/account-access-consents` - using bearer access_token and TLS certs');
@@ -127,7 +127,14 @@ class JSON1 {
         return JSON.stringify(obj);
     }
 }
-
+/**
+ * num_bytes typically: 16
+ */
+function produce_nonce_en64(num_bytes) {
+    const crypto = require('crypto');
+    let nonce = crypto.randomBytes(num_bytes).toString('base64');
+    return nonce;
+}
 async function doit() {
     try {
         stage(1,1, 'wellknown point - taken from config');
@@ -146,21 +153,16 @@ async function doit() {
 
         stage(2,1, 'hitting the `/token` endpoint: i.e. first token call - to get the first token1jws');
         // scopes, grant (and flow) type.
-        const body_data = "grant_type=client_credentials&scope=openid accounts";
-        const tokencall1_resp = await part2(token_endpoint, company_config.app_id_secret, body_data);
-        console.log('token from first /token call:', tokencall1_resp);
-
-        console.log('tokencall1_resptokencall1_resp', tokencall1_resp);
-        // check_format_keys()
-
-        check_format_keys(tokencall1_resp,
-            `{token_type, access_token, expires_in, consented_on, scope}`
-        );
-
-
+        // + sign works?
+        const body_data = "grant_type=client_credentials&scope=openid+accounts";
+        // bad name: company_config
+        const tpp_idsecret_creds = company_config.app_id_secret;
+        const tokencall1_resp = await part2(token_endpoint, tpp_idsecret_creds, body_data, SOURCES);
+        check_format_keys(tokencall1_resp, `{token_type, access_token, expires_in, consented_on, scope}`);
         const access_toekn_gktvo = tokencall1_resp.access_token;
-        console.log('access_toekn_gktvo:', access_toekn_gktvo);
         const access_token__jws_string =  accesstoken_from_gktvo(access_toekn_gktvo);
+        delete tokencall1_resp.access_token;
+        // {token_type, access_token__jws_string, expires_in, consented_on, scope}
 
         {
             const access_token__jws_string__reproduced = component_jws_verifysignature(
@@ -170,10 +172,78 @@ async function doit() {
             console.log({access_token__jws_string__reproduced});
         }
 
+
         const access_token = access_token__jws_string;
 
-        const account_access_consents_url = company_config["account-access-consents"]({obver: 'v3.1'});
-        part5(account_access_consents_url, access_token);
+        console.log('access_token=========');
+        console.log(access_token)
+
+        // const account_access_consents_url = company_config["account-access-consents"]({obver: 'v3.1'});
+        //part5(account_access_consents_url, access_token);
+
+        console.log(authorization_endpoint);
+        // part6(authorization_endpoint, access_token);
+
+        console.log('tpp_idsecret_creds', tpp_idsecret_creds);
+        // >>   instead of defining a once-only-use local variable
+        // from up
+
+        const state = '12345';
+        const nonce = 'n-0S6_WzA2Mj' || produce_nonce_en64(6+2); // e.g. 
+        //'n-0S6_WzA2Mj'
+        //'EMKCSuTn'
+        const response_type = 'code id_token';
+        const redirect_uri = require('../sensitive-data/SIT01-OBIE/cached-data/temporarily_jws.js')['redirect_uri'];
+        const scope = 'openid accounts';
+        const ssa_jws = require('../sensitive-data/SIT01-OBIE/cached-data/temporarily_jws.js')['q'];
+        const q_exp = require('../sensitive-data/SIT01-OBIE/cached-data/temporarily_jws.js')['q_exp'];
+
+        const qs = require('querystring');
+        const qo = {
+            response_type,
+            client_id: tpp_idsecret_creds.clientId,
+            state,
+            nonce,
+            redirect_uri,
+            scope,
+            request: ssa_jws
+        };
+        // const qstr = qs.stringify(qo, '&', '=', {encodeURIComponent: str => str});
+        const qstr = qs.stringify(qo);
+
+        console.log( qstr );
+        console.log('===?');
+        console.log( q_exp );
+        /*
+        if(!( encodeURIComponent(q_exp) === qstr)) {
+            throw new Error('expectation failed');
+        }
+        */
+
+
+        /*
+        const img_buffer = await call_get_style2('https://httpbin.org/image', 'image/*');
+        console.log(img_buffer);
+        const fs = require('fs');
+        fs.writeFileSync('./image.png', img_buffer);
+        console.log('saved');
+        return;
+        */
+
+        const full_get_url = authorization_endpoint +'?' + qstr;
+        console.log('GET:', full_get_url);
+        const /*jsonated2*/ resp_buf = await call_get_style2(authorization_endpoint +'?' + qstr, 'text/html');
+        // const wellknownObj2 = new JSON1().resolve(jsonated2);
+        console.log('resp_buf:GET::', typeof resp_buf);
+        console.log('resp_buf:GET::', resp_buf);
+        // { "httpCode":"302", "httpMessage":"Found", "moreInformation":"null" }
+        // The HTTP response status code 302 Found is a common way of performing URL redirection. 
+        console.log('resp_buf:GET::', resp_buf.toString());
+
+        const fs = require('fs');
+        fs.writeFileSync('./binary.binary', resp_buf);
+        console.log('saved');
+
 
     } catch (e) {
         console.error(e);
