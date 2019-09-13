@@ -8,6 +8,7 @@ const {from_file} = require('../templator/from_file.js');
 const {component_jws_verifysignature, accesstoken_from_gktvo} = require('../jwt_tools.js');
 const {call_post_style_1, style_3_call__POST_bearer_matls, call_get_style1, call_get_style2} = require('../rest.js');
 
+const {Base64} = require('../templator/base64.js');
 
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);
@@ -234,6 +235,8 @@ async function doit() {
         // const full_get_url = "https://httpbin.org/absolute-redirect/3";
         console.log('GET:', full_get_url);
         // const /*jsonated2*/ resp_buf
+        // todo: wrap in a special one made for redirecting
+        // fixme: the html output body is binary junk
         const {statusCode, statusMessage, headers, response_buffer} = await call_get_style2(full_get_url, 'text/html');
         // const wellknownObj2 = new JSON1().resolve(jsonated2);
         console.log('resp_buf:GET::', typeof response_buffer);
@@ -271,6 +274,65 @@ async function doit() {
             catalogtitle,catalogid,
             'g-transid': g_transid, transid
         } = qsObj;
+
+        {
+        const {statusCode, statusMessage, headers, response_buffer} = await call_get_style2(
+            consent_preauth_validation_service__consent,
+            // 'text/html'
+            // 'text/plain'
+            'text/*'
+            );
+        console.log({statusCode, statusMessage, headers, response_buffer});
+        // 406 Not Acceptable
+        console.log(response_buffer.toString())
+
+        {
+        const cwa_aisp_consent_url_qs = headers.location;
+        console.log('\n --------\n');
+        console.log(cwa_aisp_consent_url_qs);
+
+        const temp = new FullUrlWithQueryHash().resolve(cwa_aisp_consent_url_qs);
+        const {prot, hostname, port, path, query_string, hash} = temp;
+        console.log(temp.query_string)
+        const qsObj = qs.parse(query_string);
+        console.log('\n ==============\n');
+        console.log(qsObj);
+
+        const {lbg_transaction_info} = qsObj;
+
+        // todo: (base64 & json)   Base64 :: JSONer
+        const decoded__lbg_transaction_info__json = new Base64().resolve(lbg_transaction_info);
+        const obj = JSON.parse(decoded__lbg_transaction_info__json);
+        console.log('decoded__lbg_transaction_info__json', obj);
+        console.log(Object.keys(obj).join(', '))
+        /*
+        {
+            app-name,
+            AuthenticationContext,
+            IntentId,
+            IntentVersion,
+            Nonce, original-uri,
+            redirect_uri, response_type,
+            rstate,
+            scope,
+            state,
+            Type,
+            x-tpp-client-id,
+            x-lbg-internal-user-role,
+            x-lbg-sub-channel,
+            Session-Id,
+            ProviderName,
+            x-lbg-ob-tpp-id,
+            IsReauth,
+            iss,
+            aud,
+            IntentType,
+            OBIEVersion
+        }
+        */
+        }
+        }
+
 
     } catch (e) {
         console.error(e);
@@ -324,6 +386,8 @@ class FullUrlWithQueryHash {
         const tt4 = url_with_qs.resolve('https://www.yahoo.com?q=5&h=5#my.hash');
         console.log(tt4, '\n');
         const q4= { prot: 'https',  hostname: 'www.yahoo.com',  port: undefined,  path: undefined,  query_string: 'q=5&h=5', hash: 'myhash' };
+
+
     }
 }
 FullUrlWithQueryHash.test();
