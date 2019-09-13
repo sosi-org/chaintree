@@ -61,9 +61,11 @@ function http_request({verb, hostname, path, port, /*encoded_query_str,*/ header
             const {statusCode, statusMessage, headers} = res;
             // httpVersion, aborted, timeout, req
             //      req: {method, timeout}
+            /*
             console.log(`statusCode: ${statusCode}`)
             console.log(`statusMessage: ${statusMessage}`)
             console.log('headers:', headers);
+            */
             /*
             if (res.statusCode !== 200) {
                 // standard Exception

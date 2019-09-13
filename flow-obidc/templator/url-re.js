@@ -15,36 +15,40 @@ add_slow_ErrorCategory('port-must-be-unspecified');  // guaranteable assertion, 
 
     constructor. USe with "new".
 */
-function RegExpResolver(regexp, args_map, generator) {
+class RegExpResolver{
+  constructor (regexp, args_map, generator) {
     "use strict";
     check_error(!(0 in args_map) || args_map[0] === undefined, 'argsmap-should-not-have-0');
 
-    const that = this;
+    //const that = this;
     this.regexp = regexp;
-    this.resolve = (input_string) => {
-        check_error(typeof input_string !== 'undefined', 'must-be-defined');
-        const the_regexp = new RegExp(that.regexp);
-        const regexp_matched = the_regexp.exec(input_string);
-        console.log('regexp_matched ::::', regexp_matched)
-        if (!regexp_matched) {
-            check_error(false, 'resolver-regexp-pattern-did-not-match', input_string);
-        }
-        //console.log('regexp_matched', regexp_matched)
-        const result_obj = {};
-        for (const i in args_map) {
-            const keyname = args_map[i];
-            // i is a number
-            if (keyname === undefined && i === '0') {
-                continue;
-            }
-            result_obj[keyname] = regexp_matched[i];
-        }
-
-        // in fact: static error: error in specifying the list of binding args
-        lazy_assert_check_equal( Object.keys(result_obj)+'', Object.values(args_map)+'', TemplatorConstraintError, 'args mismatch');
-        return result_obj;
-    };
     this.generate = generator; // () => throw new Error('not implemented');
+    this.args_map = args_map;
+  }
+
+  resolve(input_string) {
+    check_error(typeof input_string !== 'undefined', 'must-be-defined');
+    const the_regexp = new RegExp(this.regexp);
+    const regexp_matched = the_regexp.exec(input_string);
+    console.log('regexp_matched ::::', regexp_matched)
+    if (!regexp_matched) {
+        check_error(false, 'resolver-regexp-pattern-did-not-match', input_string);
+    }
+    //console.log('regexp_matched', regexp_matched)
+    const result_obj = {};
+    for (const i in this.args_map) {
+        const keyname = this.args_map[i];
+        // i is a number
+        if (keyname === undefined && i === '0') {
+            continue;
+        }
+        result_obj[keyname] = regexp_matched[i];
+    }
+
+    // in fact: static error: error in specifying the list of binding args
+    lazy_assert_check_equal( Object.keys(result_obj)+'', Object.values(this.args_map)+'', TemplatorConstraintError, 'args mismatch');
+    return result_obj;
+  }
 
 }
 

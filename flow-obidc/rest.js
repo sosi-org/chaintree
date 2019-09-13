@@ -172,17 +172,18 @@ async function call_get_style2(get_url /*, query_string*/, accept_mimetype) {
 
     all_non_undefined({hostname, path, port, prot});
 
-    const headers = {
+    const req_headers = {
         "cache-control": 'no-cache',
         "accept": accept_mimetype,
     };
 
-    const {response_buffer: a} = await http_request(
-        {verb: 'GET', hostname, path, port, headers,
+    const {statusCode, statusMessage, headers, response_buffer} = await http_request(
+        {verb: 'GET', hostname, path, port, headers: req_headers,
         ...callModes.TLS_selfsigned,
     });
 
-    return a.toString('utf-8');
+    // return response_buffer.toString('utf-8');
+    return {statusCode, statusMessage, headers, response_buffer};
 }
 
 

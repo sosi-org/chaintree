@@ -231,24 +231,98 @@ async function doit() {
         */
 
         const full_get_url = authorization_endpoint +'?' + qstr;
+        // const full_get_url = "https://httpbin.org/absolute-redirect/3";
         console.log('GET:', full_get_url);
-        const /*jsonated2*/ resp_buf = await call_get_style2(authorization_endpoint +'?' + qstr, 'text/html');
+        // const /*jsonated2*/ resp_buf
+        const {statusCode, statusMessage, headers, response_buffer} = await call_get_style2(full_get_url, 'text/html');
         // const wellknownObj2 = new JSON1().resolve(jsonated2);
-        console.log('resp_buf:GET::', typeof resp_buf);
-        console.log('resp_buf:GET::', resp_buf);
+        console.log('resp_buf:GET::', typeof response_buffer);
+        console.log('resp_buf:GET::', response_buffer);
         // { "httpCode":"302", "httpMessage":"Found", "moreInformation":"null" }
         // The HTTP response status code 302 Found is a common way of performing URL redirection. 
-        console.log('resp_buf:GET::', resp_buf.toString());
+        console.log('resp_buf:GET::', response_buffer.toString('utf-8'));
 
         const fs = require('fs');
-        fs.writeFileSync('./binary.binary', resp_buf);
+        fs.writeFileSync('./binary.binary', response_buffer);
         console.log('saved');
+
+        console.log({statusCode, statusMessage, headers, response_buffer});
+
+        // templator should verify this code.
+        if (statusCode === 302) {
+            console.log('now following', headers.location);
+        } else {
+            throw new TemplatorConstraintError('must be a redirect response.');
+        }
+
+        // https://sit01-authorise-api.lloydsbank.co.uk/sit01/channel/lyds/consent-preauth-validation-service/v1.0/consent?original-url=https%3A...
+        // https://domain/consent-preauth-validation-service/v1.0/consent?...
+        const consent_preauth_validation_service__consent = headers.location;
+
+        const temp = new FullUrlWithQueryHash().resolve(consent_preauth_validation_service__consent);
+        const {prot, hostname, port, path, query_string, hash} = temp;
+        console.log(temp.query_string)
+        const qs = require('querystring');
+        const qsObj = qs.parse(query_string);
+        console.log(qsObj);
+
 
 
     } catch (e) {
         console.error(e);
     }
 }
+
+class FullUrlWithQueryHash {
+    constructor() {
+        const {RegExpResolver} = require('../templator/url-re.js');
+
+        // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/.*)(\?(.*))?(\#(.*))?$/gm;
+        // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?.]*)(\?([^#.]*))?(#(.*))?$/gm;
+        // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?.]*)?(\?[^#.]*)?(#.*)?$/gm;
+        // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?.]*)?(\?([^#.]*))?(#(.*))?$/gm;
+        const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?]*)?(\?([^#]*))?(#(.*))?$/gm;
+        this.url_with_qs = new RegExpResolver(
+            URL_RESOLVER2,
+            //{1:'prot', 2:'hostname', 3: 'port', 4:'path', 6:'query_string', 8: 'hash'},
+            {1:'prot', 2:'hostname', 3: 'port', 4:'path', 6:'query_string', 8: 'hash'},
+
+            ({prot,hostname,port,path,query_string,hash}) =>
+                `${prot}://${hostname}${port?(':'+port):''}${path}?${query_string}#${hash}`
+        );
+    }
+    resolve(full_url) {
+        return this.url_with_qs.resolve(full_url);
+    }
+    generate(objArgs) {
+        return this.url_with_qs.generate(objArgs);
+    }
+
+    static test() {
+
+        const url_with_qs = new FullUrlWithQueryHash();
+        const tt0 = url_with_qs.resolve('https://www.yahoo.com/df.df?q=5&h=5#hash.');
+        console.log(tt0, '\n');
+        const q0 = { prot: 'https', hostname: 'www.yahoo.com', port: undefined, path: '/dfdf', query_string: 'q=5&h=5', hash: 'hash' };
+
+        const tt1 = url_with_qs.resolve('https://www.yahoo.com/df.df?q=5.&h=5');
+        console.log(tt1, '\n')
+        const q1 = { prot: 'https', hostname: 'www.yahoo.com', port: undefined, path: '/dfdf', query_string: 'q=5&h=5', hash: undefined };
+
+        const tt2 = url_with_qs.resolve('https://www.yahoo.com/df.df');
+        console.log(tt2, '\n');
+        const q2 = { prot: 'https', hostname: 'www.yahoo.com', port: undefined, path: '/dfdf', query_string: undefined, hash: undefined };
+
+        const tt3 = url_with_qs.resolve('https://www.yahoo.com?q=5&h=5');
+        console.log(tt3, '\n');
+        const q3 = { prot: 'https',  hostname: 'www.yahoo.com',  port: undefined,  path: undefined,  query_string: 'q=5&h=5',  hash: undefined };
+
+        const tt4 = url_with_qs.resolve('https://www.yahoo.com?q=5&h=5#my.hash');
+        console.log(tt4, '\n');
+        const q4= { prot: 'https',  hostname: 'www.yahoo.com',  port: undefined,  path: undefined,  query_string: 'q=5&h=5', hash: 'myhash' };
+    }
+}
+FullUrlWithQueryHash.test();
 
 //doit();
 
