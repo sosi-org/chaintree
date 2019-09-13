@@ -63,12 +63,12 @@ console.log({options});
 //    meaning?
 
 
-const company_config_app = require('../company-config.js').app;
-//{clientId,clientSecret}  = company_config_app;
-const ClIdsecretObj = {id: company_config_app.clientId, secret: company_config_app.clientSecret}
+const tpp_app_id_secret = require('../company-config.js').tpp_app_id_secret;
+//{clientId,clientSecret}  = tpp_app_id_secret;
+const ClIdsecretObj = {id: tpp_app_id_secret.clientId, secret: tpp_app_id_secret.clientSecret}
 
 const C_id_secret_64 = new Base64().generate(
-  `${company_config_app.clientId}:${company_config_app.clientSecret}`
+  `${tpp_app_id_secret.clientId}:${tpp_app_id_secret.clientSecret}`
 );
 const body_data = "grant_type=client_credentials&scope=openid accounts";
 const headers = {

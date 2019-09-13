@@ -136,19 +136,18 @@ async function doit() {
 
         stage(1,2, 'calling the wellknown point');
         const jsonated = await call_get_style1(company_config.wellknown);
-        //const wellknownObj = JSON.parse(jsonated); //new JSONner().generate()
         const wellknownObj = new JSON1().resolve(jsonated);
 
         const checker = new Schema_from_swagger(require_yaml(FILES.formats.wellknown_schema));
         checker.resolve(wellknownObj); // throws if wrong
 
-        stage(1,4, 'finding the `/token` endpoint - from contents from wellknown');
+        // ****
         const {token_endpoint, authorization_endpoint} = wellknownObj;
 
         stage(2,1, 'hitting the `/token` endpoint: i.e. first token call - to get the first token1jws');
         // scopes, grant (and flow) type.
         const body_data = "grant_type=client_credentials&scope=openid accounts";
-        const tokencall1_resp = await part2(token_endpoint, company_config.app, body_data);
+        const tokencall1_resp = await part2(token_endpoint, company_config.app_id_secret, body_data);
         console.log('token from first /token call:', tokencall1_resp);
 
         console.log('tokencall1_resptokencall1_resp', tokencall1_resp);

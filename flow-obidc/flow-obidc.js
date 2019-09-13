@@ -46,7 +46,7 @@ const part2 = async (token_endpoint, {clientId,clientSecret}, body_data) =>{
 
     // then: prapare:
     // const: (source): given from outise: from company_config
-    //      company_config.app is creatd by "App Creation" tasks.
+    //      company_config.app_id_secret is creatd by "App Creation" tasks.
     //          SSA:
     //               Note that they have already provided SSA (in the larger circuit).
     //               SSA has two purposes: 1. certify (Also to arrive to use THROUGH a different ROUTE: form OB). 2. contains info fior us. 
@@ -171,7 +171,7 @@ async function doit() {
         stage(2,1, 'hitting the `/token` endpoint: i.e. first token call - to get the first token1jws');
         // scopes, grant (and flow) type.
         const body_data = "grant_type=client_credentials&scope=openid accounts";
-        const tokencall1_resp = await part2(token_endpoint, company_config.app, body_data);
+        const tokencall1_resp = await part2(token_endpoint, company_config.app_id_secret, body_data);
         console.log('token from first /token call:', tokencall1_resp);
 
         console.log('tokencall1_resptokencall1_resp', tokencall1_resp);

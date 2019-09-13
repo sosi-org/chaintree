@@ -7,7 +7,7 @@
 //seeds, tokens.
 const seeds = require('./sensitive-data/SIT01-OBIE/company-seed-info.json');
 
-const {domain, product_name, channel, subcomp, app, services} = seeds;
+const {domain, product_name, channel, subcomp, app_id_secret, services} = seeds;
 
 const l_wellknown = ({domain, product_name, channel, subcomp}) => `https://${domain}/${product_name}/${channel}/${subcomp}/.well-known/openid-configuration`;
 
@@ -29,6 +29,6 @@ function l_account_access_consents({obver}) {
 module.exports = {
     "wellknown": l_wellknown({domain, product_name, channel, subcomp}),
     // ClientId, ClientSewcret, created by "App-creation".
-    app,
+    app_id_secret,
     "account-access-consents": l_account_access_consents,
 };
