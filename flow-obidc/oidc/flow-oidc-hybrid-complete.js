@@ -339,7 +339,51 @@ async function doit() {
 
        const next_url = company_config.transaction_context_endpoint;
 
-    }
+        const gets_headers = {
+            'x-lbg-transaction-info':  lbg_transaction_info,
+            //"accept": accept_mimetype,
+        };
+
+        {
+        // third GET style?
+        const {statusCode,statusMessage,headers,response_buffer} = await call_get_style2(
+            next_url,
+            // 'text/*',
+            /*'content-type':*/ 'application/json',
+            gets_headers
+        );
+        console.log('resp4', {statusCode,statusMessage,headers,response_buffer});
+        console.log('BODY:::\n', response_buffer.toString());
+        // success !
+        const obj4 = JSON.parse(response_buffer.toString())
+        console.log(obj4)
+        console.log(obj4.lbg_transaction_info)
+
+        // lbg_transaction_info is not the one above it. (Or maybe it is)
+        // console.log(lbg_transaction_info)
+        //  console.log('££££');
+
+        const {
+                TransactionContextResponse:
+                {
+                Scope,
+                ChannelSelectionFlag,
+                ProviderName,
+                OriginalURI,
+                'Session-Id':__SessionId,
+                IsReauth,
+                HasVisited,
+                ConsentId,
+                'OB-TPP-Id':__OB_TPP_Id,
+                IntentType,
+                IntentVersion,
+                OBIEVersion },
+            lbg_transaction_info
+            } = obj4;
+
+            // now whar to do with these?
+        }
+        }
         }
 
 

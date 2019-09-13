@@ -167,7 +167,7 @@ async function call_get_style1(get_url) {
     - no #
     - returns html
 */
-async function call_get_style2(get_url /*, query_string*/, accept_mimetype) {
+async function call_get_style2(get_url /*, query_string*/, accept_mimetype, more_headers) {
     let {hostname, path, port, prot} = new UrlRegExpWithPort().resolve(get_url);
 
     all_non_undefined({hostname, path, port, prot});
@@ -175,6 +175,7 @@ async function call_get_style2(get_url /*, query_string*/, accept_mimetype) {
     const req_headers = {
         "cache-control": 'no-cache',
         "accept": accept_mimetype,
+        ...more_headers
     };
 
     const {statusCode, statusMessage, headers, response_buffer} = await http_request(
