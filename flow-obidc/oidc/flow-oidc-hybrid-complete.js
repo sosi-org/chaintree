@@ -149,6 +149,7 @@ async function doit() {
 
         const checker = new Schema_from_swagger(require_yaml(FILES.formats.wellknown_schema));
         checker.resolve(wellknownObj); // throws if wrong
+        console.log('wellknown:', wellknownObj);
 
         // ****
         const {token_endpoint, authorization_endpoint} = wellknownObj;
@@ -277,6 +278,7 @@ async function doit() {
         } = qsObj;
 
         {
+            console.log('GET2: ',consent_preauth_validation_service__consent)
         const {statusCode, statusMessage, headers, response_buffer} = await call_get_style2(
             consent_preauth_validation_service__consent,
             // 'text/html'
@@ -286,6 +288,7 @@ async function doit() {
         console.log({statusCode, statusMessage, headers, response_buffer});
         // 406 Not Acceptable
         console.log(response_buffer.toString())
+        console.log('-------\n');
 
         {
         const cwa_aisp_consent_url_qs = headers.location;
@@ -300,6 +303,8 @@ async function doit() {
         console.log(qsObj);
 
         const {lbg_transaction_info} = qsObj;
+
+        console.log('\n ==============\n');
 
         // todo: (base64 & json)   Base64 :: JSONer
         const decoded__lbg_transaction_info__json = new Base64().resolve(lbg_transaction_info);
@@ -331,7 +336,10 @@ async function doit() {
             OBIEVersion
         }
         */
-        }
+
+       const next_url = company_config.transaction_context_endpoint;
+
+    }
         }
 
 

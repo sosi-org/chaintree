@@ -16,6 +16,7 @@ const l_aisp_aaconsents = ({domain, product_name, channel, subcomp, obver}) =>
 
 //l_* means lazy
 
+
 function l_account_access_consents({obver}) {
     return l_aisp_aaconsents({
         domain: services.aisp.domain,
@@ -31,4 +32,7 @@ module.exports = {
     // ClientId, ClientSewcret, created by "App-creation".
     app_id_secret,
     "account-access-consents": l_account_access_consents,
+
+    transaction_context_endpoint: `https://${domain}/${product_name}/${channel}/${subcomp}/consent-preauth-validation-service/v1.0/transaction-context`,
+
 };
