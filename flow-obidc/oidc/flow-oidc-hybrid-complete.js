@@ -62,58 +62,6 @@ const part2 = async (token_endpoint, {clientId,clientSecret}, body_data, SOURCES
 
 
 
-async function part6(uri, access_token /*, SOURCES*/) {
-    // See line 131
-    // call 3:
-    stage(5,1, 'call the `/account-access-consents` - using bearer access_token and TLS certs');
-
-    const moment = require('moment');
-    const now = new moment();
-    const now_detailed = now.format();
-    const exp_time_detailed = now.add(3,'months').format();
-    const body = {
-		"Data": {
-			"Permissions": [
-				"ReadAccountsBasic",
-				"ReadAccountsDetail",
-				"ReadBalances",
-				"ReadTransactionsDetail",
-				"ReadTransactionsCredits",
-				"ReadTransactionsDebits",
-				"ReadProducts",
-				"ReadDirectDebits",
-				"ReadBeneficiariesBasic",
-				"ReadBeneficiariesDetail",
-				"ReadStandingOrdersBasic",
-				"ReadStandingOrdersDetail",
-				"ReadScheduledPaymentsBasic",
-				"ReadScheduledPaymentsDetail"
-            ],
-            // Why does the client ask for the times?
-            // Why is it in past?
-			"ExpirationDateTime": exp_time_detailed, //"2019-12-08T14:26:21Z",
-			"TransactionFromDateTime": now_detailed, //"2016-09-10T19:31:21+01:00",
-			"TransactionToDateTime": now_detailed,   //"2019-09-10T19:31:21+01:00"
-		},
-		"Risk": {}
-	};
-
-    const matls_key = new from_file(SOURCES.KEYS.TLS.aisp1.matls_key_filename).generate(null).toString();
-    const matls_cert = new from_file(SOURCES.KEYS.TLS.aisp1.matls_cert_filename).generate(null).toString();
-    const key_cert_tuple = {key: matls_key, cert: matls_cert};
-
-    const b = await style_3_call__POST_bearer_matls({
-        url: uri,
-        body_obj: body,
-        bearertype_token: access_token,
-        key_cert_tuple,
-    });
-    // Status none-200: 400 (Bad Request)
-    console.log('response to: ', uri);
-    console.log(b);
-    process.exit(0);
-}
-
 // jsonizer
 class JSONner {
     generate(json_string) {
@@ -166,6 +114,7 @@ async function doit() {
         const tokencall1_resp = await part2(token_endpoint, tpp_idsecret_creds, body_data, SOURCES);
         check_format_keys(tokencall1_resp, `{token_type, access_token, expires_in, consented_on, scope}`);
         const access_toekn_gktvo = tokencall1_resp.access_token;
+        // move the following in part2: output and input formats need to be done usint "templator"s. (e.g. Schema)
         const access_token__jws_string =  accesstoken_from_gktvo(access_toekn_gktvo);
         delete tokencall1_resp.access_token;
         // {token_type, access_token__jws_string, expires_in, consented_on, scope}
@@ -202,9 +151,7 @@ async function doit() {
         const redirect_uri = require('../sensitive-data/SIT01-OBIE/cached-data/temporarily_jws.js')['redirect_uri'];
         const scope = 'openid accounts';
         const ssa_jws = require('../sensitive-data/SIT01-OBIE/cached-data/temporarily_jws.js')['q'];
-        const q_exp = require('../sensitive-data/SIT01-OBIE/cached-data/temporarily_jws.js')['q_exp'];
 
-        const qs = require('querystring');
         const qo = {
             response_type,
             client_id: tpp_idsecret_creds.clientId,
@@ -214,14 +161,17 @@ async function doit() {
             scope,
             request: ssa_jws
         };
+        const qs = require('querystring');
         // const qstr = qs.stringify(qo, '&', '=', {encodeURIComponent: str => str});
         const qstr = qs.stringify(qo);
 
+        //expected (for test only):
+        const qstr_expected = require('../sensitive-data/SIT01-OBIE/cached-data/temporarily_jws.js')['q_exp'];
         console.log( qstr );
         console.log('===?');
-        console.log( q_exp );
+        console.log( qstr_expected );
         /*
-        if(!( encodeURIComponent(q_exp) === qstr)) {
+        if(!( encodeURIComponent(qstr_expected) === qstr)) {
             throw new Error('expectation failed');
         }
         */
@@ -359,7 +309,7 @@ async function doit() {
         console.log('BODY:::\n', response_buffer.toString());
         // success !
         const obj4 = JSON.parse(response_buffer.toString())
-        console.log(obj4)
+        console.log(obj4);
         console.log(obj4.lbg_transaction_info)
 
         // lbg_transaction_info is not the one above it. (Or maybe it is)

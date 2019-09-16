@@ -30,7 +30,6 @@ class RegExpResolver{
     check_error(typeof input_string !== 'undefined', 'must-be-defined');
     const the_regexp = new RegExp(this.regexp);
     const regexp_matched = the_regexp.exec(input_string);
-    console.log('regexp_matched ::::', regexp_matched)
     if (!regexp_matched) {
         check_error(false, 'resolver-regexp-pattern-did-not-match', input_string);
     }
