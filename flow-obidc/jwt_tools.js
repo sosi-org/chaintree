@@ -9,8 +9,10 @@ const fabrics = require('./fabrics-shared.js');
 const {extract_the_only_field} = require('./fabrics-shared.js');
 
 
-const part4_verify_jws_signature = (args, SOURCES)=>{
+
+const part4_verify_jws_signature = (jws_string, SOURCES) => {
   // Use RFC7515 to decode JWS
+
 
   /*
       inputs:
@@ -20,6 +22,8 @@ const part4_verify_jws_signature = (args, SOURCES)=>{
 
       orphan outputs: kid
   */
+
+  /*
   // b64url_buffer
   const {b64url_buffer} = require('./templator/b64url.js');
   //base64url_decode_to_binary = new b64url_buffer().resoslve
@@ -34,6 +38,8 @@ const part4_verify_jws_signature = (args, SOURCES)=>{
       // signature: base64url_decode_to_binary(signature),
       signature: b64ubobj.resolve(signature),
   };
+  */
+ const decod64ed_jws = jws_tripartite_template_(jws_string);
   // semantics are the same. (Semantics signature).
   //      same type of same name? (args)
   //      This is extra on top of types being the same. 
@@ -86,17 +92,29 @@ const part4_verify_jws_signature = (args, SOURCES)=>{
   fabrics.flow_valid_type(decod64ed_jws.payload, 'string', 'payload is a string');
 
   //console.log("decod64ed_jws.payload", decod64ed_jws.payload);
+  /*
   const header_payload_tuple = new RegExpResolver(
         /^([^\.]*)\.([^\.]*)$/gm,
         {1:'header', 2: 'payload'},
         ({header, payload}) => `${header}.${payload}`
   );
+  */
+ const signee_signature_tuple = new RegExpResolver(
+    /^([^\.]*\.[^\.]*)\.([^\.]*)$/gm,
+    {1:'signee', 2: 'signature'},
+    ({signee, signature}) => `${signee}.${signature}`
+ );
+
+ /*
   // this is the non-reversible part:
   const partial_info = {header: args.header, payload: args.payload};
   // how to make this "partial_info" reversible?
 
   const _signee = header_payload_tuple.generate(partial_info);
   const _signature = args.signature;
+  */
+  const {signee:_signee, signature:_signature} = signee_signature_tuple.resolve(jws_string);
+  console.log( signee_signature_tuple.resolve(jws_string) )
 
   // const q4 = sr.resolve({data: decod64ed_jws.payload, signature: decod64ed_jws.signature});
   const reproduced = sr.resolve({data: _signee, signature: _signature});
@@ -105,21 +123,49 @@ const part4_verify_jws_signature = (args, SOURCES)=>{
   return reproduced;
 };
 
+function jws_tripartite_template64() {
+    const jws_template = new RegExpResolver(
+        /^([^\.]*)\.([^\.]*)\.([^\.]*)$/gm,
+        //   /^(?<header>[^\.]*)\.(?<payload>[^\.]*)\.(?<signature>[^\.]*)$/
+        {1:'header', 2: 'payload', 3: 'signature'},
+        ({header, payload, signature}) => `${header}.${payload}.${signature}`
+    );
+    return jws_template;
+}
+const {b64url_buffer} = require('./templator/b64url.js');
+
+// also decides the encoded64
+// signature will be binary, but `header` and `payload` will be strings
+function jws_tripartite_template_(jws_string) {
+
+    const jws_template = jws_tripartite_template64();
+    const args = jws_template.resolve(jws_string);
+
+    //base64url_decode_to_binary = new b64url_buffer().resoslve
+    const b64ubobj = new b64url_buffer();
+    const base64 = new Base64();
+
+    // a;; variables must be const. (subclass of javascript)
+    const {header, payload, signature} = args;
+    const decod64ed_jws = {
+        header: base64.resolve(header),
+        payload: base64.resolve(payload),
+        // signature: base64url_decode_to_binary(signature),
+        signature: b64ubobj.resolve(signature),
+    };
+    return decod64ed_jws;
+}
 // compo nent_jws
 // only verifies
 function component_jws_verifysignature(jws_string, SOURCES) {
 
-  const jws_template = new RegExpResolver(
-      /^([^\.]*)\.([^\.]*)\.([^\.]*)$/gm,
-      //   /^(?<header>[^\.]*)\.(?<payload>[^\.]*)\.(?<signature>[^\.]*)$/
-      {1:'header', 2: 'payload', 3: 'signature'},
-      ({header, payload, signature}) => `${header}.${payload}.${signature}`
-  );
-
+    /*
+  const jws_template = jws_tripartite_template64();
   const args = jws_template.resolve(jws_string);
   //console.log(args);
+  */
 
-  const jws = part4_verify_jws_signature(args, SOURCES);
+  const jws = part4_verify_jws_signature(jws_string, SOURCES);
   /*
   now I have a `jws`
       the proper format should be:
@@ -160,4 +206,5 @@ function accesstoken_from_gktvo(access_toekn_gktvo) {
 module.exports = {
     component_jws_verifysignature,
     accesstoken_from_gktvo,
+    jws_tripartite_template_,
 }

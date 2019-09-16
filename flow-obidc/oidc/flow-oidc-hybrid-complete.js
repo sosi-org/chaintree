@@ -6,7 +6,7 @@ const {from_file} = require('../templator/from_file.js');
 const {FullUrlWithQueryHash} = require('../templator/url-re.js');
 
 // components
-const {component_jws_verifysignature, accesstoken_from_gktvo} = require('../jwt_tools.js');
+const {component_jws_verifysignature, accesstoken_from_gktvo, jws_tripartite_template_} = require('../jwt_tools.js');
 const {
     call_post_style_1, style_3_call__POST_bearer_matls, style_5_call__POST_tinfo_matls,
     call_get_style1, call_get_style2
@@ -59,8 +59,46 @@ const part2 = async (token_endpoint, {clientId,clientSecret}, body_data, SOURCES
     return bobj;
 };
 
+/**
+
+ * @param {*} idToken
+ * @param {*} url
+ */
+async function validateIdTokenSignature(id_token, url) {
+    // do a request on url
+    // ask for json
+    // (no redirect)
 
 
+    //const tem = jws_tripartite_template_();
+    // const parts = tem.resolve(id_token);
+
+    const parts = jws_tripartite_template_(id_token);
+    console.log("parts", parts);
+
+    const token_header = new JSON1().resolve(parts.header);
+    const asked_kid = token_header.kid;
+    console.log("£kid", asked_kid);
+
+    // get kid from idToken.header
+    const jsonated = await call_get_style1(url);
+    const resp = new JSON1().resolve(jsonated);
+
+    console.log('@resp@', resp);
+    const relevant_entries = resp.keys.filter( entry => (entry.kid === asked_kid))
+    console.log('@relevant_entries@', relevant_entries  );
+
+    console.log('ok@');
+
+    const signature_validation_key = relevant_entries[0]. etc;
+    const sr = new sign_verifier_u3({
+        algorithm: token_header.alg,
+        key: signature_validation_key,
+    });
+    //throws if not validated
+    const reproduced = sr.resolve({data: _signee, signature: _signature});
+    return false;
+}
 
 // jsonizer
 class JSONner {
@@ -126,6 +164,24 @@ async function doit() {
             );
             console.log({access_token__jws_string__reproduced});
         }
+
+        const id_token = access_token__jws_string; // unsure
+        console.log('\n\n**id_token', id_token);
+        /*
+        {
+            alg,
+            kid
+        }
+        {
+            iss,
+            private,
+            exp,
+            iat
+        }
+        */
+        console.log('\n\n id_token, wellknownObj.jwks_uri', id_token, wellknownObj.jwks_uri);
+        // Wrong token
+        validateIdTokenSignature(id_token, wellknownObj.jwks_uri);
 
 
         const access_token = access_token__jws_string;

@@ -214,6 +214,33 @@ function check_format_keys(obj, tuple_format) {
 check_format_keys({a:'aa', b:'bb'}, `{a,b}`);
 // another example: check_format_keys(obj, `{token_type, access_token, expires_in, consented_on, scope}`);
 
+class chain {
+    constructor(...templators) {
+        this.templators = templators;
+    }
+    resolve(arg) {
+        // or use reduce()
+        let current = arg;
+        templators.forEach( t => {
+            current = t.resolve(current);
+        });
+        return current;
+    }
+    generate(arg) {
+        let current = arg;
+        templators.forEach( t => {
+            current = t.resolve(current);
+        });
+        return current;
+        /*
+        for(let i = 0; i < this.templators.length; ++i) {
+            const t = templators[i];
+            current = t.generate(i);
+        }
+        return current;
+        */
+    }
+}
 module.exports = {
     http_request,
     flow_valid_value,
