@@ -128,13 +128,30 @@ async function part5(uri, access_token /*, SOURCES*/) {
     */
 
     const SOURCES = {
+        /*
         matls_key_filename: './sensitive-data/SIT01-OBIE/cached-data/aka_transport.key',
         matls_cert_filename: './sensitive-data/SIT01-OBIE/cached-data/aka_transport.pem',
+        */
+        // matls_key_filename: './sensitive-data/SIT01-OBIE/cached-data/ob-harness-certs/SIT01_apie-transport.key',
+        //matls_cert_filename: './sensitive-data/SIT01-OBIE/cached-data/ob-harness-certs/SIT01_apie-transport.pem',
+        // html: You don't have permission to access ... on this server
+
+        // matls_key_filename: './sensitive-data/SIT01-OBIE/cached-data/ob-harness-certs/sit01-akamai-transport.key',
+        // matls_cert_filename: './sensitive-data/SIT01-OBIE/cached-data/ob-harness-certs/sit01-akamai-transport.pem',
+        // "UK.OBIE.Field.Missing","Message":"x-fapi-financial-id is missing in the request."}]}
+
+        matls_key_filename: './sensitive-data/SIT01-OBIE/cached-data/ob-harness-certs/SIT01_akamai_transport.key',
+        matls_cert_filename: './sensitive-data/SIT01-OBIE/cached-data/ob-harness-certs/SIT01_akamai_transport.pem',
+        // Bad Request","error":"Invalid DN"
+
     };
     const matls_key = new from_file(SOURCES.matls_key_filename).generate(null).toString();
     const matls_cert = new from_file(SOURCES.matls_cert_filename).generate(null).toString();
     const key_cert_tuple = {key: matls_key, cert: matls_cert};
 
+
+
+    // const b1 = await call_get_style1()
     const b = await style_3_call__POST_bearer_matls({
         url: uri,
         body_obj: body,
@@ -144,6 +161,7 @@ async function part5(uri, access_token /*, SOURCES*/) {
     // Status none-200: 400 (Bad Request)
     console.log('response to: ', uri);
     console.log(b);
+    console.log('*************@£$@£$*');
     process.exit(0);
 }
 
