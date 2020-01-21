@@ -214,6 +214,7 @@ function check_format_keys(obj, tuple_format) {
 check_format_keys({a:'aa', b:'bb'}, `{a,b}`);
 // another example: check_format_keys(obj, `{token_type, access_token, expires_in, consented_on, scope}`);
 
+/* chains them: A few of templators. rename: bind. concatenate. join. */
 class chain {
     constructor(...templators) {
         this.templators = templators;
