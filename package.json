@@ -1,4 +1,11 @@
 {
+  "scripts": {
+    "lint": "eslint '**/*.js'",
+    "lint:fix": "npm run lint -- --fix",
+    "pretest": "npm run lint:fix",
+    "demo1": "cd flow-obidc && node ./test/jws-demo.js",
+    "test": "echo todo: write sscript"
+  },
   "dependencies": {
     "comment-json": "^2.1.0",
     "fs": "0.0.1-security",
