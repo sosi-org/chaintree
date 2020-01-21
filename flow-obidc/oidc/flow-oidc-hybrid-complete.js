@@ -207,7 +207,7 @@ async function doit() {
         const redirect_uri = require('../sensitive-data/SIT01-OBIE/cached-data/temporarily_jws.js')['redirect_uri'];
         const scope = 'openid accounts';
         const ssa_jws = require('../sensitive-data/SIT01-OBIE/cached-data/temporarily_jws.js')['q'];
-
+        // contains ...
         const qo = {
             response_type,
             client_id: tpp_idsecret_creds.clientId,
