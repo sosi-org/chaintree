@@ -1,5 +1,19 @@
 /* RegExp operations + RegExps marketplace. A simple RegExps language or myteampltes? Also for building a good RegExp for work */
 
+/*
+I forgot the exact intentions. They (probably) were:
+
+2. To make Regular expressions more readable (and structured/functional, rather than spagettish. guarantee balanced parantheses): 
+e.g. concat(httphttps, domainname, path )
+
+concat(httphttps, domainname, path=join(foldername, /\// ) )
+
+1. To use in Templators
+
+3. To write an alternative language for REgExps, and later write a compiler for it.
+   But a quick-and dirty version that is suitable as an intermediate step for a DSL.
+*/
+
 function group(re) {
     // only if necessary
     return new RegExp('(' + re.source + ')');
@@ -36,6 +50,7 @@ const foldername = /([A-Za-z0-9-\.]+)/;
 // const path = concat(plus(foldername, + /\// )));
 const path = join(foldername, /\// );
 
+const full_url = concat(httphttps, domainname, path );
 
 const testcases = [
 
@@ -53,7 +68,7 @@ const testcases = [
 
 
 testcases.forEach( url => {
-  const full_url = concat(httphttps, domainname, path );
+
   console.log(full_url.source)
 
   console.log(
