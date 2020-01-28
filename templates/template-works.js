@@ -8,10 +8,15 @@ e.g. concat(httphttps, domainname, path )
 
 concat(httphttps, domainname, path=join(foldername, /\// ) )
 
+A better interface for regexp s.
+
 1. To use in Templators
 
 3. To write an alternative language for REgExps, and later write a compiler for it.
    But a quick-and dirty version that is suitable as an intermediate step for a DSL.
+
+A regexp package with minima use ofactual regExp class. (Later to be replaced with a different implementation) 
+
 */
 
 function group(re) {
