@@ -1,6 +1,5 @@
 'use strict';
 
-console.log(__dirname + '/../requiret.js');
 const {requiret, fabrics} = require(__dirname + '/../requiret.js');
 
 class from_file {
