@@ -1,5 +1,6 @@
 'use strict';
-'use strict';
+
+const chai = require('chai');
 
 // untested psudo-code
 /*
@@ -45,23 +46,42 @@ async function each_case(tname) {
   const trequire_examples = trequire(tname).examples;
 
   const instance = new t();
-  const ex1_trequire_example_geenrator = trequire_examples(tname);
+  //const ex1_trequire_example_geenrator = trequire_examples(tname);
+  let genr = trequire_examples();
   while (true) {
-    console.log('TODO: use generators');
+    // console.log('TODO: use generators'); //DONE!!
     /*
     const {example, expected} = ex1_trequire_example_geenrator.get_next_pair(); // make it more yeild-y. Or async.
     */
-    const pall = Promise.all(ex1_trequire_example_geenrator);
-    console.log('???', await pall());
-
-    if (!example) {
+    const iter = genr.next();
+    if (iter.done) {
       break;
     }
-    const output = instance.generate(example);
-    chai.expect(output).eql(expected);
+    console.log('generated:', iter.value)
+    if (!('input' in iter.value) || !('output' in iter.value)) {
+        throw new Error('generator must yield `{input,output}`');
+    }
+    // or: {example, expected}
+    const {input, output} = iter.value;
+
+    console.log(instance.generate(output));
+    // feed(input)
+    const actual_output = instance.resolve(input);
+    console.log({actual_output, input});
+    chai.expect(actual_output).eql(output);
+
+    //use decorators:
+    //feed_generator -> for lazy-serial (for real-time!)
+      // also lazy input: real-time
+    //feed_async
+    //feed_async_mapseries
+    //feeder_as_promise (useful for Promise.map_all)
 
     // reverse
-    const o2 = instance.generate(output);
+    //feed-back reconstructed input !
+    const reverse_input = instance.generate(output);
+    chai.expect(reverse_input).eql(input);  // magic
+
     // idempotence
     // ?
   }

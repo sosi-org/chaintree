@@ -9,6 +9,7 @@
     "test": "node templators/tests/self-test.js"
   },
   "dependencies": {
+    "chai": "^4.2.0",
     "comment-json": "^2.1.0",
     "fs": "0.0.1-security",
     "http-status-codes": "^1.3.2",
