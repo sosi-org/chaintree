@@ -31,11 +31,11 @@ const t = new b64();
 t.generate('sample string');
 
 const auto_test_templators = [
-  {
-    // namespace/name
-    name: 'base64',
-  },
-  {name: 'b64url',},
+    {
+      // namespace/name
+      name: 'base64',
+    },
+    {name: 'b64url',},
 ];
 
 async function each_case(tname) {
@@ -49,40 +49,42 @@ async function each_case(tname) {
   const instance = new t();
 
   if (texample_generator !== null) {
-  let genr = texample_generator();
-  while (true) {
-    const iter = genr.next();
-    if (iter.done) {
-      break;
-    }
-    if (!('input' in iter.value) || !('output' in iter.value)) {
-        throw new Error('generator must yield `{input,output}`');
-    }
-    // or: {example, expected} =
-    const {input, output} = iter.value;
+      let genr = texample_generator();
+      while (true) {
+        const iter = genr.next();
+        if (iter.done) {
+          break;
+        }
+        if (!('input' in iter.value) || !('output' in iter.value)) {
+            throw new Error('generator must yield `{input,output}`');
+        }
+        // or: {example, expected} =
+        const {input, output} = iter.value;
 
-    // console.log(instance.generate(output));
+        // console.log(instance.generate(output));
 
-    // feed(input)
-    const actual_output = instance.resolve(input);
-    chai.expect(actual_output).eql(output);
+        // feed(input)
+        const actual_output = instance.resolve(input);
+        chai.expect(actual_output).eql(output);
 
-    //use decorators:
-      //feed_generator -> for lazy-serial (for real-time!)
-         // also lazy input: real-time
-    //feed_async
-    //feed_async_mapseries
-    //feeder_as_promise (useful for Promise.map_all)
+        //use decorators:
+          //feed_generator -> for lazy-serial (for real-time!)
+            // also lazy input: real-time
+        //feed_async
+        //feed_async_mapseries
+        //feeder_as_promise (useful for Promise.map_all)
 
-    // reverse
-    //feed-back reconstructed input !
-    const reverse_input = instance.generate(output);
-    chai.expect(reverse_input).eql(input);  // magic
+        // reverse
+        //feed-back reconstructed input !
+        const reverse_input = instance.generate(output);
+        chai.expect(reverse_input).eql(input);  // magic
 
-    // idempotence
-    // ?
+        // idempotence
+        // ?
+      }
+  } else {
+    console.log('no examples');
   }
-  } else {console.log('no examples')}
   // check documentations, etc
 }
 
