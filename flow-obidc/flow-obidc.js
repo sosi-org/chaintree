@@ -1,9 +1,11 @@
 'use strict';
 
-// const fabrics = require('./fabrics-shared.js');
-const {Schema_from_swagger, require_yaml} = require('./templator/swagger2-schema.js');
+const {requiret} = require('../templators/requiret.js');
 
-const {from_file} = require('./templator/from_file.js');
+// const fabrics = require('./fabrics-shared.js');
+const {Schema_from_swagger, require_yaml} = require('../templators/templator/swagger2-schema.js');
+
+const {from_file} = requiret('from_file.js');
 // console.log( new from_file('./jws/1_public.key') );
 //const {all_non_undefined}  = require('./error-checking.js');
 
