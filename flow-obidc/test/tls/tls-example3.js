@@ -4,7 +4,7 @@ https://stackoverflow.com/questions/19665863/how-do-i-use-a-self-signed-certific
 
 'use strict';
 
-const {Base64} = requiret('base64.js');
+const {Base64} = requiret('base64');
 
 // const pem_filename = ;
 const key_cert = require(

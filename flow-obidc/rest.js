@@ -2,8 +2,8 @@
 
 const {requiret, fabrics, error_checking} = require(__dirname + '/../templators/requiret.js');
 const {callModes, http_request} = fabrics;
-const {UrlRegExp, UrlRegExpWithPort} = requiret('url-re.js');
-const {Base64} = requiret('base64.js');
+const {UrlRegExp, UrlRegExpWithPort} = requiret('url-re');
+const {Base64} = requiret('base64');
 const {all_non_undefined}  = error_checking;
 const {allow_fixed_special_only} = error_checking;
 

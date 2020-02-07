@@ -2,9 +2,9 @@
 
 const {requiret, fabrics } = require(__dirname + '/../templators/requiret.js');
 
-const {Schema_from_swagger, require_yaml} = requiret('swagger2-schema.js');
+const {Schema_from_swagger, require_yaml} = requiret('swagger2-schema');
 
-const {from_file} = requiret('from_file.js');
+const {from_file} = requiret('from_file');
 // console.log( new from_file('./jws/1_public.key') );
 //const {all_non_undefined}  = require('./error-checking.js');
 
@@ -26,7 +26,7 @@ class BinaryBuffer {
 }
 
 // todo: refactor. utils?
-const {util: {base64url_decode_to_binary}} = requiret('b64url.js');
+const {util: {base64url_decode_to_binary}} = requiret('b64url');
 
 
 

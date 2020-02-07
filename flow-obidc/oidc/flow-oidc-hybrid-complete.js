@@ -2,10 +2,10 @@
 
 const {requiret, fabrics, error_checking} = require(__dirname + '/../templators/requiret.js');
 
-const {Schema_from_swagger, require_yaml} = requiret('swagger2-schema.js');
+const {Schema_from_swagger, require_yaml} = requiret('swagger2-schema');
 const {check_format_keys} = fabrics;
-const {from_file} = requiret('from_file.js');
-const {FullUrlWithQueryHash} = requiret('url-re.js');
+const {from_file} = requiret('from_file');
+const {FullUrlWithQueryHash} = requiret('url-re');
 
 // components
 const {component_jws_verifysignature, accesstoken_from_gktvo, jws_tripartite_template_} = require('../jwt_tools.js');
@@ -14,7 +14,7 @@ const {
     call_get_style1, call_get_style2
 } = require('../rest.js');
 
-const {Base64} = requiret('base64.js');
+const {Base64} = requiret('base64');
 
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);

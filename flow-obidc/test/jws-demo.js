@@ -10,12 +10,12 @@
 const {requiret, fabrics, error_checking} = require(__dirname + '/../templators/requiret.js');
 
 
-const {from_file} = requiret('from_file.js');
-const {Base64} = requiret('base64.js');
-const {RegExpResolver} = requiret('url-re.js');
+const {from_file} = requiret('from_file');
+const {Base64} = requiret('base64');
+const {RegExpResolver} = requiret('url-re');
 
-const {b64url_buffer} = requiret('b64url.js');
-const {sign_verifier_u3} = requiret('signer.js')
+const {b64url_buffer} = requiret('b64url');
+const {sign_verifier_u3} = requiret('signer')
 
 
 // filenames (file-ref s)

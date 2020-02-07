@@ -143,7 +143,7 @@ test_UrlRegExpWithPort();
 
 class FullUrlWithQueryHash {
     constructor() {
-        // const {RegExpResolver} = requiret('url-re.js');
+        // const {RegExpResolver} = requiret('url-re');
 
         // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/.*)(\?(.*))?(\#(.*))?$/gm;
         // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?.]*)(\?([^#.]*))?(#(.*))?$/gm;

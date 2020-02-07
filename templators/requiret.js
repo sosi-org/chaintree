@@ -2,11 +2,14 @@
 
 const path = require('path');
 
-const PREFIX = 'templator';
+const TEMPLATORS_FOLDER = 'templator';
 
 function requiret(templator_name) {
-    const fullpath = path.join(__dirname, PREFIX, templator_name);
-    console.log('require-templator:', fullpath);
+    const command = `requiret('${templator_name}')`; 
+    if (/\.js$/.exec(templator_name)) {
+        throw new Error('dont use .js in ' + command);
+    }
+    const fullpath = path.join(__dirname, TEMPLATORS_FOLDER, templator_name + '.js');
     return require(fullpath);
 }
 
