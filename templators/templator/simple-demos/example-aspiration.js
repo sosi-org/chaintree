@@ -36,7 +36,7 @@ const auto_test_templators = [
       name: 'base64',
     },
     {name: 'b64url',},
-    {name: 'from_file', cargs: ['./README.md'] },
+    {name: 'from_file', cargs: ['./templators/tests/simple-test-file.txt'] },
 ];
 
 /*async*/ function each_case(tentry) {
@@ -66,7 +66,7 @@ const auto_test_templators = [
           break;
         }
         if (!('input' in iter.value) || !('output' in iter.value)) {
-            throw new Error('generator must yield `{input,output}`');
+            throw new Error( tname + '.examples.js generator must yield `{input,output}`');
         }
         // or: {example, expected} =
         //const {input, output, constructor_args} = iter.value;
