@@ -11,6 +11,6 @@ function requiret(templator_name) {
 }
 
 
-const {fabrics} = requiret('../../flow-obidc/fabrics-shared.js');
+const {fabrics} = require('./fabrics-shared.js');
 
 module.exports = {requiret};
