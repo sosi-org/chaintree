@@ -45,6 +45,8 @@ class Base64 {
   }
 }
 
+const templator = Base64;
+
 module.exports = {
   util: {
     encode64,
@@ -52,4 +54,5 @@ module.exports = {
     decode64_to_binary_buffer,
   },
   Base64,
+  templator,
 };

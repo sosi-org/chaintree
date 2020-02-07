@@ -24,8 +24,7 @@ TODO: usage:
 const b64 = trequire('base64');
 const t = b64();
 */
-const {Base64} = trequire('base64');
-const b64 = Base64;
+const b64 = trequire('base64').templator;
 const t = new b64();
 
 t.generate('sample string');
@@ -37,16 +36,24 @@ const auto_test_templators = [
   }
 ];
 
-function each_case(tname) {
+async function each_case(tname) {
   global.templatorsconf.reverberate = false;
 
   console.log('going for: ', tname);
 
-  const t = trequire(tname);
+  const t = trequire(tname).templator;
+  const trequire_examples = trequire(tname).examples;
+
   const instance = new t();
   const ex1_trequire_example_geenrator = trequire_examples(tname);
   while (true) {
+    console.log('TODO: use generators');
+    /*
     const {example, expected} = ex1_trequire_example_geenrator.get_next_pair(); // make it more yeild-y. Or async.
+    */
+    const pall = Promise.all(ex1_trequire_example_geenrator);
+    console.log('???', await pall());
+
     if (!example) {
       break;
     }

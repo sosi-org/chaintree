@@ -5,16 +5,40 @@ const path = require('path');
 
 const TEMPLATORS_FOLDER = 'templator';
 
+
+function exassert(cond, throw_lazy_string) {
+    if (!cond) {
+        throw new Error( throw_lazy_string() );
+    }
+}
+
 function requiret(templator_name) {
     const command = `requiret('${templator_name}')`;
-    if (/\.js$/.exec(templator_name)) {
-        throw new Error('dont use .js in ' + command);
-    }
+    exassert(!(/\.js$/.exec(templator_name)), () => 'dont use .js in ' + command);
+
     if (!util.isString(templator_name)) {
         throw new Error('Templator must be a string: ' + typeof(templator_name)  + ' ' + templator_name);
     }
-    const fullpath = path.join(__dirname, TEMPLATORS_FOLDER, templator_name + '.js');
-    return require(fullpath);
+    const fullpath_js = path.join(__dirname, TEMPLATORS_FOLDER, templator_name + '.js');
+    const temp = require(fullpath_js);
+    if (! ('templator' in temp)) {
+        console.log('Templator module must export a variable naemd "templator" = main class.');
+    }
+    const templator = temp.templator;
+
+    const fullpath_examplesjs = path.join(__dirname, TEMPLATORS_FOLDER, templator_name + '.examples.js');
+    const examples = require(fullpath_examplesjs);
+    if (examples) {
+        //check if async function
+
+        const isAsync = examples.constructor.name === "AsyncFunction";
+        exassert(isAsync, () => '.example must be an async function. (todo: generator). is: ' + examples.toString());
+    }
+
+    return {
+        templator,
+        examples,
+    };
 }
 
 
