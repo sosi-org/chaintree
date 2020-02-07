@@ -1,7 +1,8 @@
 'use strict';
 
 const {requiret, fabrics} = require(__dirname + '/../requiret.js');
-
+// add: from_file_async (full content), from_file_generator
+// rename: from_file_sync
 class from_file {
   constructor(filename) {
       const fs = require('fs');
@@ -28,5 +29,6 @@ class from_file {
 */
 
 module.exports = {
-  from_file
+  from_file,
+  templator: from_file
 };

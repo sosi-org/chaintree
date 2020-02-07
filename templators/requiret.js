@@ -23,12 +23,13 @@ function requiret(templator_name) {
     const fullpath_js = path.join(__dirname, TEMPLATORS_FOLDER, templator_name + '.js');
     const temp = require(fullpath_js);
     if (! ('templator' in temp)) {
-        console.log('Templator module must export a variable naemd "templator" = main class.');
+        console.log(`Templator module "${templator_name}.js" must export a variable named "templator" = main class.`);
+        console.log({temp});
     }
     const templator = temp.templator;
 
     const fullpath_examples_js = path.join(__dirname, TEMPLATORS_FOLDER, templator_name + '.examples.js');
-    //todo: async
+    //todo: async exists()
     var examples = null;
    if (fs.existsSync(fullpath_examples_js)) {
 
@@ -42,7 +43,7 @@ function requiret(templator_name) {
    }
 
     const fullpath_spec_js = path.join(__dirname, TEMPLATORS_FOLDER, templator_name + '.spec.js');
-    // todo: async
+    // todo: async exists()
     if (fs.existsSync(fullpath_spec_js)) {
         const tests = require(fullpath_spec_js);
         if (tests(temp)) {

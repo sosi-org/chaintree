@@ -36,17 +36,27 @@ const auto_test_templators = [
       name: 'base64',
     },
     {name: 'b64url',},
+    {name: 'from_file', cargs: ['./README.md'] },
 ];
 
-async function each_case(tname) {
+/*async*/ function each_case(tentry) {
   global.templatorsconf.reverberate = false;
+
+  const tname = tentry.name;
+  let constructor_args = tentry.cargs;
+
+  if (!constructor_args) {
+    constructor_args = [];
+  }
 
   console.log('Testing templator:', tname);
 
   const t = trequire(tname).templator;
   const texample_generator = trequire(tname).examples;
 
-  const instance = new t();
+  // todo:rename: tobj
+  const instance = new t(...constructor_args);
+
 
   if (texample_generator !== null) {
       let genr = texample_generator();
@@ -59,6 +69,7 @@ async function each_case(tname) {
             throw new Error('generator must yield `{input,output}`');
         }
         // or: {example, expected} =
+        //const {input, output, constructor_args} = iter.value;
         const {input, output} = iter.value;
 
         // console.log(instance.generate(output));
@@ -88,6 +99,6 @@ async function each_case(tname) {
   // check documentations, etc
 }
 
-auto_test_templators.forEach( tname => each_case(tname.name) );
+auto_test_templators.forEach( tentry => each_case(tentry) );
 
 // todo: commandline for each templator. testt base64;testt b64url;
