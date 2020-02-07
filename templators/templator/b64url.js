@@ -103,7 +103,10 @@ require('../templatore-store.js').register_templator(
 module.exports = {
   util: {
       base64url_encode_strstr,
+
+      //todo: rename:
       base64url_decode_to_binary,
+      //todo: rename:
       base64url_encode_buffer,
   },
   // b64url,
