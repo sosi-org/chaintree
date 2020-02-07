@@ -1,12 +1,13 @@
 
 'use strict';
 
-const {RegExpResolver} = require('./templator/url-re.js');
-const {Base64} = require('./templator/base64.js');
-const {from_file} = require('./templator/from_file.js');
-const fabrics = require('./fabrics-shared.js');
+const {requiret, fabrics} = require(__dirname + '/../templators/requiret.js');
 
-const {extract_the_only_field} = require('./fabrics-shared.js');
+const {RegExpResolver} = requiret('url-re.js');
+const {Base64} = requiret('base64.js');
+const {from_file} = requiret('from_file.js');
+
+const {extract_the_only_field} = fabrics;
 
 
 
