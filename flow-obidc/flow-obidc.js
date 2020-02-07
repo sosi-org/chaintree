@@ -1,9 +1,9 @@
 'use strict';
 
-const {requiret} = require('../templators/requiret.js');
+const {requiret} = require(__dirname + '/../templators/requiret.js');
 
 // const fabrics = require('./fabrics-shared.js');
-const {Schema_from_swagger, require_yaml} = require('../templators/templator/swagger2-schema.js');
+const {Schema_from_swagger, require_yaml} = requiret('swagger2-schema.js');
 
 const {from_file} = requiret('from_file.js');
 // console.log( new from_file('./jws/1_public.key') );

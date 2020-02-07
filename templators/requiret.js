@@ -10,4 +10,7 @@ function requiret(templator_name) {
     return require(fullpath);
 }
 
+
+const {fabrics} = requiret('../../flow-obidc/fabrics-shared.js');
+
 module.exports = {requiret};

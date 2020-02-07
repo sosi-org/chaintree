@@ -1,6 +1,6 @@
 'use strict';
 
-const fabrics = require('../fabrics-shared.js');
+const {requiret, fabrics} = require(__dirname + '/../requiret.js');
 
 class from_file {
   constructor(filename) {
