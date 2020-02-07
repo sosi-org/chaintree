@@ -4,7 +4,8 @@
     "lint:fix": "npm run lint -- --fix",
     "pretest": "npm run lint:fix",
     "demo1": "cd flow-obidc && node ./test/jws-demo.js",
-    "test": "node templators/tests/self-test.js; echo todo: write sscript"
+    "test": "node templators/tests/self-test.js",
+    "test1": "node templators/tests/self-test.js"
   },
   "dependencies": {
     "comment-json": "^2.1.0",
