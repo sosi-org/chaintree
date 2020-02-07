@@ -31,7 +31,6 @@ function requiret(templator_name) {
     if (examples) {
         //check if async function
 
-        console.log(examples.constructor.name)
         const isAsync = examples.constructor.name === "GeneratorFunction";
         exassert(isAsync, () => '.example must be an generator function*. Instead, it is: ' + examples.toString());
     }
