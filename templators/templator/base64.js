@@ -17,18 +17,7 @@ function decode64_to_binary_buffer(stringBase64) {
   return buffer;
 }
 
-function test_(data_utf8) {
-    const e64 = encode64(data_utf8);
-    const orig_reconst = decode64(e64);
 
-    if (orig_reconst !== data_utf8) {
-      throw new Error('test failed: ', orig_reconst, '!==', data_utf8);
-    }
-}
-test_('ab12..');
-test_('چشم');
-test_('');
-// test_(13);
 
 /*
     Matches strings of base64.
