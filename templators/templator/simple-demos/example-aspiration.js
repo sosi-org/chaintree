@@ -34,7 +34,8 @@ const auto_test_templators = [
   {
     // namespace/name
     name: 'base64',
-  }
+  },
+  {name: 'b64url',},
 ];
 
 async function each_case(tname) {
@@ -47,6 +48,7 @@ async function each_case(tname) {
 
   const instance = new t();
 
+  if (texample_generator !== null) {
   let genr = texample_generator();
   while (true) {
     const iter = genr.next();
@@ -80,6 +82,7 @@ async function each_case(tname) {
     // idempotence
     // ?
   }
+  } else {console.log('no examples')}
   // check documentations, etc
 }
 

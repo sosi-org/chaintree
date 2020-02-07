@@ -5,7 +5,7 @@
     "pretest": "npm run lint:fix",
     "demo1": "cd flow-obidc && node ./test/jws-demo.js",
     "test1": "node templators/tests/self-test.js",
-    "test2": "node templators/templator/simple-demos/example-aspiration.js",
+    "test-reversibility": "node templators/templator/simple-demos/example-aspiration.js",
     "test": "node templators/tests/self-test.js"
   },
   "dependencies": {

@@ -84,15 +84,6 @@ function base64url_decode_to_binary(str_b64url) {
     return util.decode64_to_binary_buffer(q);
 }
 
-function test_base64url_decode_to_binary() {
-  const signature = 'YOWPewyGHKu4Y_0M_vtlEnNlqmFOclqp4Hy6hVHfFT4';
-  console.log(base64url_decode_to_binary(signature));
-  // console.log(util.decode64(base64url_decode(signature)));
-
-  // process.exit(0);
-}
-
-test_base64url_decode_to_binary();
 
 
 class b64url_buffer {
@@ -117,4 +108,5 @@ module.exports = {
   },
   // b64url,
   b64url_buffer,
+  templator: b64url_buffer,
 };
