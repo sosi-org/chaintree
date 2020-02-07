@@ -55,7 +55,7 @@ const auto_test_templators = [
   const texample_generator = trequire(tname).examples;
 
   // todo:rename: tobj
-  const instance = new t(...constructor_args);
+  const tobj = new t(...constructor_args);
 
 
   if (texample_generator !== null) {
@@ -72,10 +72,10 @@ const auto_test_templators = [
         //const {input, output, constructor_args} = iter.value;
         const {input, output} = iter.value;
 
-        // console.log(instance.generate(output));
+        // console.log(tobj.generate(output));
 
         // feed(input)
-        const actual_output = instance.resolve(input);
+        const actual_output = tobj.resolve(input);
         chai.expect(actual_output).eql(output);
 
         //use decorators:
@@ -87,14 +87,14 @@ const auto_test_templators = [
 
         // reverse
         //feed-back reconstructed input !
-        const reverse_input = instance.generate(output);
+        const reverse_input = tobj.generate(output);
         chai.expect(reverse_input).eql(input);  // magic
 
         // idempotence
         // ?
       }
   } else {
-    console.log('no examples');
+    console.log('WARNING: no examples for ' + tname );
   }
   // check documentations, etc
 }

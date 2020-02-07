@@ -75,8 +75,6 @@ function base64url_decode_to_binary(str_b64url) {
         .replace(/\-/g, '+')
         .replace(/\_/g, '/');
 
-    console.log(q);
-
     if (q.length % 4 !== 0) {
       throw new Error('bad padding');
     }
