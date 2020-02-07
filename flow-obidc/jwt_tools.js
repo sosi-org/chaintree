@@ -26,7 +26,7 @@ const part4_verify_jws_signature = (jws_string, SOURCES) => {
 
   /*
   // b64url_buffer
-  const {b64url_buffer} = require('./templator/b64url.js');
+  const {b64url_buffer} = requiret('b64url.js');
   //base64url_decode_to_binary = new b64url_buffer().resoslve
   const b64ubobj = new b64url_buffer();
 
@@ -57,7 +57,7 @@ const part4_verify_jws_signature = (jws_string, SOURCES) => {
   const ssa = binary_private_key; // changin name for semanticss
   console.log('PRIVATE KEY: ', ssa /*, ssa.toString()*/);
 
-  const {sign_verifier_u3} = require('./templator/signer.js')
+  const {sign_verifier_u3} = requiret('signer.js')
   // wiring instruction. (w-time!)
   console.log('decod64ed_jws', decod64ed_jws);
   /*
@@ -133,7 +133,7 @@ function jws_tripartite_template64() {
     );
     return jws_template;
 }
-const {b64url_buffer} = require('./templator/b64url.js');
+const {b64url_buffer} = requiret('b64url.js');
 
 // also decides the encoded64
 // signature will be binary, but `header` and `payload` will be strings

@@ -13,4 +13,5 @@ function requiret(templator_name) {
 
 const fabrics = require('./fabrics-shared.js');
 
-module.exports = {requiret, fabrics};
+const error_checking = require('./error-checking.js');
+module.exports = {requiret, fabrics, error_checking};

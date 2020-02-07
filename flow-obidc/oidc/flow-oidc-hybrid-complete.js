@@ -1,9 +1,11 @@
 'use strict';
 
-const {Schema_from_swagger, require_yaml} = require('../templator/swagger2-schema.js');
-const {check_format_keys} = require('../fabrics-shared.js');
-const {from_file} = require('../templator/from_file.js');
-const {FullUrlWithQueryHash} = require('../templator/url-re.js');
+const {requiret, fabrics, error_checking} = require(__dirname + '/../templators/requiret.js');
+
+const {Schema_from_swagger, require_yaml} = requiret('swagger2-schema.js');
+const {check_format_keys} = fabrics;
+const {from_file} = requiret('from_file.js');
+const {FullUrlWithQueryHash} = requiret('url-re.js');
 
 // components
 const {component_jws_verifysignature, accesstoken_from_gktvo, jws_tripartite_template_} = require('../jwt_tools.js');
@@ -12,7 +14,7 @@ const {
     call_get_style1, call_get_style2
 } = require('../rest.js');
 
-const {Base64} = require('../templator/base64.js');
+const {Base64} = requiret('base64.js');
 
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);

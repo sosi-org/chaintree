@@ -7,13 +7,15 @@
 +    "uuid": "^3.3.3"
 */
 
-const fabrics = require('../fabrics-shared.js');
-const {from_file} = require('../templator/from_file.js');
-const {Base64} = require('../templator/base64.js');
-const {RegExpResolver} = require('../templator/url-re.js');
+const {requiret, fabrics, error_checking} = require(__dirname + '/../templators/requiret.js');
 
-const {b64url_buffer} = require('../templator/b64url.js');
-const {sign_verifier_u3} = require('../templator/signer.js')
+
+const {from_file} = requiret('from_file.js');
+const {Base64} = requiret('base64.js');
+const {RegExpResolver} = requiret('url-re.js');
+
+const {b64url_buffer} = requiret('b64url.js');
+const {sign_verifier_u3} = requiret('signer.js')
 
 
 // filenames (file-ref s)

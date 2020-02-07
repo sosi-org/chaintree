@@ -1,8 +1,7 @@
 'use strict';
 
-const {requiret} = require(__dirname + '/../templators/requiret.js');
+const {requiret, fabrics } = require(__dirname + '/../templators/requiret.js');
 
-// const fabrics = require('./fabrics-shared.js');
 const {Schema_from_swagger, require_yaml} = requiret('swagger2-schema.js');
 
 const {from_file} = requiret('from_file.js');
@@ -13,7 +12,7 @@ const {from_file} = requiret('from_file.js');
 const {component_jws_verifysignature, accesstoken_from_gktvo} = require('./jwt_tools.js');
 const {call_post_style_1, style_3_call__POST_bearer_matls, call_get_style1} = require('./rest.js');
 
-const {check_format_keys} = require('./fabrics-shared.js');
+const {check_format_keys} = fabrics;
 
 function stage(stage_id, minor_step, heading) {
     console.log('---------- stage %d.', stage_id, minor_step, ':', heading);
@@ -26,7 +25,8 @@ class BinaryBuffer {
     // from/to string utf-8
 }
 
-const {util: {base64url_decode_to_binary}} = require('./templator/b64url.js');
+// todo: refactor. utils?
+const {util: {base64url_decode_to_binary}} = requiret('b64url.js');
 
 
 

@@ -1,10 +1,11 @@
 'use strict';
 
-const {callModes, http_request} = require('./fabrics-shared.js');
-const {UrlRegExp, UrlRegExpWithPort} = require('./templator/url-re.js');
-const {Base64} = require('./templator/base64.js');
-const {all_non_undefined}  = require('./error-checking.js');
-const {allow_fixed_special_only} = require('./error-checking.js');
+const {requiret, fabrics, error_checking} = require(__dirname + '/../templators/requiret.js');
+const {callModes, http_request} = fabrics;
+const {UrlRegExp, UrlRegExpWithPort} = requiret('url-re.js');
+const {Base64} = requiret('base64.js');
+const {all_non_undefined}  = error_checking;
+const {allow_fixed_special_only} = error_checking;
 
 function ignore_https_TLS_SSC_error() {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";

@@ -1,7 +1,8 @@
 'use strict';
 
-// const {} = require('../fabrics-shared.js');
-const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_ErrorCategory, lazy_assert_check_equal} = require('../error-checking.js');
+const {/*fabrics,*/ error_checking} = require(__dirname + '/../requiret.js');
+
+const {check_error, allow_type, allow_fixed_special_only, allow_enum, add_slow_ErrorCategory, lazy_assert_check_equal} = error_checking;
 const {TemplatorConstraintError, FlowValueConstraintError, ReversibilityTestError} = require('../custom-errors/custom-exceptions.js');
 
 add_slow_ErrorCategory('argsmap-should-not-have-0');
@@ -142,7 +143,7 @@ test_UrlRegExpWithPort();
 
 class FullUrlWithQueryHash {
     constructor() {
-        // const {RegExpResolver} = require('./templator/url-re.js');
+        // const {RegExpResolver} = requiret('url-re.js');
 
         // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/.*)(\?(.*))?(\#(.*))?$/gm;
         // const URL_RESOLVER2 = /^([htps]+):\/\/([a-z0-9\.\-]+)(:\d+)?(\/[^\?.]*)(\?([^#.]*))?(#(.*))?$/gm;
