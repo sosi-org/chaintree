@@ -7,7 +7,7 @@
 +    "uuid": "^3.3.3"
 */
 
-const {requiret, fabrics, error_checking} = require(__dirname + '/../templators/requiret.js');
+const {requiret, fabrics, error_checking} = require(__dirname + '/../../templators/requiret.js');
 
 
 const {from_file} = requiret('from_file');
