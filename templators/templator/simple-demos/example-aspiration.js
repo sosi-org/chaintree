@@ -1,5 +1,6 @@
 'use strict';
 
+const util = require('util');
 const chai = require('chai');
 
 // untested psudo-code
@@ -20,6 +21,13 @@ global.templatorsconf =  {
   reverberate: false,
 }
 
+
+function exassert(cond, throw_lazy_string) {
+  if (!cond) {
+      throw new Error( throw_lazy_string() );
+  }
+}
+
 /*
 TODO: usage:
 const b64 = trequire('base64');
@@ -36,31 +44,35 @@ const auto_test_templators = [
       name: 'base64',
     },
     {name: 'b64url',},
-    {name: 'from_file', cargs: ['./templators/tests/simple-test-file.txt'] },
+    {name: 'from_file' },
 ];
 
 /*async*/ function each_case(tentry) {
   global.templatorsconf.reverberate = false;
 
   const tname = tentry.name;
-  let constructor_args = tentry.cargs;
-
-  if (!constructor_args) {
-    constructor_args = [];
-  }
 
   console.log('Testing templator:', tname);
 
   const t = trequire(tname).templator;
   const texample_generator = trequire(tname).examples;
 
-  // todo:rename: tobj
-  const tobj = new t(...constructor_args);
 
+  var tobj = null;
 
-  if (texample_generator !== null) {
+  const no_examples = texample_generator === null;
+
+  if (no_examples) {
+    console.log('new');
+    const tobj = new t(...[]);
+    console.log('WARNING: no examples for ' + tname );
+  }
+
+  if (!no_examples) {
+      var tobj = null;
       let genr = texample_generator();
       while (true) {
+
         const iter = genr.next();
         if (iter.done) {
           break;
@@ -70,7 +82,23 @@ const auto_test_templators = [
         }
         // or: {example, expected} =
         //const {input, output, constructor_args} = iter.value;
-        const {input, output} = iter.value;
+        const {input, output, params} = iter.value;
+
+
+        if (params) {
+            exassert(util.isArray(params), ()=>'param: Must be an array (as contructir arguments) or falsey.');
+            console.log('new');
+            tobj = new t(...params);
+        } else {
+            // reusing the first instance? no.
+            // tobj = tobj0;
+            console.log('no new. keeping previous tobj');
+            if (tobj === null ) {
+              console.log('new: default constructor for first item');
+              tobj = new t(...[]);
+            }
+        }
+        exassert(tobj !== null, ()=>'error');
 
         // console.log(tobj.generate(output));
 
@@ -93,8 +121,6 @@ const auto_test_templators = [
         // idempotence
         // ?
       }
-  } else {
-    console.log('WARNING: no examples for ' + tname );
   }
   // check documentations, etc
 }

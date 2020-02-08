@@ -127,6 +127,12 @@ function flow_valid_value(value, expected, constraint_description) {
     "template-constraint" version of flow_valid_value (ass opposed to flow-constraint)
 */
 function valid_value_as_template_constraint(value, expected, constraint_description) {
+    // Meeting ends for two buffers.
+    // Todo: generator version (online/realtime/low-latency/live)
+    if (value instanceof Buffer) {
+        value = 'bufffer:::'+JSON.stringify(value.toJSON());
+        expected = 'bufffer:::'+JSON.stringify(expected.toJSON());
+    }
     lazy_assert_check_equal(value, expected, TemplatorConstraintError, 'this constraint failed: ' + constraint_description);
 }
 

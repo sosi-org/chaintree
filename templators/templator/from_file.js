@@ -9,6 +9,7 @@ class from_file {
       this.file_content_binarybuffer = fs.readFileSync(filename);
   }
   resolve(buffer) {
+      "Meeting ends";
       fabrics.valid_value_as_template_constraint(buffer, this.file_content_binarybuffer, 'binary contents must be equal');
       return null;
   }
