@@ -1,0 +1,4 @@
+steps:
+  - name: mytest1-chaintree
+    entrypoint: node
+    args: ["templators/templator/simple-demos/example-aspiration.js"]
