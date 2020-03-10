@@ -1,4 +1,3 @@
 steps:
-  - name: mytest1-chaintree
-    entrypoint: node
+  - name: 'gcr.io/cloud-builders/npm'
     args: ["templators/templator/simple-demos/example-aspiration.js"]
