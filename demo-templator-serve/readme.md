@@ -10,3 +10,4 @@ Is grounded and has a face.
 
 Uses express, cors
 Deploys with any selection of templators.
+For cors: https://github.com/gjuljo/CORS-Playground

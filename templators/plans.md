@@ -6,3 +6,7 @@
   * uses CORS (express).
 * Features:
   * Is Sertverless by definition.
+
+microservicee
+serverless
+server
