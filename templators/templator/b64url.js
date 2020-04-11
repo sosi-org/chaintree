@@ -86,11 +86,15 @@ function base64url_decode_to_binary(str_b64url) {
 
 class b64url_buffer {
     resolve(str) {
+        console.debug('b64url_buffer:', str);
         return base64url_decode_to_binary(str);
     }
     generate(buffer) {
+        console.debug('b64url_buffer.generate:', buffer);
         const binary_to_base64url = base64url_encode_buffer;
-        return binary_to_base64url(buffer);
+        var e = binary_to_base64url(buffer);
+        console.debug('b64url_buffer.generate.return:', buffer);
+        return e;
     }
 }
 
