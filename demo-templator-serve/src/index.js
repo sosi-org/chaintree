@@ -61,7 +61,7 @@ function process_querystring(request) {
     return url;
 }
 
-http.createServer(function(req,res) {
+http.createServer(async function(req,res) {
     console.log(req.method + " --> " + JSON.stringify(req.headers));
 
     const { headers, method, url } = req;
@@ -72,7 +72,7 @@ http.createServer(function(req,res) {
     const query_jso = process_querystring(req);
 
     if(req.method === VERB_GET) {
-        const data_jso = process_data(/*await*/ bodystr_promised.resolve() );
+        const data_jso = process_data(await bodystr_promised );
         res.writeHead(OK200,
               { ...CORS_RESPONSE,
                 'Content-Type'  : APPLICATION_JSON,
