@@ -1,11 +1,23 @@
+# A web API
+* A tiny API server to serve them.
+  * Accepts json
+  * or otherss, based on mime type
+  * uses CORS (express).
+* Features:
+  * Is Sertverless by definition.
+
+microservicee
+serverless
+server
+
 ## Intention:
 A demo application
 a showcase
 An online tool
-Srerverless Microsservice with CORS=*
+Srerverless Microservice with CORS=*
 To use in a github demo.
 
-Is snow a social cewature.
+Is now a social ceature.
 Is grounded and has a face.
 
 Uses express, cors
