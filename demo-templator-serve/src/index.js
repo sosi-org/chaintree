@@ -107,6 +107,7 @@ http.createServer(async function(req,res) {
         res.write(JSON.stringify(data_jso));
 
     } else if(req.method === VERB_OPTIONS) {
+        // Whre are the OPTIONS requests gone?
         res.writeHead(OK200, CORS_RESPONSE);
     } else {
         console.debug('    not processing: ', req.method);

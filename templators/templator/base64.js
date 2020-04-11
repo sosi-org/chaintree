@@ -44,4 +44,7 @@ module.exports = {
   },
   Base64,
   templator,
+
+  // io_specs = ['mime:application/json', 'mime:application/json;charset=utf-8'],
+  io_specs = ['application/json', 'application/json;charset=utf-8'],
 };

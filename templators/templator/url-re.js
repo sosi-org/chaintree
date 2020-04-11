@@ -201,3 +201,7 @@ module.exports = {
     FullUrlWithQueryHash,
 };
 
+/*
+'text/plain'
+without Hashs used with a url with a hash, it should throw an exception about NOT matching.
+*/
