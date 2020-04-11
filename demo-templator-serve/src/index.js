@@ -90,7 +90,14 @@ http.createServer(async function(req,res) {
         const input_jso = query_jso;
         // const input_jso = await bodystr_promised;
 
-        const data_jso = process_data( input_jso );
+        let data_jso;
+        if (input_jso === null) {
+            // no data to process.
+            data_jso = null;
+            console.debug('no data to process');
+        } else {
+            data_jso = process_data( input_jso );
+        }
 
         res.writeHead(OK200,
               { ...CORS_RESPONSE,
@@ -101,6 +108,8 @@ http.createServer(async function(req,res) {
 
     } else if(req.method === VERB_OPTIONS) {
         res.writeHead(OK200, CORS_RESPONSE);
+    } else {
+        console.debug('    not processing: ', req.method);
     }
     res.end();
 }).listen(PORT, function(){
