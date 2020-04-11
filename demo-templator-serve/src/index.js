@@ -56,18 +56,17 @@ const processs_body = /*async*/ (request) => new Promise((resolve, reject) => {
 const qs = require('querystring');
 
 function slice_querystring(url) {
+  // Exmaples:  "/?a=5&b=9" or "/"
   const cut_first_questionmark_re = /[^\?]+\?(.*)/;
   const m = cut_first_questionmark_re.exec(url);
   if (m) {
-    //console.log('qs---->', m[1]);
     return m[1];
   }
-  //console.log('qs----> NOTHING');
   return null;
 }
+
 function process_querystring(request) {
     const { url } = request;
-    //console.debug('req.url = ' + url ); // req.url = /?a=5&b=9  or /
     const qs_str = slice_querystring(url);
     if (qs_str === null) {
         return null;
@@ -82,7 +81,6 @@ http.createServer(async function(req,res) {
 
     const { headers, method, url } = req;
     const bodystr_promised = processs_body(req);
-    console.debug('bodystr_promised', bodystr_promised);
     const query_jso = process_querystring(req);
 
     if(req.method === VERB_GET) {
