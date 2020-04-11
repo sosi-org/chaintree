@@ -470,7 +470,7 @@ function report_relevant_stack_entry_at(stack, wherei=4) {
 function split_stack_string(stack_str) {
 
   function per_item(stackline) {
-      const regexp = /^    at ([\w \.$<>\[\]]*) \(([^\n]*):(\d+):(\d+)\)[^\n]*$/mg;
+      const regexp = /^ {4}at ([\w \.$<>\[\]]*) \(([^\n]*):(\d+):(\d+)\)[^\n]*$/mg;
       const result = regexp.exec(stackline);
       if (result !== null) {
           check(result.length === 5, '5');
@@ -479,7 +479,7 @@ function split_stack_string(stack_str) {
 
           return {funcname, source_file, pos: [posx, posy]};
       } else {
-          const regexp2 = /^    at ([^\n]*):(\d+):(\d+)[^\n]*$/mg;
+          const regexp2 = /^ {4}at ([^\n]*):(\d+):(\d+)[^\n]*$/mg;
           const result = regexp2.exec(stackline);
           if (result !== null) {
               check(result.length === 4, '4');
@@ -489,7 +489,7 @@ function split_stack_string(stack_str) {
 
               return {funcname, source_file, pos: [posx, posy]};
           } else {
-              const regexp3 = /^    at ([^\n]*)[^\n]* \(<anonymous>\)$/mg;
+              const regexp3 = /^ {4}at ([^\n]*)[^\n]* \(<anonymous>\)$/mg;
               const result = regexp3.exec(stackline);
               if (result !== null) {
                   check(result.length === 2, '2');
