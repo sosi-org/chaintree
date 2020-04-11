@@ -39,10 +39,40 @@ const CORS_RESPONSE = {
   'Access-Control-Allow-Headers'     : CORS_ALLOWED_HEADERS.join(', '),
 };
 
+//async
+const processs_body = /*async*/ (request) => new Promise((resolve, reject) => {
+  const body = [];
+  request.on('error', (err) => {
+      reject(err);
+
+  }).on('data', (chunk) => {
+      body.push(chunk);
+  }).on('end', () => {
+      const bodystr = Buffer.concat(body).toString();
+      resolve(bodystr);
+  });
+});
+
+const qs = require('querystring');
+
+function process_querystring(request) {
+    const { url } = request;
+    console.debug('req.url = ' + url );
+    return url;
+}
+
 http.createServer(function(req,res) {
     console.log(req.method + " --> " + JSON.stringify(req.headers));
+
+    const { headers, method, url } = req;
+    const bodystr_promised = processs_body(req);
+    console.debug('bodystr_promised', bodystr_promised);
+    //const bodystr = await processs_body(req);
+    //const bodystr = processs_body(req).resolve();
+    const query_jso = process_querystring(req);
+
     if(req.method === VERB_GET) {
-        const data_jso = process_data(req);
+        const data_jso = process_data(/*await*/ bodystr_promised.resolve() );
         res.writeHead(OK200,
               { ...CORS_RESPONSE,
                 'Content-Type'  : APPLICATION_JSON,
