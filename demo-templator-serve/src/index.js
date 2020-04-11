@@ -1,4 +1,4 @@
-'use stric';
+'use strict';
 
 var http = require('http');
 
@@ -19,6 +19,7 @@ const CORS_ALLOWED_HEADERS = ['Content-Type', 'MyCustomHeader'];
 
 function process_data(req) {
     console.debug('input received', req);
+    // .headers
     return {'ok': 'ok2'};
 }
 
