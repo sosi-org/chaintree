@@ -169,7 +169,7 @@ const partial_info = {header: args.header, payload: args.payload};
 console.log("decod64ed_jws.payload", decod64ed_jws.payload);
 // const signee = decod64ed_jws.payload;  // incorrect
 // const signee = args.payload /*decod64ed_jws.payload*/;
-const _signee = header_payload_tuple.generate(partial_info);;
+const _signee = header_payload_tuple.generate(partial_info);
 
 /*
     potential example found for propagation:

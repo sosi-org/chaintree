@@ -112,7 +112,7 @@ function http_request({verb, hostname, path, port, /*encoded_query_str,*/ header
         }
         req.end();
     });
-};
+}
 
 // old name: flow_valid_if()
 function flow_valid_value(value, expected, constraint_description) {

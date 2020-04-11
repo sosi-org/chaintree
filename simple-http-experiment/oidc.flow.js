@@ -130,7 +130,7 @@ function http_request({verb, hostname, path, port, headers, body_data}) {
         req.end();
         // milestone 1
     });
-};
+}
 
 /*
 class REResolver {
