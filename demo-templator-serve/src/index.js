@@ -20,14 +20,7 @@ const CORS_ALLOWED_ORIGINS = 'https://sohale.github.io';
 // 'https://sohale.github.io'
 const CORS_ALLOWED_HEADERS = ['Content-Type', 'MyCustomHeader'];
 
-function process_data(req) {
-    console.debug('input received', req);
-    // const ip = res.socket.remoteAddress;
-    // const port = res.socket.remotePort;
-
-    // .headers
-
-    const input_jso = {};
+function process_data(input_jso) {
     const output_jso = transform(input_jso);
     return output_jso;
 }
@@ -65,6 +58,10 @@ function slice_querystring(url) {
   return null;
 }
 
+function recode_jso(jso) {
+    return JSON.parse(JSON.stringify(jso));
+}
+
 function process_querystring(request) {
     const { url } = request;
     const qs_str = slice_querystring(url);
@@ -72,8 +69,7 @@ function process_querystring(request) {
         return null;
     }
     const qs_jso = qs.parse(qs_str);
-    console.debug('qs_jso ', qs_jso );
-    return qs_jso;
+    return recode_jso(qs_jso);
 }
 
 http.createServer(async function(req,res) {
@@ -82,9 +78,20 @@ http.createServer(async function(req,res) {
     const { headers, method, url } = req;
     const bodystr_promised = processs_body(req);
     const query_jso = process_querystring(req);
+    console.debug('query_jso ', query_jso );
 
     if(req.method === VERB_GET) {
-        const data_jso = process_data(await bodystr_promised );
+        // console.debug('input received', req);
+        // const ip = res.socket.remoteAddress;
+        // const port = res.socket.remotePort;
+        // .headers
+
+        /* choose REST input */
+        const input_jso = query_jso;
+        // const input_jso = await bodystr_promised;
+
+        const data_jso = process_data( input_jso );
+
         res.writeHead(OK200,
               { ...CORS_RESPONSE,
                 'Content-Type'  : APPLICATION_JSON,
