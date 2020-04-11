@@ -64,3 +64,6 @@ typings/
 .codebin
 
 sensitive-data
+
+.DS_Store
+.vscode
