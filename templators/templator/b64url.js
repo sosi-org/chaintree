@@ -26,7 +26,7 @@ function base64url_encode_strstr(str_base64) {
         .replace(/\//g, '_');
 }
 
-function base64url_encode_buffer(buffer) {
+function base64url_encode_buffer_nopadded(buffer) {
     return base64url_encode_strstr(
           buffer
           .toString('base64')
@@ -36,6 +36,13 @@ function base64url_encode_buffer(buffer) {
       .replace(/\+/g, '-')
       .replace(/\//g, '_');
       */
+}
+function base64url_encode_buffer_padded(buffer) {
+    const s = base64url_encode_strstr(
+          buffer
+          .toString('base64')
+      );
+      return pad4(s, 4, '=');
 }
 
 
@@ -85,15 +92,23 @@ function base64url_decode_to_binary(str_b64url) {
 
 
 class b64url_buffer {
+    constructor(padded=true) {
+        this.padded = padded;
+    }
     resolve(str) {
-        console.debug('b64url_buffer:', str);
+        //console.debug('b64url_buffer: base64url_decode_to_binary:', str);
         return base64url_decode_to_binary(str);
     }
     generate(buffer) {
-        console.debug('b64url_buffer.generate:', buffer);
-        const binary_to_base64url = base64url_encode_buffer;
+        //console.debug('b64url_buffer.generate: binary_to_base64url: ', buffer);
+        let binary_to_base64url;
+        if (this.padded ) {
+            binary_to_base64url = base64url_encode_buffer_padded;
+        } else {
+            binary_to_base64url = base64url_encode_buffer_nopadded;
+        }
         var e = binary_to_base64url(buffer);
-        console.debug('b64url_buffer.generate.return:', buffer);
+        //console.debug('b64url_buffer.generate.return:', buffer);
         return e;
     }
 }
@@ -109,7 +124,8 @@ module.exports = {
       //todo: rename:
       base64url_decode_to_binary,
       //todo: rename:
-      base64url_encode_buffer,
+      base64url_encode_buffer_padded,
+      base64url_encode_buffer_nopadded,
   },
   // b64url,
   b64url_buffer,

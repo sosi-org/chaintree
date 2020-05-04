@@ -14,9 +14,9 @@ function check_equal(a, b) {
 }
 
 
-function test_base64url_decode_to_binary(_require) {
+function test_base64url_decode_to_binary__nopadded(_require) {
   const decode = _require.util.base64url_decode_to_binary;
-  const encode = _require.util.base64url_encode_buffer;
+  const encode = _require.util.base64url_encode_buffer_nopadded;
 
   const signature = 'YOWPewyGHKu4Y_0M_vtlEnNlqmFOclqp4Hy6hVHfFT4';
   const b_out = decode(signature);
@@ -33,5 +33,5 @@ function test_base64url_decode_to_binary(_require) {
 }
 
 module.exports = (m) => {
-  test_base64url_decode_to_binary(m)
+  test_base64url_decode_to_binary__nopadded(m)
 };
