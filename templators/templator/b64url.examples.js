@@ -7,10 +7,12 @@
 // The following are done mindlessly
 
 function* example_generator() {
-  //yield {output: null, input: Buffer.from('abc'), params: [] };
   yield {output: Buffer.from([0x61, 0x20, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67]), input:'YSBzdHJpbmc='};
-  // yield {output: '', input: ''};
-  // yield {output: 'یونیکد', input: '24zZiNmG24zaqdiv'};
+
+  yield {output: Buffer.from([]), input: ''};
+
+  // 'یونیکد'
+  yield {output: Buffer.from([0xdb, 0x8c, 0xd9, 0x88, 0xd9, 0x86, 0xdb, 0x8c, 0xda, 0xa9, 0xd8, 0xaf]), input: '24zZiNmG24zaqdiv'};
 
   yield {
     input: 'YOWPewyGHKu4Y_0M_vtlEnNlqmFOclqp4Hy6hVHfFT4=',
