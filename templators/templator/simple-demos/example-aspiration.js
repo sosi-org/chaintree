@@ -43,8 +43,10 @@ const auto_test_templators = [
       // namespace/name
       name: 'base64',
     },
+    /* temporarilyu disable*/
     {name: 'b64url',},
     {name: 'from_file' },
+    {name: 'yaml-json' },
 ];
 
 /*async*/ function each_case(tentry) {
@@ -86,13 +88,13 @@ const auto_test_templators = [
 
 
         if (params) {
-            exassert(util.isArray(params), ()=>'param: Must be an array (as contructir arguments) or falsey.');
+            exassert(util.isArray(params), ()=>'param: Must be an array (as constructor arguments) or falsey.');
             console.log('new');
             tobj = new t(...params);
         } else {
             // reusing the first instance? no.
             // tobj = tobj0;
-            console.log('no new. keeping previous tobj');
+            console.log('constructor call skipped. keeping previous tobj for ' + tname);
             if (tobj === null ) {
               console.log('new: default constructor for first item');
               tobj = new t(...[]);

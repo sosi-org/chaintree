@@ -5,15 +5,33 @@ const YAML = require('yamljs');
 // NOT TESTED
 class YamlJson2wayAdaptor {
 
-  constructor(indent, indentJson) {
+  constructor(indentBoth, indentJson_) {
+    let indentYaml = 0;
+    let indentJson = 0;
+    let newline = 0;
+    if (indentJson_ !== undefined) {
+      indentYaml = indentBoth;
+      indentJson = indentJson_;
+      newline = true;
+    } else if (indentBoth !== undefined) {
+      indentYaml = indentBoth;
+      indentJson = indentBoth;
+      newline = true;
+    } else {
+      indentYaml = 0;
+      indentJson = 0;
+      newline = false;
+    }
+
+    // format & package it
     this.conf = {
       yaml: {
-        indent: indent,
-        newline: true,
+        indent: indentYaml,
+        newline: newline,
       },
       json: {
-        indent: (indentJson === undefined) ? indent : indent,
-        newline: true,
+        indent: indentJson,
+        newline: newline,
       },
     };
     if (this.conf.json.indent && !this.conf.json.newline) {
@@ -23,15 +41,25 @@ class YamlJson2wayAdaptor {
   }
 
   resolve(yamlString) {
-      console.debug('YamlJson2wayAdaptor: yaml:', yamlString);
-      const jso = nativeObject = YAML.parse(yamlString);
+      //console.debug('YamlJson2wayAdaptor: yaml:', yamlString);
+      const jso = YAML.parse(yamlString);
       const json = JSON.stringify(jso, undefined, this.conf.json.indent);
+      //console.debug('this.conf', this.conf);
+      //console.debug('converted to json:', json);
       return json;
   }
   generate(jsonString) {
-      console.debug('YamlJson2wayAdaptor: json:', jsonString);
-      const jso = JSON.parse(jsonString);;
-      const yamlString = YAML.stringify(jso, 0, this.conf.yaml.indent);
+      //console.debug('YamlJson2wayAdaptor: json:', jsonString);
+      const jso = JSON.parse(jsonString);
+      var yamlString;
+      if (this.conf.yaml.newline) {
+         yamlString = YAML.stringify(jso, 100000, this.conf.yaml.indent);
+      } else {
+         yamlString = YAML.stringify(jso, 0);
+         // https://github.com/jeremyfa/yaml.js/blob/develop/src/Dumper.coffee
+      }
+      //console.debug('this.conf', this.conf);
+      //console.debug('converted to yaml:', yamlString);
       return yamlString;
   }
 }
@@ -41,6 +69,8 @@ require('../templatore-store.js').register_templator(
     // string: utf-8: json, string; utf-8; yaml,
     // idempotent projects
 );
+  // ['mime:application/json', 'mime:application/json;charset=utf-8'],
+  // ['application/json', 'application/json;charset=utf-8'],
 
 
 module.exports = {
