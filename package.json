@@ -24,6 +24,7 @@
     "secure-random": "^1.1.2",
     "tv4": "^1.3.0",
     "typescript": "^3.5.3",
+    "yamljs": "^0.3.0",
     "uuid": "^3.3.3"
   },
   "engines": {
