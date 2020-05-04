@@ -11,11 +11,6 @@ function* example_generator() {
  yield {input: `[abc, {a: cc}]` , output: '["abc",{"a":"cc"}]'};
 
    yield {input:
-/*`
----
-- abc
-- a: cc
-`,*/
 `- abc
 -
     a: cc
@@ -36,6 +31,12 @@ params: [4]};
 */
 
 yield {input: `[abc, {a: cc}]` , output: '["abc",{"a":"cc"}]', params: []};
+
+/*`
+---
+- abc
+- a: cc
+`,*/
 
 }
 

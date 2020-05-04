@@ -2,6 +2,8 @@
 
 const YAML = require('yamljs');
 
+const EXTREME_LARGE = 1000000000000000000;
+
 // NOT TESTED
 class YamlJson2wayAdaptor {
 
@@ -53,12 +55,11 @@ class YamlJson2wayAdaptor {
       const jso = JSON.parse(jsonString);
       var yamlString;
       if (this.conf.yaml.newline) {
-         yamlString = YAML.stringify(jso, 100000, this.conf.yaml.indent);
+         yamlString = YAML.stringify(jso, EXTREME_LARGE, this.conf.yaml.indent);
       } else {
          yamlString = YAML.stringify(jso, 0);
          // https://github.com/jeremyfa/yaml.js/blob/develop/src/Dumper.coffee
       }
-      //console.debug('this.conf', this.conf);
       //console.debug('converted to yaml:', yamlString);
       return yamlString;
   }
