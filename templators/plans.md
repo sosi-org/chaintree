@@ -7,7 +7,9 @@ Use it rto create langage constructs:
 * Uses Babel
 * looks like a separate language
 
-Possible directions: Decision points:
+### Decision points
+(Possible directions)
+
 * Inline constructs in JS itself : (primitives)
    * define multiple:
       `var (a,b) <= (q,r)`
