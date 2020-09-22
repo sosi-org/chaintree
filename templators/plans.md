@@ -2,16 +2,22 @@
 ### A web API
 See [./demo-templator-serve/readme.md]
 
-Use it rto create langage constructs:
+### Inline constructs in JS itself : (primitives)
+See "Inline primitives" below.
+
+Use it to create langage constructs:
 * Those that are water-tight.
 * Uses Babel
 * looks like a separate language
 
+Example:
+
+
 ### Decision points
 (Possible directions)
 
-* Inline constructs in JS itself : (primitives)
-   * define multiple:
+* "Inline primitives"
+   * define multiple, or one variable only? (return-style): Answer: since we allow multiple inputs, why not allow multiple outputs?
       `var (a,b) <= (q,r)`
       when expanded, consumes `q`,`r`, defines two variables as vara in two lines.
    * `use @construct templatorc/constructs-primitives/safe-data-movers-chtr_style`
