@@ -21,3 +21,8 @@ Example:
       `var (a,b) <= (q,r)`
       when expanded, consumes `q`,`r`, defines two variables as vara in two lines.
    * `use @construct templatorc/constructs-primitives/safe-data-movers-chtr_style`
+
+### Next step(s)
+Next steps ready to be made.
+* An array processor using generators
+*
