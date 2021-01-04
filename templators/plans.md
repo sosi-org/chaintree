@@ -25,4 +25,8 @@ Example:
 ### Next step(s)
 Next steps ready to be made.
 * An array processor using generators
-*
+* http server API
+* a demo webpage (online tool)
+* json with interpolation
+* async generastor for online processing
+* is yaml-json already done?

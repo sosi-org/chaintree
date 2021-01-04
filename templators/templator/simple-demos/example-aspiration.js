@@ -47,6 +47,7 @@ const auto_test_templators = [
     {name: 'b64url',},
     {name: 'from_file' },
     {name: 'yaml-json' },
+    {name: 'json-sub' },
 ];
 
 /*async*/ function each_case(tentry) {
