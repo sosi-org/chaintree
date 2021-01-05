@@ -16,7 +16,7 @@ const b64 = teamplator('base64');
 
 */
 
-const {requiret} = require('../../requiret');
+const {requiret} = require('../requiret');
 const trequire = requiret;
 
 global.templatorsconf =  {
