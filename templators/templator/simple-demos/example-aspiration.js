@@ -83,15 +83,20 @@ const auto_test_templators = [
         if (!('input' in iter.value) || !('output' in iter.value)) {
             throw new Error( tname + '.examples.js generator must yield `{input,output}`');
         }
+        /*
+          The Templator constructor arguments
+            aka. Templator parameters
+            aka. tparams cparams params constructor_args
+        */
         // or: {example, expected} =
         //const {input, output, constructor_args} = iter.value;
-        const {input, output, params} = iter.value;
+        const {input, output, tparams} = iter.value;
 
 
-        if (params) {
-            exassert(util.isArray(params), ()=>'param: Must be an array (as constructor arguments) or falsey.');
+        if (tparams) {
+            exassert(Array.isArray(tparams), ()=>'param: Must be an array (as constructor arguments) or falsey.');
             console.log('new');
-            tobj = new t(...params);
+            tobj = new t(...tparams);
         } else {
             // reusing the first instance? no.
             // tobj = tobj0;

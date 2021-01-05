@@ -7,7 +7,7 @@ function* example_generator() {
     input: {"profile":{"name":"john"},"birthday":{"year":1980},"data":{"jack":"surename"}},
     output: {name: "john", year: 1980},
     /* constructor args */
-    params: [`{"profile":{"name": \${name} },"birthday":{"year":\${year}},"data":{"jack":"surename"}}`],
+    tparams: [`{"profile":{"name": \${name} },"birthday":{"year":\${year}},"data":{"jack":"surename"}}`],
   };
 
   // lookup the key
@@ -15,14 +15,14 @@ function* example_generator() {
     input: {"profile":{"name":"john"},"birthday":{"year":1980},"data":{"jack":"surename"}},
     output: {name: "john", year: 1980, misc: "jack"},
 
-    params: [`{"profile":{"name": \${name}} },"birthday":{"year":\${year}},"data":{${misc}:"surename"}}`],
+    tparams: [`{"profile":{"name": \${name}} },"birthday":{"year":\${year}},"data":{${misc}:"surename"}}`],
   };
 
   // redundancy
   yield {
     input: {"profile":{"name":"john"},"birthday":{"year":1980},"data":{"name2":"john"}},
     output: {name: "john", year: 1980},
-    params: [`{"profile":{"name": \${name} },"birthday":{"year":\${year}},"data":{"name2":\${name} }}`],
+    tparams: [`{"profile":{"name": \${name} },"birthday":{"year":\${year}},"data":{"name2":\${name} }}`],
   };
 
 
@@ -30,7 +30,7 @@ function* example_generator() {
   yield {
     input: {"profile":{"name":"john2"},"birthday":{"year":1980},"data":{"name2":"john"}},
     output: {name: "john", year: 1980},
-    params: [`{"profile":{"name": \${name} },"birthday":{"year":\${year}},"data":{"name2":\${name} }}`],
+    tparams: [`{"profile":{"name": \${name} },"birthday":{"year":\${year}},"data":{"name2":\${name} }}`],
   };
 
 }
