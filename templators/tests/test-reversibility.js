@@ -41,6 +41,18 @@ const auto_test_templators = [
     // {name: 'json-sub' },
 ];
 
+function* loopthrough(genr) {
+  while (true) {
+
+    const iter = genr.next();
+    if (iter.done) {
+      break;
+    }
+
+    yield iter.value;
+  }
+}
+
 /*async*/ function each_case(tentry) {
   global.templatorsconf.reverberate = false;
 
@@ -62,17 +74,6 @@ const auto_test_templators = [
     console.log('WARNING: no examples for ' + tname );
   }
 
-  function* loopthrough(genr) {
-    while (true) {
-
-      const iter = genr.next();
-      if (iter.done) {
-        break;
-      }
-
-      yield iter.value;
-    }
-  }
   if (!no_examples) {
       var tobj;
       let genr = texample_generator();
