@@ -62,16 +62,22 @@ const auto_test_templators = [
     console.log('WARNING: no examples for ' + tname );
   }
 
-  if (!no_examples) {
-      var tobj = null;
-      let genr = texample_generator();
-      while (true) {
+  function* loopthrough(genr) {
+    while (true) {
 
-        const iter = genr.next();
-        if (iter.done) {
-          break;
-        }
-        if (!('input' in iter.value) || !('output' in iter.value)) {
+      const iter = genr.next();
+      if (iter.done) {
+        break;
+      }
+
+      yield iter.value;
+    }
+  }
+  if (!no_examples) {
+      var tobj;
+      let genr = texample_generator();
+      for (const example_entry_case of loopthrough(genr)) {
+        if (!('input' in example_entry_case) || !('output' in example_entry_case)) {
             throw new Error( tname + '.examples.js generator must yield `{input,output}`');
         }
         /*
@@ -80,9 +86,8 @@ const auto_test_templators = [
             aka. tparams cparams params constructor_args
         */
         // or: {example, expected} =
-        //const {input, output, constructor_args} = iter.value;
-        const {input, output, tparams} = iter.value;
-
+        //const {input, output, constructor_args} = example_entry_case;
+        const {input, output, tparams} = example_entry_case;
 
         if (tparams) {
             exassert(Array.isArray(tparams), ()=>'param: Must be an array (as constructor arguments) or falsey.');
@@ -97,6 +102,7 @@ const auto_test_templators = [
               tobj = new t(...[]);
             }
         }
+
         exassert(tobj !== null, ()=>'error');
 
         // console.log(tobj.generate(output));
