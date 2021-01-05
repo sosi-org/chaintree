@@ -63,9 +63,56 @@ const auto_test_templators = [
   const texample_generator = trequire(tname).examples;
 
 
- 
- 
-/*
+  var tobj = null;
+
+  const no_examples = texample_generator === null;
+
+  if (no_examples) {
+    console.log('new');
+    const tobj = new t(...[]);
+    console.log('WARNING: no examples for ' + tname );
+  }
+
+  if (!no_examples) {
+      var tobj = null;
+      let genr = texample_generator();
+      while (true) {
+
+        const iter = genr.next();
+        if (iter.done) {
+          break;
+        }
+        if (!('input' in iter.value) || !('output' in iter.value)) {
+            throw new Error( tname + '.examples.js generator must yield `{input,output}`');
+        }
+        /*
+          The Templator constructor arguments
+            aka. Templator parameters
+            aka. tparams cparams params constructor_args
+        */
+        // or: {example, expected} =
+        //const {input, output, constructor_args} = iter.value;
+        const {input, output, tparams} = iter.value;
+
+
+        if (tparams) {
+            exassert(Array.isArray(tparams), ()=>'param: Must be an array (as constructor arguments) or falsey.');
+            console.log('new');
+            tobj = new t(...tparams);
+        } else {
+            // reusing the first instance? no.
+            // tobj = tobj0;
+            console.log('constructor call skipped. keeping previous tobj for ' + tname);
+            if (tobj === null ) {
+              console.log('new: default constructor for first item');
+              tobj = new t(...[]);
+            }
+        }
+        exassert(tobj !== null, ()=>'error');
+
+        // console.log(tobj.generate(output));
+
+        // feed(input)
         const actual_output = tobj.resolve(input);
         chai.expect(actual_output).eql(output);
 
@@ -83,7 +130,11 @@ const auto_test_templators = [
 
         // idempotence
         // ?
-*/
+      }
+  }
+  // check documentations, etc
+}
 
+auto_test_templators.forEach( tentry => each_case(tentry) );
 
 // todo: commandline for each templator. testt base64;testt b64url;
