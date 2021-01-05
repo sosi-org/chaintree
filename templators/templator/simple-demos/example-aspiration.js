@@ -1,5 +1,7 @@
 'use strict';
-
+/*
+Todo: keep a file with the same name here, but move this to ../tests/test-reversibility.js
+*/
 const util = require('util');
 const chai = require('chai');
 
