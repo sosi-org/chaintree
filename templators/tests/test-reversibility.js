@@ -90,19 +90,28 @@ function* loopthrough(genr) {
         //const {input, output, constructor_args} = example_entry_case;
         const {input, output, tparams} = example_entry_case;
 
-        if (tparams) {
-            exassert(Array.isArray(tparams), ()=>'param: Must be an array (as constructor arguments) or falsey.');
-            console.log('new');
-            tobj = new t(...tparams);
-        } else {
-            // reusing the first instance? no.
-            // tobj = tobj0;
-            console.log('constructor call skipped. keeping previous tobj for ' + tname);
-            if (tobj === null ) {
-              console.log('new: default constructor for first item');
-              tobj = new t(...[]);
+        tobj = ((tparams, tname)=>{
+
+            if (tparams) {
+              exassert(Array.isArray(tparams), ()=>'param: Must be an array (as constructor arguments) or falsey.');
+              console.log('new');
+              tobj = new t(...tparams);
+              return tobj;
+
+            } else {
+              // reusing the first instance? no.
+              // tobj = tobj0;
+              console.log('constructor call skipped. keeping previous tobj for ' + tname);
+              if (tobj === null ) {
+                console.log('new: default constructor for first item');
+                tobj = new t(...[]);
+              }
+              return tobj;
+
             }
-        }
+
+        })(tparams);
+
 
         exassert(tobj !== null, ()=>'error');
 
