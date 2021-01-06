@@ -28,7 +28,7 @@ function exassert(cond, throw_lazy_string) {
   }
 }
 
-
+/* list of Templators to be tested for reversibility. */
 const auto_test_templators = [
     {
       // namespace/name
@@ -52,6 +52,7 @@ function* loopthrough(genr) {
     yield iter.value;
   }
 }
+
 /**
  * Calls constructor `t` (for Templator) using args `tparams` if necessary.
  * Returns the new "tobj" (a Templator object).
@@ -84,6 +85,29 @@ const ISOLATE1/*{tobj}*/ = (t, tparams, tname, last_tobj) =>
 
 function IF_OR(x, y) {
   return (x !== undefined)? x : y;
+}
+
+function test_one_case(tobj, input, output) {
+  // console.log(tobj.generate(output));
+
+  // feed(input)
+  const actual_output = tobj.resolve(input);
+  chai.expect(actual_output).eql(output);
+
+  //use decorators:
+    //feed_generator -> for lazy-serial (for real-time!)
+      // also lazy input: real-time
+  //feed_async
+  //feed_async_mapseries
+  //feeder_as_promise (useful for Promise.map_all)
+
+  // reverse
+  //feed-back reconstructed input !
+  const reverse_input = tobj.generate(output);
+  chai.expect(reverse_input).eql(input);  // magic
+
+  // idempotence
+  // ?
 }
 
 /** Runs all testcases for a geiven TEmplator class, base on its `.examples`. */
@@ -126,26 +150,7 @@ function IF_OR(x, y) {
 
         exassert(tobj !== null, ()=>'error');
 
-        // console.log(tobj.generate(output));
-
-        // feed(input)
-        const actual_output = tobj.resolve(input);
-        chai.expect(actual_output).eql(output);
-
-        //use decorators:
-          //feed_generator -> for lazy-serial (for real-time!)
-            // also lazy input: real-time
-        //feed_async
-        //feed_async_mapseries
-        //feeder_as_promise (useful for Promise.map_all)
-
-        // reverse
-        //feed-back reconstructed input !
-        const reverse_input = tobj.generate(output);
-        chai.expect(reverse_input).eql(input);  // magic
-
-        // idempotence
-        // ?
+        test_one_case(tobj, input, output);
 
         lastcase_tobj = tobj;
       }
