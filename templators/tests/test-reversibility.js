@@ -46,7 +46,7 @@ const auto_test_templators = [
     {name: 'b64url',},
     {name: 'from_file' },
     {name: 'yaml-json' },
-    // {name: 'json-sub' },
+    {name: 'json-sub' },
 ];
 
 function* loopthrough(genr) {
