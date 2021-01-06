@@ -52,6 +52,33 @@ function* loopthrough(genr) {
     yield iter.value;
   }
 }
+const ISOLATE1/*{tobj}*/ = (t, tparams, tname, tobj) =>
+{
+
+    if (tparams) {
+      exassert(Array.isArray(tparams), ()=>'param: Must be an array (as constructor arguments) or falsey.');
+      console.log('new');
+      const tobj_new = new t(...tparams);
+      return tobj_new;
+
+    } else {
+      // reusing the first instance? no.
+      // tobj = tobj0;
+      console.log('constructor call skipped. keeping previous tobj for ' + tname);
+      if (tobj === null ) {
+        console.log('new: default constructor for first item');
+        const tobj_new = new t(...[]);
+        return tobj_new;
+
+      }
+    }
+
+    return undefined;
+};
+
+function IF_OR(x, y) {
+  return (x !== undefined)? x : y;
+}
 
 /*async*/ function each_case(tentry) {
   global.templatorsconf.reverberate = false;
@@ -63,9 +90,6 @@ function* loopthrough(genr) {
   const t = trequire(tname).templator;
   const texample_generator = trequire(tname).examples;
 
-
-  var tobj = null;
-
   const no_examples = texample_generator === null;
 
   if (no_examples) {
@@ -75,7 +99,7 @@ function* loopthrough(genr) {
   }
 
   if (!no_examples) {
-      var tobj;
+      var tobj = null;
       let genr = texample_generator();
       for (const example_entry_case of loopthrough(genr)) {
         if (!('input' in example_entry_case) || !('output' in example_entry_case)) {
@@ -90,27 +114,7 @@ function* loopthrough(genr) {
         //const {input, output, constructor_args} = example_entry_case;
         const {input, output, tparams} = example_entry_case;
 
-        tobj = ((tparams, tname)=>{
-
-            if (tparams) {
-              exassert(Array.isArray(tparams), ()=>'param: Must be an array (as constructor arguments) or falsey.');
-              console.log('new');
-              tobj = new t(...tparams);
-              return tobj;
-
-            } else {
-              // reusing the first instance? no.
-              // tobj = tobj0;
-              console.log('constructor call skipped. keeping previous tobj for ' + tname);
-              if (tobj === null ) {
-                console.log('new: default constructor for first item');
-                tobj = new t(...[]);
-              }
-              return tobj;
-
-            }
-
-        })(tparams);
+        tobj = IF_OR(ISOLATE1(t, tparams, tname, tobj), tobj);
 
 
         exassert(tobj !== null, ()=>'error');
