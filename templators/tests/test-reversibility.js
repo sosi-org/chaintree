@@ -54,11 +54,11 @@ function* loopthrough(genr) {
 }
 /**
  * Calls constructor `t` (for Templator) using args `tparams` if necessary.
- * Returns the new `tobj` (a Templator object).
+ * Returns the new "tobj" (a Templator object).
  * This is the logic used for tests: creates the object only when necessary.
- * tobj: last test case's `tobj`.
+ * `last_tobj`: last test case's "tobj".
  */
-const ISOLATE1/*{tobj}*/ = (t, tparams, tname, tobj) =>
+const ISOLATE1/*{tobj}*/ = (t, tparams, tname, last_tobj) =>
 {
 
     if (tparams) {
@@ -71,7 +71,7 @@ const ISOLATE1/*{tobj}*/ = (t, tparams, tname, tobj) =>
       // reusing the first instance? no.
       // tobj = tobj0;
       console.log('constructor call skipped. keeping previous tobj for ' + tname);
-      if (tobj === null ) {
+      if (last_tobj === null ) {
         console.log('new: default constructor for first item');
         const tobj_new = new t(...[]);
         return tobj_new;
@@ -86,6 +86,7 @@ function IF_OR(x, y) {
   return (x !== undefined)? x : y;
 }
 
+/** Runs all testcases for a geiven TEmplator class, base on its `.examples`. */
 /*async*/ function each_case(tentry) {
   global.templatorsconf.reverberate = false;
 
@@ -93,6 +94,7 @@ function IF_OR(x, y) {
 
   console.log('Testing templator:', tname);
 
+  /* constructor for this case's Templator class */
   const t = trequire(tname).templator;
   const texample_generator = trequire(tname).examples;
 
@@ -105,7 +107,7 @@ function IF_OR(x, y) {
   }
 
   if (!no_examples) {
-      let tobj = null;
+      let lastcase_tobj = null;
       let genr = texample_generator();
       for (const example_entry_case of loopthrough(genr)) {
         if (!('input' in example_entry_case) || !('output' in example_entry_case)) {
@@ -120,8 +122,7 @@ function IF_OR(x, y) {
         //const {input, output, constructor_args} = example_entry_case;
         const {input, output, tparams} = example_entry_case;
 
-        tobj = IF_OR(ISOLATE1(t, tparams, tname, tobj), tobj);
-
+        const tobj = IF_OR(ISOLATE1(t, tparams, tname, lastcase_tobj), lastcase_tobj);
 
         exassert(tobj !== null, ()=>'error');
 
@@ -145,6 +146,8 @@ function IF_OR(x, y) {
 
         // idempotence
         // ?
+
+        lastcase_tobj = tobj;
       }
   }
   // check documentations, etc
