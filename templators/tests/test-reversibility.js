@@ -3,6 +3,14 @@
 const util = require('util');
 const chai = require('chai');
 
+/*
+Terms:
+* tobj: A Templator. An object, instance of a Templator class.
+* exampleset: for one single Templator class
+* examine: to test reversibility.
+* Templator class:
+*/
+
 // untested psudo-code
 /*
 TODO:
@@ -54,10 +62,12 @@ function* loopthrough(genr) {
 }
 
 /**
+ * The logic of obtaining each tobj for each case in an exampleset.
  * Calls constructor `t` (for Templator) using args `tparams` if necessary.
  * Returns the new "tobj" (a Templator object).
  * This is the logic used for tests: creates the object only when necessary.
  * `last_tobj`: last test case's "tobj".
+ * `{tobj}` means the returned output.
  */
 const ISOLATE1/*{tobj}*/ = (t, tparams, tname, last_tobj) =>
 {
