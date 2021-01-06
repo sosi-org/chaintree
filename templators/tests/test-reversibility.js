@@ -79,7 +79,7 @@ const ISOLATE1/*{tobj}*/ = (t, tparams, tname, last_tobj) =>
       }
     }
 
-    return undefined;
+    return last_tobj;
 };
 
 function IF_OR(x, y) {
@@ -87,7 +87,7 @@ function IF_OR(x, y) {
 }
 
 /** Runs all testcases for a geiven TEmplator class, base on its `.examples`. */
-/*async*/ function each_case(tentry) {
+/*async*/ function examine_exampleset(tentry) {
   global.templatorsconf.reverberate = false;
 
   const tname = tentry.name;
@@ -122,7 +122,7 @@ function IF_OR(x, y) {
         //const {input, output, constructor_args} = example_entry_case;
         const {input, output, tparams} = example_entry_case;
 
-        const tobj = IF_OR(ISOLATE1(t, tparams, tname, lastcase_tobj), lastcase_tobj);
+        const tobj = ISOLATE1(t, tparams, tname, lastcase_tobj);
 
         exassert(tobj !== null, ()=>'error');
 
@@ -153,6 +153,6 @@ function IF_OR(x, y) {
   // check documentations, etc
 }
 
-auto_test_templators.forEach( tentry => each_case(tentry) );
+auto_test_templators.forEach( tentry => examine_exampleset(tentry) );
 
 // todo: commandline for each templator. testt base64;testt b64url;
