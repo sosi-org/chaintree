@@ -26,11 +26,19 @@ function* example_generator() {
   };
 
 
-  // must reject this (onconsistent redundancy)
+  // TODO: must reject this (onconsistent redundancy)
+  /*
+    "rejects:", "fails:", "throws:", "breaks:".
+    Exception class:
+      ReversiblityError(tclass, [input_arags], direction:[ direciton-of-application(FORWARD | BACKWARD), error locus(STRAIGHT|REVERB)], )
+      ReversiblityFailedError,
+      ConsistencyError(redundancy cancellation/resolution)
+  */
   yield {
     input: {"profile":{"name":"john2"},"birthday":{"year":1980},"data":{"name2":"john"}},
     output: {name: "john", year: 1980},
     tparams: [`{"profile":{"name": \${name} },"birthday":{"year":\${year}},"data":{"name2":\${name} }}`],
+    breaks: [true, false], /* forward, backwards */
   };
 
 }
