@@ -52,6 +52,12 @@ function* loopthrough(genr) {
     yield iter.value;
   }
 }
+/**
+ * Calls constructor `t` (for Templator) using args `tparams` if necessary.
+ * Returns the new `tobj` (a Templator object).
+ * This is the logic used for tests: creates the object only when necessary.
+ * tobj: last test case's `tobj`.
+ */
 const ISOLATE1/*{tobj}*/ = (t, tparams, tname, tobj) =>
 {
 
@@ -99,7 +105,7 @@ function IF_OR(x, y) {
   }
 
   if (!no_examples) {
-      var tobj = null;
+      let tobj = null;
       let genr = texample_generator();
       for (const example_entry_case of loopthrough(genr)) {
         if (!('input' in example_entry_case) || !('output' in example_entry_case)) {
