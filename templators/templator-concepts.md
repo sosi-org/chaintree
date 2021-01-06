@@ -1,5 +1,6 @@
 
-Templators:
+# Templators
+
 * Reversibility
 
 * Code looks like data
