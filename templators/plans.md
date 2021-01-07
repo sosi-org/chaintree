@@ -30,4 +30,6 @@ Next steps ready to be made.
 * json with interpolation
 * async generastor for online processing
 * is yaml-json already done?
-* tobj = json_sub`{"name":${name}, "dob": {"year":${year}}}`
+* Template literal usage: ```javascript
+tobj = json_sub`{"name":${name}, "dob": {"year":${year}}}`
+```
